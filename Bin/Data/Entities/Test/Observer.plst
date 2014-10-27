@@ -1,8 +1,0 @@
-<Entity>
-    <Script>
-        <File>Entities/Test/Observer.asc</File>
-        <Rate>60</Rate>
-    </Script>
-    <Transformable>true</Transformable>
-    <Observer>true</Observer>
-</Entity>

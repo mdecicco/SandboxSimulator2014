@@ -1,6 +1,0 @@
-<Entity>
-    <Script>
-        <File>Entities/Test/DelayedShutdown.rsc</File>
-        <Rate>10</Rate>
-    </Script>
-</Entity>

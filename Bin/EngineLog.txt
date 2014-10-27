@@ -1,3 +1,0 @@
-0.066843: Fatal error: Config.plst must exist in the executable directory.
-0.021145: Fatal error: Config.plst must exist in the executable directory.
-0.005202: Fatal error: Config.plst must exist in the executable directory.
