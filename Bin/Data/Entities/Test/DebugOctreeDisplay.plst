@@ -1,0 +1,5 @@
+<Entity>
+    <Render>
+        <Shader>Shaders/Test/Points.glsl</Shader>
+    </Render>
+</Entity>

@@ -1,0 +1,10 @@
+<Entity>
+    <Render>
+        <Mesh>Models/Test/Horse.dae</Mesh>
+        <Shader>Shaders/Test/Skinning.glsl</Shader>
+        <Texture0>Textures/Checker.png</Texture0>
+        <Primitives>TRIANGLES</Primitives>
+    </Render>
+    <Transformable>true</Transformable>
+    <Position>-250,1,-250</Position>
+</Entity>

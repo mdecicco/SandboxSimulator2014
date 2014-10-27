@@ -1,0 +1,10 @@
+<Entity>
+    <Script>
+        <File>Entities/Test/Math.rsc</File>
+        <Rate>60</Rate>
+    </Script>
+    <Render>
+        <Shader>Shaders/Test/Points.glsl</Shader>
+    </Render>
+    <Transformable>true</Transformable>
+</Entity>

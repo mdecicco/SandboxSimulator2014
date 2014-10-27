@@ -1,0 +1,15 @@
+<Entity>
+    <Render>
+        <Mesh>Models/Sandbox/Cylinder.3ds</Mesh>
+        <Shader>Shaders/Sandbox/Map.glsl</Shader>
+        <Texture0>Textures/Checker.png</Texture0>
+        <Primitives>TRIANGLES</Primitives>
+    </Render>
+    <Script>
+        <File>Entities/Sandbox/Cylinder.rsc</File>
+        <Rate>1</Rate>
+    </Script>
+    <Mass>10.0</Mass>
+    <Transformable>true</Transformable>
+    <Position>-250,10,-250</Position>
+</Entity>

@@ -1,0 +1,6 @@
+<Entity>
+    <Script>
+        <File>Entities/Test/PeriodicFrameratePrinter.rsc</File>
+        <Rate>0.5</Rate>
+    </Script>
+</Entity>
