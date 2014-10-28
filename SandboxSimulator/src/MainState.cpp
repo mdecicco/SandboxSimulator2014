@@ -32,6 +32,6 @@ void MainState::OnDeactivate()
 
 void MainState::Update(f64 DeltaTime)
 {
-    SS_LOG("Updating main state %f\n", DeltaTime);
+    //SS_LOG("Updating main state %f\n", DeltaTime);
 }
 }

@@ -19,8 +19,11 @@ GameApp::~GameApp()
     delete m_StateManager;
 }
 
-void GameApp::Start()
+void GameApp::Start(WindowInitializer WinInit)
 {
+	GameWindow = new SSWindow(WinInit);
+	GameWindow->Create();
+
     f64 OldTime = BCGetTimeInMS();
     f64 DeltaTime = 0.0f;
 	i32 Frames = 0;
@@ -40,6 +43,7 @@ void GameApp::Start()
 
         m_StateManager->UpdateState(DeltaTime);
         
+		GameWindow->PollEvents();
         GameWindow->SwapBuffers();
 
 		//Frames++;

@@ -26,7 +26,7 @@ public:
     GameApp(State* S);
 	~GameApp();
 
-    void Start();
+    void Start(WindowInitializer WinInit);
     
     void RequestClose() {m_bIsCloseRequested = true;}
     StateManager* GetStateManager() {return m_StateManager;}

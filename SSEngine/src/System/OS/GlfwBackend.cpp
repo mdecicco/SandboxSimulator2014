@@ -3,7 +3,6 @@
 #include <System/InputManager.h>
 #include <System/OS/GlfwBackend.h>
 
-#define SS_USE_GLFW_BACKEND
 #ifdef SS_USE_GLFW_BACKEND
 namespace SSEngine {
 

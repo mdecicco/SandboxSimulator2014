@@ -26,7 +26,7 @@ int main()
     WinInit.Title           =   "Sandbox Simulator";
 
     GameApp* Game = new GameApp(new MainState());
-    Game->Start();
+    Game->Start(WinInit);
     delete(Game);
     exit(0);
 }

@@ -11,6 +11,8 @@
 #define SS_ERROR(...) {DebugSingleton::GetDebug()->Log(__VA_ARGS__); abort(); }
 #define AllocStr(Sz) AllocArray(char,Sz)
 
+#include <stdio.h>
+#include <iostream>
 #include <stdarg.h>
 
 namespace SSEngine {
@@ -40,7 +42,7 @@ public:
         vsnprintf(Formatted, Size, Text, List);
         va_end(List);
 
-        i32 Ret = fprintf(m_Log, "%s", Formatted);
+		i32 Ret = 0;// fprintf(m_Log, "%s", Formatted);
         printf("%s", Formatted);
 
         free(Formatted);
