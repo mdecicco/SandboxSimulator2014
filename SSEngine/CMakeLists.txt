@@ -15,7 +15,7 @@ endif()
 
 add_library(SSEngine ${BUILD_MODE} ${ss_top_SOURCES} ${ss_system_SOURCES} ${ss_system_os_SOURCES} ${ss_utils_SOURCES} ${ss_utils_math_SOURCES} ${ss_system_states_SOURCES})
 
-target_link_libraries(SSEngine assimp Glew Glfw ${ZLIB_LIBRARIES} ${GL_LIBRARIES} ${GLFW_LIBRARIES})
+target_link_libraries(SSEngine assimp Glew Glfw Soil ${ZLIB_LIBRARIES} ${GL_LIBRARIES} ${GLFW_LIBRARIES})
 
 source_group("SSEngine" FILES ${ss_top_SOURCES})
 
