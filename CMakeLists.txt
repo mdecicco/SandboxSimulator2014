@@ -30,7 +30,7 @@ ADD_SUBDIRECTORY(dependencies)
 find_package(GL REQUIRED)
 find_package(X11)
 
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${gl_INCLUDE_DIRS}/include ${GLEWDIR} ${ZDIR} ${SOILDIR})
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
 
 ADD_DEFINITIONS(
     -std=c++11 # Or -std=c++0x
