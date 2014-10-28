@@ -1,11 +1,11 @@
 #ifndef VECTOR_THREE_H
 #define VECTOR_THREE_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <math.h>
 #include <Utils/Math/Functions.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class Mat4;
 
 class Vec3

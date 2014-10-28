@@ -1,15 +1,14 @@
 #ifndef BC_STRING_H
 #define BC_STRING_H
 
-#include <Utils/BcVector.h>
-#include <Utils/EngineMacros.h>
+#include <Utils/SSVector.h>
 #include <stdint.h>
 #include <stdarg.h>
 
 #define GS BcString() +
 #define AllocStr(Sz) AllocArray(char,Sz)
 
-namespace BearClaw {
+namespace SSEngine {
 
 class BcString;
 

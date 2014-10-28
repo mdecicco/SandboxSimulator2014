@@ -1,7 +1,7 @@
 #ifndef INPUT_MANAGER_H
 #define INPUT_MANAGER_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <Utils/Math.h>
 #include <System/OS/PlatformIncludes.h>
 #include <vector>

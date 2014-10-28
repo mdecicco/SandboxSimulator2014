@@ -2,10 +2,9 @@
 #define OCTREE_H
 
 #include <Utils/AABoundingBox.h>
-#include <Scene/SceneNode.h>
 #include <algorithm>
 
-namespace BearClaw {
+namespace SSEngine {
 class Octree
 {
 private:

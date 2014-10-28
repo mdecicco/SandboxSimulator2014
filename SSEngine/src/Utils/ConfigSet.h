@@ -1,11 +1,10 @@
 #ifndef CONFIG_SET_H
 
-#include <System/Environment.h>
-#include <System/BcTypes.h>
-#include <Utils/BcString.h>
+#include <System/SSTypes.h>
+#include <Utils/SSString.h>
 #include <unordered_map>
 
-namespace BearClaw {
+namespace SSEngine {
     typedef std::unordered_map<const char*, f64> Settings;
 
 class ConfigSet

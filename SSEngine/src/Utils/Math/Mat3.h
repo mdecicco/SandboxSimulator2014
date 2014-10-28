@@ -1,10 +1,10 @@
 #ifndef MATTHREE_H
 #define MATTHREE_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <Utils/Math.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class Mat3
 {
 public:

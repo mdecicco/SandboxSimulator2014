@@ -9,12 +9,12 @@
  */
 
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <new>
 #include <vector>
 
 using namespace std;
-namespace BearClaw
+namespace SSEngine
     {
         template <typename StorageType,typename SizeType = i32>
         class BcVector

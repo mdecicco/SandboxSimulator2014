@@ -1,11 +1,11 @@
 #ifndef QUAT_H
 #define QUAT_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <Utils/Math/Mat4.h>
 #include <math.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class Quat
 {
 public:

@@ -1,9 +1,9 @@
 #ifndef VECTOR_FOUR_H
 #define VECTOR_FOUR_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class Vec4
 {
 public:

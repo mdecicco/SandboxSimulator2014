@@ -1,13 +1,13 @@
 
 #include <System/OS/PlatformIncludes.h>
-#include <Utils/BcString.h>
+#include <Utils/SSString.h>
 #include <stdio.h>
 
 #define Min(x,y) ((x) < (y) ? (x) : (y))
 #define Max(x,y) ((x) > (y) ? (x) : (y))
 #define MAX_STRING_FORMATTING_SIZE 256
 
-namespace BearClaw
+namespace SSEngine
     {
         BcString Format(const char *Text,...)
             {

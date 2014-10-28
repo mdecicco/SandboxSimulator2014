@@ -5,11 +5,9 @@
 
 #include <stdlib.h>
 #include <Utils/Math/Vec3.h>
-#include <Resource/Mesh.h>
-#include <System/BcTypes.h>
-#include <Renderer/Material.h>
+#include <System/SSTypes.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class AABoundingBox {
 public:
 	Vec3 HalfDim;
