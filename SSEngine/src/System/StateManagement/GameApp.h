@@ -2,6 +2,7 @@
 #define GAMEAPP_H
 
 #include <System/OS/PlatformIncludes.h>
+#include <System/InputManager.h>
 
 namespace SSEngine {
 class StateManager;
@@ -31,6 +32,8 @@ public:
     void RequestClose() {m_bIsCloseRequested = true;}
     StateManager* GetStateManager() {return m_StateManager;}
     bool IsRunning() {return m_bIsRunning;}
+
+	void TestKeyCallback(char button, Action_Type Type);
 };
 }
 

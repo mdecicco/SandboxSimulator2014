@@ -14,6 +14,7 @@
  */
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+#define InputMgr InputManager::GetInputManager()
 
 namespace SSEngine {
 enum KeyCode
@@ -214,9 +215,15 @@ private:
     MouseMoveFuncList        m_MouseMoveFunctions;
     MouseButtonFuncList        m_MouseButtonFunctions;
 
+	InputManager() { Reset(); }
+
 public:
-    InputManager() { Reset(); }
     ~InputManager();
+
+	static InputManager* GetInputManager() {
+		static InputManager* inp = new InputManager();
+		return inp;
+	}
 
     u32 GetKey(u32 i) const
     {

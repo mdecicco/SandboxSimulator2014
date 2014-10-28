@@ -219,26 +219,26 @@ void KeyCallback(GLFWwindow* Window, int key, int scancode, int action, int mods
 {
     if(action == GLFW_PRESS)
     {
-        //TODO: InputMgr->Keys[GKEYCODE2BC(key)] = 1;
-        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_PRESSED);
+        InputMgr->Keys[GKEYCODE2BC(key)] = 1;
+        InputMgr->OnKeyDown(GKEYCODE2BC(key), SS_PRESSED);
     }
 
     if(action == GLFW_RELEASE)
     {
-        //TODO: InputMgr->Keys[GKEYCODE2BC(key)] = 0;
-        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_RELEASED);
+        InputMgr->Keys[GKEYCODE2BC(key)] = 0;
+        InputMgr->OnKeyDown(GKEYCODE2BC(key), SS_RELEASED);
     }
 
     if(action == GLFW_REPEAT)
     {
-        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_HELD);
+        InputMgr->OnKeyDown(GKEYCODE2BC(key), SS_HELD);
     }
 }
 
 void MouseMoveCallback(GLFWwindow* Window, double x, double y)
 {
-    //TODO: InputMgr->MousePosition = Vec2(x, y);
-    //TODO: InputMgr->OnMouseMove(x,y);
+    InputMgr->MousePosition = Vec2(x, y);
+    InputMgr->OnMouseMove(x,y);
 }
 
 void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int mods)
@@ -255,7 +255,7 @@ void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int mods)
     if (Button == GLFW_MOUSE_BUTTON_3) Butt = MOUSE_BUTTON_3;
     if (Button == GLFW_MOUSE_BUTTON_4) Butt = MOUSE_BUTTON_4;
 
-    //TODO: InputMgr->OnMouseButton(Butt, Type);
+    InputMgr->OnMouseButton(Butt, Type);
 }
 
 InputManager::~InputManager()

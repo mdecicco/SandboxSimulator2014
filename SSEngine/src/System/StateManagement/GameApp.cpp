@@ -2,6 +2,7 @@
 #include <System/StateManagement/StateManager.h>
 #include <System/OS/PlatformIncludes.h>
 
+#include <System/InputManager.h>
 #include <System/DebugSingleton.h>
 
 namespace SSEngine {
@@ -28,6 +29,16 @@ void GameApp::Start(WindowInitializer WinInit)
     f64 DeltaTime = 0.0f;
 	i32 Frames = 0;
 	f64 FrameCounter = 0;
+	InputManager* input = InputManager::GetInputManager();
+	input->Init(GameWindow);
+
+	//Register callback function, using std::function this can be inside of a class instance!
+	using std::placeholders::_1;
+	using std::placeholders::_2;
+	//The class' function, the class instance, the params
+	KeyFunc KeyFunction = std::bind(&GameApp::TestKeyCallback, this, _1, _2);
+	input->AddKeyDownFunction(KeyFunction);
+	//
 
     SS_LOG("Starting main loop...\n");
 
@@ -44,7 +55,12 @@ void GameApp::Start(WindowInitializer WinInit)
         m_StateManager->UpdateState(DeltaTime);
         
 		GameWindow->PollEvents();
+		input->PollEvents();
         GameWindow->SwapBuffers();
+
+		/* if (input->GetKey(SS_KEY_ESCAPE) == SS_PRESSED) {
+			GameWindow->SetCloseRequested(true);
+		} */
 
 		//Frames++;
 		//FrameCounter += DeltaTime / 1000;
@@ -57,5 +73,11 @@ void GameApp::Start(WindowInitializer WinInit)
 	m_StateManager->ChangeState(nullptr);
 	m_StateManager->DeInit();
     GameWindow->Destroy();
+}
+
+void GameApp::TestKeyCallback(char button, Action_Type Type) {
+	if (button == SS_KEY_ESCAPE && Type == SS_PRESSED) {
+		GameWindow->SetCloseRequested(true);
+	}
 }
 }
