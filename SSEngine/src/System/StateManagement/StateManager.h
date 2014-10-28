@@ -2,7 +2,7 @@
 #define SCREENMANAGER_H
 
 #include <string>
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <map>
 
 namespace SSEngine {

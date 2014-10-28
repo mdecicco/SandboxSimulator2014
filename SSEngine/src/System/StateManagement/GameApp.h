@@ -2,7 +2,6 @@
 #define GAMEAPP_H
 
 #include <System/OS/PlatformIncludes.h>
-#include <Utils/EngineMacros.h>
 
 namespace SSEngine {
 class StateManager;
@@ -15,6 +14,8 @@ private:
     bool m_bIsCloseRequested, m_bIsClosing, m_bIsRunning;
 
     char* m_Title;
+
+    SSWindow* GameWindow;
 
     //void RegisterEngineEvents(void);
 

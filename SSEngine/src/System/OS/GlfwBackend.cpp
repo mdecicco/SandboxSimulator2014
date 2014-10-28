@@ -1,6 +1,10 @@
+#include <System/OS/PlatformIncludes.h>
+#include <System/DebugSingleton.h>
+#include <System/InputManager.h>
 #include <System/OS/GlfwBackend.h>
 
-#ifdef BC_USE_GLFW_BACKEND
+#define SS_USE_GLFW_BACKEND
+#ifdef SS_USE_GLFW_BACKEND
 namespace SSEngine {
 
 /*
@@ -22,7 +26,7 @@ void BackendWindow::Create()
     if(!glfwInit())
     {
         glfwTerminate();
-        BC_ERROR("Glfw could not initialize!\n");
+        SS_ERROR("Glfw could not initialize!\n");
     }
     //Gl context version
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_Initializer.MajorVersion);
@@ -53,7 +57,7 @@ void BackendWindow::Create()
     if(!m_Window)
     {
         glfwTerminate();
-        BC_ERROR("Creating the glfw window failed!\n");
+        SS_ERROR("Creating the glfw window failed!\n");
     }
 
     // GLEW
@@ -62,7 +66,7 @@ void BackendWindow::Create()
     GLenum err = glewInit();
     if(err != GLEW_OK)
     {
-        BC_LOG("Glew initialization failed: %s\n", glewGetErrorString(err));
+        SS_LOG("Glew initialization failed: %s\n", glewGetErrorString(err));
     }
     glGetError();
 }
@@ -120,94 +124,94 @@ struct GLFWKeyCode2BC
 };
 
 static const GLFWKeyCode2BC g2b[] = {
-    {GLFW_KEY_ENTER,        BC_KEY_RETURN       },
-    {GLFW_KEY_ESCAPE,       BC_KEY_ESCAPE       },
-    {GLFW_KEY_BACKSPACE,    BC_KEY_BACKSPACE    },
-    {GLFW_KEY_TAB,          BC_KEY_TAB          },
-    {GLFW_KEY_SPACE,        BC_KEY_SPACE        },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_EXCLAIM      },
-    {GLFW_KEY_APOSTROPHE,   BC_KEY_QUOTEDBL     },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_HASH         },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_PERCENT      },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_DOLLAR       },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_AMPERSAND    },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_QUOTE        },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_LPAREN       },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_RPAREN       },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_ASTERISK     },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_PLUS         },
-    {GLFW_KEY_COMMA,        BC_KEY_COMMA        },
-    {GLFW_KEY_MINUS,        BC_KEY_MINUS        },
-    {GLFW_KEY_PERIOD,       BC_KEY_PERIOD       },
-    {GLFW_KEY_SLASH,        BC_KEY_SLASH        },
-    {GLFW_KEY_0,            BC_KEY_0            },
-    {GLFW_KEY_1,            BC_KEY_1            },
-    {GLFW_KEY_2,            BC_KEY_2            },
-    {GLFW_KEY_3,            BC_KEY_3            },
-    {GLFW_KEY_4,            BC_KEY_4            },
-    {GLFW_KEY_5,            BC_KEY_5            },
-    {GLFW_KEY_6,            BC_KEY_6            },
-    {GLFW_KEY_7,            BC_KEY_7            },
-    {GLFW_KEY_8,            BC_KEY_8            },
-    {GLFW_KEY_9,            BC_KEY_9            },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_COLON        },
-    {GLFW_KEY_SEMICOLON,    BC_KEY_SEMICOLON    },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_LESS         },
-    {GLFW_KEY_EQUAL,        BC_KEY_EQUALS       },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_GREATER      },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_QUESTION     },
-    {GLFW_KEY_UNKNOWN,      BC_KEY_AT           },
-    {GLFW_KEY_LEFT_BRACKET, BC_KEY_LBRACKET     },
-    {GLFW_KEY_BACKSLASH,    BC_KEY_BACKSLASH    },
-    {GLFW_KEY_RIGHT_BRACKET,BC_KEY_RBRACKET     },
-    //{XK_caret, BC_KEY_CARET},
-    {GLFW_KEY_UNKNOWN,      BC_KEY_UNDERSCORE   },
-    {GLFW_KEY_GRAVE_ACCENT, BC_KEY_BACKQUOTE    },
-    {GLFW_KEY_A,            BC_KEY_A            },
-    {GLFW_KEY_B,            BC_KEY_B            },
-    {GLFW_KEY_C,            BC_KEY_C            },
-    {GLFW_KEY_D,            BC_KEY_D            },
-    {GLFW_KEY_E,            BC_KEY_E            },
-    {GLFW_KEY_F,            BC_KEY_F            },
-    {GLFW_KEY_G,            BC_KEY_G            },
-    {GLFW_KEY_H,            BC_KEY_H            },
-    {GLFW_KEY_I,            BC_KEY_I            },
-    {GLFW_KEY_J,            BC_KEY_J            },
-    {GLFW_KEY_K,            BC_KEY_K            },
-    {GLFW_KEY_L,            BC_KEY_L            },
-    {GLFW_KEY_M,            BC_KEY_M            },
-    {GLFW_KEY_N,            BC_KEY_N            },
-    {GLFW_KEY_O,            BC_KEY_O            },
-    {GLFW_KEY_P,            BC_KEY_P            },
-    {GLFW_KEY_Q,            BC_KEY_Q            },
-    {GLFW_KEY_R,            BC_KEY_R            },
-    {GLFW_KEY_S,            BC_KEY_S            },
-    {GLFW_KEY_T,            BC_KEY_T            },
-    {GLFW_KEY_U,            BC_KEY_U            },
-    {GLFW_KEY_V,            BC_KEY_V            },
-    {GLFW_KEY_W,            BC_KEY_W            },
-    {GLFW_KEY_X,            BC_KEY_X            },
-    {GLFW_KEY_Y,            BC_KEY_Y            },
-    {GLFW_KEY_Z,            BC_KEY_Z            },
-    {GLFW_KEY_DELETE,       BC_KEY_DELETE       },
+    {GLFW_KEY_ENTER,        SS_KEY_RETURN       },
+    {GLFW_KEY_ESCAPE,       SS_KEY_ESCAPE       },
+    {GLFW_KEY_BACKSPACE,    SS_KEY_BACKSPACE    },
+    {GLFW_KEY_TAB,          SS_KEY_TAB          },
+    {GLFW_KEY_SPACE,        SS_KEY_SPACE        },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_EXCLAIM      },
+    {GLFW_KEY_APOSTROPHE,   SS_KEY_QUOTEDBL     },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_HASH         },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_PERCENT      },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_DOLLAR       },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_AMPERSAND    },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_QUOTE        },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_LPAREN       },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_RPAREN       },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_ASTERISK     },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_PLUS         },
+    {GLFW_KEY_COMMA,        SS_KEY_COMMA        },
+    {GLFW_KEY_MINUS,        SS_KEY_MINUS        },
+    {GLFW_KEY_PERIOD,       SS_KEY_PERIOD       },
+    {GLFW_KEY_SLASH,        SS_KEY_SLASH        },
+    {GLFW_KEY_0,            SS_KEY_0            },
+    {GLFW_KEY_1,            SS_KEY_1            },
+    {GLFW_KEY_2,            SS_KEY_2            },
+    {GLFW_KEY_3,            SS_KEY_3            },
+    {GLFW_KEY_4,            SS_KEY_4            },
+    {GLFW_KEY_5,            SS_KEY_5            },
+    {GLFW_KEY_6,            SS_KEY_6            },
+    {GLFW_KEY_7,            SS_KEY_7            },
+    {GLFW_KEY_8,            SS_KEY_8            },
+    {GLFW_KEY_9,            SS_KEY_9            },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_COLON        },
+    {GLFW_KEY_SEMICOLON,    SS_KEY_SEMICOLON    },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_LESS         },
+    {GLFW_KEY_EQUAL,        SS_KEY_EQUALS       },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_GREATER      },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_QUESTION     },
+    {GLFW_KEY_UNKNOWN,      SS_KEY_AT           },
+    {GLFW_KEY_LEFT_BRACKET, SS_KEY_LBRACKET     },
+    {GLFW_KEY_BACKSLASH,    SS_KEY_BACKSLASH    },
+    {GLFW_KEY_RIGHT_BRACKET,SS_KEY_RBRACKET     },
+    //{XK_caret, BC_KEY_CARET,
+    {GLFW_KEY_UNKNOWN,      SS_KEY_UNDERSCORE   },
+    {GLFW_KEY_GRAVE_ACCENT, SS_KEY_BACKQUOTE    },
+    {GLFW_KEY_A,            SS_KEY_A            },
+    {GLFW_KEY_B,            SS_KEY_B            },
+    {GLFW_KEY_C,            SS_KEY_C            },
+    {GLFW_KEY_D,            SS_KEY_D            },
+    {GLFW_KEY_E,            SS_KEY_E            },
+    {GLFW_KEY_F,            SS_KEY_F            },
+    {GLFW_KEY_G,            SS_KEY_G            },
+    {GLFW_KEY_H,            SS_KEY_H            },
+    {GLFW_KEY_I,            SS_KEY_I            },
+    {GLFW_KEY_J,            SS_KEY_J            },
+    {GLFW_KEY_K,            SS_KEY_K            },
+    {GLFW_KEY_L,            SS_KEY_L            },
+    {GLFW_KEY_M,            SS_KEY_M            },
+    {GLFW_KEY_N,            SS_KEY_N            },
+    {GLFW_KEY_O,            SS_KEY_O            },
+    {GLFW_KEY_P,            SS_KEY_P            },
+    {GLFW_KEY_Q,            SS_KEY_Q            },
+    {GLFW_KEY_R,            SS_KEY_R            },
+    {GLFW_KEY_S,            SS_KEY_S            },
+    {GLFW_KEY_T,            SS_KEY_T            },
+    {GLFW_KEY_U,            SS_KEY_U            },
+    {GLFW_KEY_V,            SS_KEY_V            },
+    {GLFW_KEY_W,            SS_KEY_W            },
+    {GLFW_KEY_X,            SS_KEY_X            },
+    {GLFW_KEY_Y,            SS_KEY_Y            },
+    {GLFW_KEY_Z,            SS_KEY_Z            },
+    {GLFW_KEY_DELETE,       SS_KEY_DELETE       },
 
-    {GLFW_KEY_F1,           BC_KEY_F1           },
-    {GLFW_KEY_F2,           BC_KEY_F2           },
-    {GLFW_KEY_F3,           BC_KEY_F3           },
-    {GLFW_KEY_F4,           BC_KEY_F4           },
-    {GLFW_KEY_F5,           BC_KEY_F5           },
-    {GLFW_KEY_F6,           BC_KEY_F6           },
-    {GLFW_KEY_F7,           BC_KEY_F7           },
-    {GLFW_KEY_F8,           BC_KEY_F8           },
-    {GLFW_KEY_F9,           BC_KEY_F9           },
-    {GLFW_KEY_F10,          BC_KEY_F10          },
-    {GLFW_KEY_F11,          BC_KEY_F11          },
-    {GLFW_KEY_F12,          BC_KEY_F12          },
+    {GLFW_KEY_F1,           SS_KEY_F1           },
+    {GLFW_KEY_F2,           SS_KEY_F2           },
+    {GLFW_KEY_F3,           SS_KEY_F3           },
+    {GLFW_KEY_F4,           SS_KEY_F4           },
+    {GLFW_KEY_F5,           SS_KEY_F5           },
+    {GLFW_KEY_F6,           SS_KEY_F6           },
+    {GLFW_KEY_F7,           SS_KEY_F7           },
+    {GLFW_KEY_F8,           SS_KEY_F8           },
+    {GLFW_KEY_F9,           SS_KEY_F9           },
+    {GLFW_KEY_F10,          SS_KEY_F10          },
+    {GLFW_KEY_F11,          SS_KEY_F11          },
+    {GLFW_KEY_F12,          SS_KEY_F12          },
 
-    {GLFW_KEY_UP,           BC_KEY_UP           },
-    {GLFW_KEY_DOWN,         BC_KEY_DOWN         },
-    {GLFW_KEY_LEFT,         BC_KEY_LEFT         },
-    {GLFW_KEY_RIGHT,        BC_KEY_RIGHT        }
+    {GLFW_KEY_UP,           SS_KEY_UP           },
+    {GLFW_KEY_DOWN,         SS_KEY_DOWN         },
+    {GLFW_KEY_LEFT,         SS_KEY_LEFT         },
+    {GLFW_KEY_RIGHT,        SS_KEY_RIGHT        }
 };
 
 #define GKEYCODE2BC(k_) InputMgr->Impl->KeyToBC[k_ & 0xFF]
@@ -216,48 +220,48 @@ void KeyCallback(GLFWwindow* Window, int key, int scancode, int action, int mods
 {
     if(action == GLFW_PRESS)
     {
-        InputMgr->Keys[GKEYCODE2BC(key)] = 1;
-        InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_PRESSED);
+        //TODO: InputMgr->Keys[GKEYCODE2BC(key)] = 1;
+        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_PRESSED);
     }
 
     if(action == GLFW_RELEASE)
     {
-        InputMgr->Keys[GKEYCODE2BC(key)] = 0;
-        InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_RELEASED);
+        //TODO: InputMgr->Keys[GKEYCODE2BC(key)] = 0;
+        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_RELEASED);
     }
 
     if(action == GLFW_REPEAT)
     {
-        InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_HELD);
+        //TODO: InputMgr->OnKeyDown(GKEYCODE2BC(key), BC_HELD);
     }
 }
 
 void MouseMoveCallback(GLFWwindow* Window, double x, double y)
 {
-    InputMgr->MousePosition = Vec2(x, y);
-    InputMgr->OnMouseMove(x,y);
+    //TODO: InputMgr->MousePosition = Vec2(x, y);
+    //TODO: InputMgr->OnMouseMove(x,y);
 }
 
 void MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int mods)
 {
     //TODO
-	//printf("button %d action %d", Button, Action);
-	Action_Type Type;
-	Mouse_Button Butt;
-	if (Action == GLFW_PRESS) Type = BC_PRESSED;
-	if (Action == GLFW_RELEASE) Type = BC_RELEASED;
-	if (Action == GLFW_REPEAT) Type = BC_HELD;
-	if (Button == GLFW_MOUSE_BUTTON_1) Butt = MOUSE_BUTTON_1;
-	if (Button == GLFW_MOUSE_BUTTON_2) Butt = MOUSE_BUTTON_2;
-	if (Button == GLFW_MOUSE_BUTTON_3) Butt = MOUSE_BUTTON_3;
-	if (Button == GLFW_MOUSE_BUTTON_4) Butt = MOUSE_BUTTON_4;
+    //printf("button %d action %d", Button, Action);
+    Action_Type Type;
+    Mouse_Button Butt;
+    if (Action == GLFW_PRESS) Type = SS_PRESSED;
+    if (Action == GLFW_RELEASE) Type = SS_RELEASED;
+    if (Action == GLFW_REPEAT) Type = SS_HELD;
+    if (Button == GLFW_MOUSE_BUTTON_1) Butt = MOUSE_BUTTON_1;
+    if (Button == GLFW_MOUSE_BUTTON_2) Butt = MOUSE_BUTTON_2;
+    if (Button == GLFW_MOUSE_BUTTON_3) Butt = MOUSE_BUTTON_3;
+    if (Button == GLFW_MOUSE_BUTTON_4) Butt = MOUSE_BUTTON_4;
 
-	InputMgr->OnMouseButton(Butt, Type);
+    //TODO: InputMgr->OnMouseButton(Butt, Type);
 }
 
 InputManager::~InputManager()
 {
-	delete Impl;
+    delete Impl;
 }
 
 void InputManager::PollEvents()
@@ -265,19 +269,19 @@ void InputManager::PollEvents()
 
 }
 
-void InputManager::Init(BcWindow* Win)
+void InputManager::Init(SSWindow* Win)
 {
     m_Window = Win;
     BackendWindow* nwin = m_Window->GetBackendWindow();
 
     glfwSetKeyCallback(nwin->GetWindow(), KeyCallback);
     glfwSetCursorPosCallback(nwin->GetWindow(), MouseMoveCallback);
-	glfwSetMouseButtonCallback(nwin->GetWindow(), MouseButtonCallback);
+    glfwSetMouseButtonCallback(nwin->GetWindow(), MouseButtonCallback);
 
     // Init native
     Impl = new InputImpl;
 
-    memset(&Impl->KeyToBC[0], sizeof(Impl->KeyToBC), BC_KEY_UNKNOWN);
+    memset(&Impl->KeyToBC[0], sizeof(Impl->KeyToBC), SS_KEY_UNKNOWN);
     for(i32 i = 0; i < ARRAY_SIZE_IN_ELEMENTS(g2b); i++)
     {
         GLFWKeyCode2BC a = g2b[i];

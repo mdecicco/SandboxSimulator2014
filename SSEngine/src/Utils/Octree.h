@@ -1,3 +1,5 @@
+#ifdef ENABLE_OCTREES
+
 #ifndef OCTREE_H
 #define OCTREE_H
 
@@ -189,5 +191,7 @@ public:
 	}
 };
 }
+
+#endif
 
 #endif

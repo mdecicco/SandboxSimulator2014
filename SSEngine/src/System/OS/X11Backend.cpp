@@ -1,4 +1,4 @@
-#ifdef BC_USE_X11_BACKEND
+#ifdef SS_USE_X11_BACKEND
 
 #include <System/OS/PlatformIncludes.h>
 #include <System/InputManager.h>

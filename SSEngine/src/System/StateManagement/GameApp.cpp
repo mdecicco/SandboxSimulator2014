@@ -1,7 +1,8 @@
 #include <System/StateManagement/GameApp.h>
 #include <System/StateManagement/StateManager.h>
 #include <System/OS/PlatformIncludes.h>
-#include <System/Environment.h>
+
+#include <System/DebugSingleton.h>
 
 namespace SSEngine {
 GameApp::GameApp(State* S)
@@ -15,8 +16,7 @@ GameApp::GameApp(State* S)
 
 GameApp::~GameApp()
 {
-	delete m_StateManager;
-	delete Environ;
+    delete m_StateManager;
 }
 
 void GameApp::Start()
@@ -26,11 +26,11 @@ void GameApp::Start()
 	i32 Frames = 0;
 	f64 FrameCounter = 0;
 
-    BC_LOG("Starting main loop...\n");
+    SS_LOG("Starting main loop...\n");
 
     m_StateManager->Init(this);
     
-    BC_LOG("Done initializing main loop.\n");
+    SS_LOG("Done initializing main loop.\n");
     while(!GameWindow->GetCloseRequested() && !m_bIsCloseRequested)
     {
         DeltaTime = BCGetTimeInMS() - OldTime;
@@ -38,7 +38,6 @@ void GameApp::Start()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Environ->Update(DeltaTime);
         m_StateManager->UpdateState(DeltaTime);
         
         GameWindow->SwapBuffers();

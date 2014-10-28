@@ -3,7 +3,7 @@
 namespace SSEngine {
 void InputManager::Reset()
 {
-    memset(&Keys[0], 0, BC_KEY_COUNT * sizeof(int));
+    memset(&Keys[0], 0, SS_KEY_COUNT * sizeof(int));
     memset(&MouseButtons[0], 0, MOUSE_BUTTON_COUNT * sizeof(int));
     MousePosition = Vec2(0.0);
     memset(&Events[0], 0, sizeof(Events));

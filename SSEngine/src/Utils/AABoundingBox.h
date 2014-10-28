@@ -1,3 +1,5 @@
+#ifdef ENABLE_AABB
+
 #ifndef AABOUNDINGBOX_H
 #define AABOUNDINGBOX_H
 
@@ -171,5 +173,7 @@ protected:
 	}
 };
 }
+
+#endif
 
 #endif

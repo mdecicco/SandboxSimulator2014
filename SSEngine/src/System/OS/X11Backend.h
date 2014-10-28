@@ -1,5 +1,5 @@
-#ifndef GLFW_BACKEND_H
-#define GLFW_BACKEND_H
+#ifndef X11_BACKEND_H
+#define X11_BACKEND_H
 
 
 #include <System/OS/Window.h>

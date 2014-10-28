@@ -1,7 +1,8 @@
 #include <System/StateManagement/StateManager.h>
 #include <System/StateManagement/State.h>
 #include <System/StateManagement/GameApp.h>
-#include <System/Environment.h>
+
+#include <System/DebugSingleton.h>
 
 namespace SSEngine {
 StateManager::StateManager(State* S)
@@ -17,9 +18,9 @@ StateManager::~StateManager()
 void StateManager::Init(GameApp* G)
 {
     m_Game = G;
-    BC_LOG("State manager initializing...\n");
+    SS_LOG("State manager initializing...\n");
     m_CurrentState->Init(this);
-    BC_LOG("Done initializing state manager.\n");
+    SS_LOG("Done initializing state manager.\n");
 }
 
 void StateManager::DeInit() {
@@ -64,7 +65,7 @@ void StateManager::SetActiveState(std::string Key)
     }
     else
     {
-        BC_LOG("ERROR: The State Could not be found.\n");
+        SS_LOG("ERROR: The State Could not be found.\n");
     }
 }
 
@@ -84,7 +85,7 @@ void StateManager::SetActiveState(std::string Key, std::string SaveKey)
     }
     else
     {
-        BC_LOG("ERROR: The State Could not be found.\n");
+        SS_LOG("ERROR: The State Could not be found.\n");
     }
 }
 
@@ -97,7 +98,7 @@ State* StateManager::FindAliveState(std::string Key)
     }
 
     return nullptr;
-    BC_LOG("ERROR: The State Could not be found.\n");
+    SS_LOG("ERROR: The State Could not be found.\n");
 }
 
 void StateManager::InsertAliveState(std::string Key, State* S)

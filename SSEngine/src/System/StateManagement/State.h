@@ -2,7 +2,7 @@
 #define STATE_H
 
 #include <string.h>
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 
 namespace SSEngine {
 class StateManager;
