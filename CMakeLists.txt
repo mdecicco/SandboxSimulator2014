@@ -18,6 +18,7 @@ set(GLEWDIR "" CACHE PATH "Path to glew dir")
 set(SOILDIR "" CACHE PATH "Path to soil dir")
 set(ZDIR "" CACHE PATH "Path to zlib dir")
 set(GLDIR "" CACHE PATH "Path to openGL dir")
+set(ASSIMPDIR "" CACHE PATH "Path to Assimp dir")
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-extras/")
 
@@ -25,12 +26,13 @@ set(GLFWDIR "${PROJECT_SOURCE_DIR}/dependencies/glfw")
 set(GLEWDIR "${PROJECT_SOURCE_DIR}/dependencies/glew")
 set(SOILDIR "${PROJECT_SOURCE_DIR}/dependencies/soil")
 set(ZDIR "${PROJECT_SOURCE_DIR}/dependencies/z")
+set(ASSIMPDIR "${PROJECT_SOURCE_DIR}/dependencies/Assimp")
 
 ADD_SUBDIRECTORY(dependencies)
 find_package(GL REQUIRED)
 find_package(X11)
 
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${ASSIMPDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
 
 ADD_DEFINITIONS(
     -std=c++11 # Or -std=c++0x
