@@ -4,7 +4,7 @@
 #include <string.h>
 #include <System/BcTypes.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class StateManager;
 
 class State

@@ -5,7 +5,7 @@
 #include <System/BcTypes.h>
 #include <map>
 
-namespace BearClaw {
+namespace SSEngine {
 class GameApp;
 class State;
 

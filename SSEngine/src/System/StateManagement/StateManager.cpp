@@ -3,7 +3,7 @@
 #include <System/StateManagement/GameApp.h>
 #include <System/Environment.h>
 
-namespace BearClaw {
+namespace SSEngine {
 StateManager::StateManager(State* S)
 {
     m_CurrentState = S;

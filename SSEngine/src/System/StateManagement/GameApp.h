@@ -4,7 +4,7 @@
 #include <System/OS/PlatformIncludes.h>
 #include <Utils/EngineMacros.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class StateManager;
 class State;
 

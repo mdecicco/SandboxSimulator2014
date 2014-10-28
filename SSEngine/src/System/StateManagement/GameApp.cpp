@@ -3,7 +3,7 @@
 #include <System/OS/PlatformIncludes.h>
 #include <System/Environment.h>
 
-namespace BearClaw {
+namespace SSEngine {
 GameApp::GameApp(State* S)
 {
     m_StateManager = new StateManager(S);

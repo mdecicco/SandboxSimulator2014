@@ -13,7 +13,7 @@
 #include <cstring>
 #include <string>
 
-namespace BearClaw {
+namespace SSEngine {
 
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*,
     GLXFBConfig, GLXContext, Bool, const int*);

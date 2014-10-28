@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <System/OS/Window.h>
 
-namespace BearClaw {
+namespace SSEngine {
 
 class BackendWindow
 {

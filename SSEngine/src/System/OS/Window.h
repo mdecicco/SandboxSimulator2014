@@ -1,10 +1,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <System/BcTypes.h>
+#include <System/SSTypes.h>
 #include <Utils/Math.h>
 
-namespace BearClaw {
+namespace SSEngine {
 class BackendWindow;
 
 struct WindowInitializer
@@ -20,18 +20,18 @@ struct WindowInitializer
     bool        Resizable;//       =   false;
     u32         MajorVersion;//    =   3;
     u32         MinorVersion;//    =   3;
-    const char* Title;//           =   "BearClaw Engine";
+    const char* Title;//           =   "SSEngine Engine";
 };
 
-class BcWindow
+class SSWindow
 {
 private:
     BackendWindow*      m_Window;
     bool                m_CloseRequested;
 
 public:
-    BcWindow(WindowInitializer &Initializer);
-    ~BcWindow();
+    SSWindow(WindowInitializer &Initializer);
+    ~SSWindow();
     void Create();
     void MakeCurrent();
     bool GetCloseRequested();

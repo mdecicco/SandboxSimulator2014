@@ -1,6 +1,6 @@
 #include <System/InputManager.h>
 
-namespace BearClaw {
+namespace SSEngine {
 void InputManager::Reset()
 {
     memset(&Keys[0], 0, BC_KEY_COUNT * sizeof(int));

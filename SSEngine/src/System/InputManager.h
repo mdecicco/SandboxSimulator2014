@@ -15,136 +15,136 @@
 
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 
-namespace BearClaw {
+namespace SSEngine {
 enum KeyCode
 {
-    BC_KEY_UNKNOWN = 0,
+    SS_KEY_UNKNOWN = 0,
 
-    BC_KEY_RETURN = '\r',
-    BC_KEY_ESCAPE = '\033',
-    BC_KEY_BACKSPACE = '\b',
-    BC_KEY_TAB = '\t',
-    BC_KEY_SPACE = ' ',
-    BC_KEY_EXCLAIM = '!',
-    BC_KEY_QUOTEDBL = '"',
-    BC_KEY_HASH = '#',
-    BC_KEY_PERCENT = '%',
-    BC_KEY_DOLLAR = '$',
-    BC_KEY_AMPERSAND = '&',
-    BC_KEY_QUOTE = '\'',
-    BC_KEY_LPAREN = '(',
-    BC_KEY_RPAREN = ')',
-    BC_KEY_ASTERISK = '*',
-    BC_KEY_PLUS = '+',
-    BC_KEY_COMMA = ',',
-    BC_KEY_MINUS = '-',
-    BC_KEY_PERIOD = '.',
-    BC_KEY_SLASH = '/',
-    BC_KEY_0 = '0',
-    BC_KEY_1 = '1',
-    BC_KEY_2 = '2',
-    BC_KEY_3 = '3',
-    BC_KEY_4 = '4',
-    BC_KEY_5 = '5',
-    BC_KEY_6 = '6',
-    BC_KEY_7 = '7',
-    BC_KEY_8 = '8',
-    BC_KEY_9 = '9',
-    BC_KEY_COLON = ':',
-    BC_KEY_SEMICOLON = ';',
-    BC_KEY_LESS = '<',
-    BC_KEY_EQUALS = '=',
-    BC_KEY_GREATER = '>',
-    BC_KEY_QUESTION = '?',
-    BC_KEY_AT = '@',
-    BC_KEY_LBRACKET = '[',
-    BC_KEY_BACKSLASH = '\\',
-    BC_KEY_RBRACKET = ']',
-    BC_KEY_CARET = '^',
-    BC_KEY_UNDERSCORE = '_',
-    BC_KEY_BACKQUOTE = '`',
+    SS_KEY_RETURN = '\r',
+    SS_KEY_ESCAPE = '\033',
+    SS_KEY_BACKSPACE = '\b',
+    SS_KEY_TAB = '\t',
+    SS_KEY_SPACE = ' ',
+    SS_KEY_EXCLAIM = '!',
+    SS_KEY_QUOTEDBL = '"',
+    SS_KEY_HASH = '#',
+    SS_KEY_PERCENT = '%',
+    SS_KEY_DOLLAR = '$',
+    SS_KEY_AMPERSAND = '&',
+    SS_KEY_QUOTE = '\'',
+    SS_KEY_LPAREN = '(',
+    SS_KEY_RPAREN = ')',
+    SS_KEY_ASTERISK = '*',
+    SS_KEY_PLUS = '+',
+    SS_KEY_COMMA = ',',
+    SS_KEY_MINUS = '-',
+    SS_KEY_PERIOD = '.',
+    SS_KEY_SLASH = '/',
+    SS_KEY_0 = '0',
+    SS_KEY_1 = '1',
+    SS_KEY_2 = '2',
+    SS_KEY_3 = '3',
+    SS_KEY_4 = '4',
+    SS_KEY_5 = '5',
+    SS_KEY_6 = '6',
+    SS_KEY_7 = '7',
+    SS_KEY_8 = '8',
+    SS_KEY_9 = '9',
+    SS_KEY_COLON = ':',
+    SS_KEY_SEMICOLON = ';',
+    SS_KEY_LESS = '<',
+    SS_KEY_EQUALS = '=',
+    SS_KEY_GREATER = '>',
+    SS_KEY_QUESTION = '?',
+    SS_KEY_AT = '@',
+    SS_KEY_LBRACKET = '[',
+    SS_KEY_BACKSLASH = '\\',
+    SS_KEY_RBRACKET = ']',
+    SS_KEY_CARET = '^',
+    SS_KEY_UNDERSCORE = '_',
+    SS_KEY_BACKQUOTE = '`',
 
-    BC_KEY_A = 'A',
-    BC_KEY_B = 'B',
-    BC_KEY_C = 'C',
-    BC_KEY_D = 'D',
-    BC_KEY_E = 'E',
-    BC_KEY_F = 'F',
-    BC_KEY_G = 'G',
-    BC_KEY_H = 'H',
-    BC_KEY_I = 'I',
-    BC_KEY_J = 'J',
-    BC_KEY_K = 'K',
-    BC_KEY_L = 'L',
-    BC_KEY_M = 'M',
-    BC_KEY_N = 'N',
-    BC_KEY_O = 'O',
-    BC_KEY_P = 'P',
-    BC_KEY_Q = 'Q',
-    BC_KEY_R = 'R',
-    BC_KEY_S = 'S',
-    BC_KEY_T = 'T',
-    BC_KEY_U = 'U',
-    BC_KEY_V = 'V',
-    BC_KEY_W = 'W',
-    BC_KEY_X = 'X',
-    BC_KEY_Y = 'Y',
-    BC_KEY_Z = 'Z',
+    SS_KEY_A = 'A',
+    SS_KEY_B = 'B',
+    SS_KEY_C = 'C',
+    SS_KEY_D = 'D',
+    SS_KEY_E = 'E',
+    SS_KEY_F = 'F',
+    SS_KEY_G = 'G',
+    SS_KEY_H = 'H',
+    SS_KEY_I = 'I',
+    SS_KEY_J = 'J',
+    SS_KEY_K = 'K',
+    SS_KEY_L = 'L',
+    SS_KEY_M = 'M',
+    SS_KEY_N = 'N',
+    SS_KEY_O = 'O',
+    SS_KEY_P = 'P',
+    SS_KEY_Q = 'Q',
+    SS_KEY_R = 'R',
+    SS_KEY_S = 'S',
+    SS_KEY_T = 'T',
+    SS_KEY_U = 'U',
+    SS_KEY_V = 'V',
+    SS_KEY_W = 'W',
+    SS_KEY_X = 'X',
+    SS_KEY_Y = 'Y',
+    SS_KEY_Z = 'Z',
 
-    BC_KEY_a = 'a',
-    BC_KEY_b = 'b',
-    BC_KEY_c = 'c',
-    BC_KEY_d = 'd',
-    BC_KEY_e = 'e',
-    BC_KEY_f = 'f',
-    BC_KEY_g = 'g',
-    BC_KEY_h = 'h',
-    BC_KEY_i = 'i',
-    BC_KEY_j = 'j',
-    BC_KEY_k = 'k',
-    BC_KEY_l = 'l',
-    BC_KEY_m = 'm',
-    BC_KEY_n = 'n',
-    BC_KEY_o = 'o',
-    BC_KEY_p = 'p',
-    BC_KEY_q = 'q',
-    BC_KEY_r = 'r',
-    BC_KEY_s = 's',
-    BC_KEY_t = 't',
-    BC_KEY_u = 'u',
-    BC_KEY_v = 'v',
-    BC_KEY_w = 'w',
-    BC_KEY_x = 'x',
-    BC_KEY_y = 'y',
-    BC_KEY_z = 'z',
-    BC_KEY_LSHIFT,
+    SS_KEY_a = 'a',
+    SS_KEY_b = 'b',
+    SS_KEY_c = 'c',
+    SS_KEY_d = 'd',
+    SS_KEY_e = 'e',
+    SS_KEY_f = 'f',
+    SS_KEY_g = 'g',
+    SS_KEY_h = 'h',
+    SS_KEY_i = 'i',
+    SS_KEY_j = 'j',
+    SS_KEY_k = 'k',
+    SS_KEY_l = 'l',
+    SS_KEY_m = 'm',
+    SS_KEY_n = 'n',
+    SS_KEY_o = 'o',
+    SS_KEY_p = 'p',
+    SS_KEY_q = 'q',
+    SS_KEY_r = 'r',
+    SS_KEY_s = 's',
+    SS_KEY_t = 't',
+    SS_KEY_u = 'u',
+    SS_KEY_v = 'v',
+    SS_KEY_w = 'w',
+    SS_KEY_x = 'x',
+    SS_KEY_y = 'y',
+    SS_KEY_z = 'z',
+    SS_KEY_LSHIFT,
 
-    BC_KEY_DELETE = '\177',
-    BC_KEY_INSERT,
-    BC_KEY_HOME,
-    BC_KEY_END,
-    BC_KEY_PAGEUP,
-    BC_KEY_PAGEDOWN,
+    SS_KEY_DELETE = '\177',
+    SS_KEY_INSERT,
+    SS_KEY_HOME,
+    SS_KEY_END,
+    SS_KEY_PAGEUP,
+    SS_KEY_PAGEDOWN,
 
-    BC_KEY_UP,
-    BC_KEY_DOWN,
-    BC_KEY_LEFT,
-    BC_KEY_RIGHT,
+    SS_KEY_UP,
+    SS_KEY_DOWN,
+    SS_KEY_LEFT,
+    SS_KEY_RIGHT,
 
-    BC_KEY_F1,
-    BC_KEY_F2,
-    BC_KEY_F3,
-    BC_KEY_F4,
-    BC_KEY_F5,
-    BC_KEY_F6,
-    BC_KEY_F7,
-    BC_KEY_F8,
-    BC_KEY_F9,
-    BC_KEY_F10,
-    BC_KEY_F11,
-    BC_KEY_F12,
+    SS_KEY_F1,
+    SS_KEY_F2,
+    SS_KEY_F3,
+    SS_KEY_F4,
+    SS_KEY_F5,
+    SS_KEY_F6,
+    SS_KEY_F7,
+    SS_KEY_F8,
+    SS_KEY_F9,
+    SS_KEY_F10,
+    SS_KEY_F11,
+    SS_KEY_F12,
 
-    BC_KEY_COUNT
+    SS_KEY_COUNT
 };
 
 enum Mouse_Button
@@ -162,9 +162,9 @@ enum Mouse_Button
 
 enum Action_Type
 {
-    BC_RELEASED,
-    BC_PRESSED,
-    BC_HELD,
+    SS_RELEASED,
+    SS_PRESSED,
+    SS_HELD,
     EVENT_TYPE_COUNT
 };
 
@@ -195,14 +195,14 @@ public:
     };
 
 public:
-    u32                     Keys[BC_KEY_COUNT];
+    u32                     Keys[SS_KEY_COUNT];
     u32                     MouseButtons[MOUSE_BUTTON_COUNT];
     Vec2                    MousePosition;
     InputImpl*              Impl;
 
 
 private:
-    BcWindow*               m_Window;
+    SSWindow*               m_Window;
     u8                      Events[EVENTS_COUNT];
     bool                    ShowCursor;
 
@@ -210,9 +210,9 @@ private:
     Keycallbacks            m_KeyCBs;
     MouseMoveCallbacks      m_MouseMoveCBs;
     MouseButtonCallbacks    m_MouseButtonCBs;
-	KeyFuncList				m_KeyFunctions;
-	MouseMoveFuncList		m_MouseMoveFunctions;
-	MouseButtonFuncList		m_MouseButtonFunctions;
+    KeyFuncList                m_KeyFunctions;
+    MouseMoveFuncList        m_MouseMoveFunctions;
+    MouseButtonFuncList        m_MouseButtonFunctions;
 
 public:
     InputManager() { Reset(); }
@@ -238,7 +238,7 @@ public:
         return Events[Event];
     }
 
-    void Init(BcWindow* Win);
+    void Init(SSWindow* Win);
     void Reset();
     void PollEvents();
     void SetMousePosition(const Vec2& Pos);
@@ -253,21 +253,21 @@ public:
     void RemoveMouseMoveCB(MouseMoveCB CB);
     void RemoveMouseButtonCB(MouseButtonCB CB);
 
-	//Functions
-	void AddKeyDownFunction(KeyFunc KF) { m_KeyFunctions.push_back(KF); }
-	void AddMouseMoveFunction(MouseMoveFunc MMF) { m_MouseMoveFunctions.push_back(MMF); }
-	void AddMouseButtonFunction(MouseButtonFunc MBF) { m_MouseButtonFunctions.push_back(MBF); }
+    //Functions
+    void AddKeyDownFunction(KeyFunc KF) { m_KeyFunctions.push_back(KF); }
+    void AddMouseMoveFunction(MouseMoveFunc MMF) { m_MouseMoveFunctions.push_back(MMF); }
+    void AddMouseButtonFunction(MouseButtonFunc MBF) { m_MouseButtonFunctions.push_back(MBF); }
 
-	void RemoveKeyDownFunctions();
-	void RemoveMouseMoveFunctions();
-	void RemoveMouseButtconFunctions();
+    void RemoveKeyDownFunctions();
+    void RemoveMouseMoveFunctions();
+    void RemoveMouseButtconFunctions();
 
-	//lower level calls, calls the cbs and funcs
+    //lower level calls, calls the cbs and funcs
     void OnMouseMove(double x, double y);
     void OnKeyDown(char Key, Action_Type Action);
     void OnMouseButton(Mouse_Button Button, Action_Type Action);
 
-	
+
 
     void ClearCallbacks()
     {
@@ -276,12 +276,12 @@ public:
         m_MouseButtonCBs.clear();
     }
 
-	void ClearFunctions()
-	{
-		m_KeyFunctions.clear();
-		m_MouseMoveFunctions.clear();
-		m_MouseButtonFunctions.clear();
-	}
+    void ClearFunctions()
+    {
+        m_KeyFunctions.clear();
+        m_MouseMoveFunctions.clear();
+        m_MouseButtonFunctions.clear();
+    }
 
     //
 

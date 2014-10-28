@@ -1,34 +1,34 @@
 #include <System/OS/Window.h>
 #include <System/OS/PlatformIncludes.h>
 
-namespace BearClaw {
-BcWindow::BcWindow(WindowInitializer &Initializer)
+namespace SSEngine {
+SSWindow::SSWindow(WindowInitializer &Initializer)
 {
     m_Window = new BackendWindow(Initializer);
     m_CloseRequested = false;
 }
 
-BcWindow::~BcWindow()
+SSWindow::~SSWindow()
 {
-	delete m_Window;
+    delete m_Window;
 }
 
-void BcWindow::Create()
+void SSWindow::Create()
 {
     m_Window->Create();
 }
 
-void BcWindow::Destroy()
+void SSWindow::Destroy()
 {
     m_Window->Destroy();
 }
 
-Vec2 BcWindow::GetWindowSize()
+Vec2 SSWindow::GetWindowSize()
 {
     return m_Window->GetWindowSize();
 }
 
-bool BcWindow::GetCloseRequested()
+bool SSWindow::GetCloseRequested()
 {
     if(!m_CloseRequested)
         return m_Window->GetCloseRequested();
@@ -36,17 +36,17 @@ bool BcWindow::GetCloseRequested()
         return true;
 }
 
-void BcWindow::PollEvents()
+void SSWindow::PollEvents()
 {
     m_Window->PollEvents();
 }
 
-void BcWindow::SwapBuffers()
+void SSWindow::SwapBuffers()
 {
     m_Window->SwapBuffers();
 }
 
-void BcWindow::MakeCurrent()
+void SSWindow::MakeCurrent()
 {
     m_Window->MakeCurrent();
 }

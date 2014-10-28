@@ -4,8 +4,7 @@
 #define GLEW_STATIC
 #define BC_USE_GLFW_BACKEND
 
-#include <System/BcTypes.h>
-
+#include <System/SSTypes.h>
 
 #include <GL/glew.h>
 
@@ -21,7 +20,6 @@
  #include <System/OS/X11Backend.h>
 #endif
 
-#include <Utils/EngineMacros.h>
 #include <memory>
 
 #include <memory>

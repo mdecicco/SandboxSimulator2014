@@ -1,8 +1,7 @@
-#include <System/Environment.h>
 #include <System/OS/GlfwBackend.h>
 
 #ifdef BC_USE_GLFW_BACKEND
-namespace BearClaw {
+namespace SSEngine {
 
 /*
  *Glfw Window
