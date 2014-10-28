@@ -28,11 +28,15 @@ set(SOILDIR "${PROJECT_SOURCE_DIR}/dependencies/soil")
 set(ZDIR "${PROJECT_SOURCE_DIR}/dependencies/z")
 set(ASSIMPDIR "${PROJECT_SOURCE_DIR}/dependencies/Assimp")
 
+INCLUDE_DIRECTORIES( ${ASSIMPDIR}/code/BoostWorkaround )
+ADD_DEFINITIONS( -DASSIMP_BUILD_BOOST_WORKAROUND )
+MESSAGE( STATUS "Building a non-boost version of Assimp." )
+
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${ASSIMPDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
+
 ADD_SUBDIRECTORY(dependencies)
 find_package(GL REQUIRED)
 find_package(X11)
-
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${ASSIMPDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
 
 ADD_DEFINITIONS(
     -std=c++11 # Or -std=c++0x
