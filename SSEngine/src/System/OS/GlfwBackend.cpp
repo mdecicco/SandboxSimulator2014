@@ -68,6 +68,7 @@ void BackendWindow::Create()
         SS_LOG("Glew initialization failed: %s\n", glewGetErrorString(err));
     }
     glGetError();
+	glfwSwapInterval(0);
 }
 
 void BackendWindow::Destroy()

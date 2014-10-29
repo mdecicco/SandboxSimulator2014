@@ -18,6 +18,7 @@ GameApp::GameApp(State* S)
 GameApp::~GameApp()
 {
     delete m_StateManager;
+	InputManager::GetInputManager()->RemoveKeyDownFunctions();
 }
 
 void GameApp::Start(WindowInitializer WinInit)
@@ -55,20 +56,19 @@ void GameApp::Start(WindowInitializer WinInit)
         m_StateManager->UpdateState(DeltaTime);
         
 		GameWindow->PollEvents();
-		input->PollEvents();
         GameWindow->SwapBuffers();
 
 		/* if (input->GetKey(SS_KEY_ESCAPE) == SS_PRESSED) {
 			GameWindow->SetCloseRequested(true);
 		} */
 
-		//Frames++;
-		//FrameCounter += DeltaTime / 1000;
-		//if (FrameCounter >= 1) {
-			//BC_LOG("%d fps\n", Frames);
-			//Frames = 0;
-			//FrameCounter = 0;
-		//}
+		Frames++;
+		FrameCounter += DeltaTime / 1000;
+		if (FrameCounter >= 1) {
+			SS_LOG("%d fps\n", Frames);
+			Frames = 0;
+			FrameCounter = 0;
+		}
     }
 	m_StateManager->ChangeState(nullptr);
 	m_StateManager->DeInit();
