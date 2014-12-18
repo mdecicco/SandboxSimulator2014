@@ -22,7 +22,7 @@ int main()
     WinInit.FullScreen      =   false;
     WinInit.Resizable       =   true;
     WinInit.MajorVersion    =   3;
-    WinInit.MinorVersion    =   0;
+    WinInit.MinorVersion    =   2;
     WinInit.Title           =   "Sandbox Simulator";
 
     GameApp* Game = new GameApp(new MainState());

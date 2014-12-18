@@ -45,7 +45,7 @@ public:
 		i32 Ret = 0;// fprintf(m_Log, "%s", Formatted);
         printf("%s", Formatted);
 
-        free(Formatted);
+        //free(Formatted);
         return Ret;
     }
 };

@@ -20,6 +20,9 @@
 
 #include <memory>
 
-#include <malloc.h>
-
+#ifdef __APPLE__
+    #include <sys/malloc.h>
+#else
+    #include <malloc.h>
+#endif
 #endif

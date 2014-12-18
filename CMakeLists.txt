@@ -32,10 +32,11 @@ INCLUDE_DIRECTORIES( ${ASSIMPDIR}/code/BoostWorkaround )
 ADD_DEFINITIONS( -DASSIMP_BUILD_BOOST_WORKAROUND )
 MESSAGE( STATUS "Building a non-boost version of Assimp." )
 
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${ASSIMPDIR}/include ${gl_INCLUDE_DIRS} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
+find_package(OpenGL REQUIRED)
+
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${OPENGL_INCLUDE_DIR} ${GLEWDIR}/include ${ZDIR} ${SOILDIR})
 
 ADD_SUBDIRECTORY(dependencies)
-find_package(GL REQUIRED)
 find_package(X11)
 
 ADD_DEFINITIONS(

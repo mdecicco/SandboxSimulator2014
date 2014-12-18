@@ -30,6 +30,9 @@ void BackendWindow::Create()
     //Gl context version
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_Initializer.MajorVersion);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_Initializer.MinorVersion);
+    glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE);
+
     //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
     //Set bits
@@ -129,17 +132,17 @@ static const GLFWKeyCode2BC g2b[] = {
     {GLFW_KEY_BACKSPACE,    SS_KEY_BACKSPACE    },
     {GLFW_KEY_TAB,          SS_KEY_TAB          },
     {GLFW_KEY_SPACE,        SS_KEY_SPACE        },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_EXCLAIM      },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_EXCLAIM      },
     {GLFW_KEY_APOSTROPHE,   SS_KEY_QUOTEDBL     },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_HASH         },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_PERCENT      },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_DOLLAR       },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_AMPERSAND    },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_QUOTE        },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_LPAREN       },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_RPAREN       },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_ASTERISK     },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_PLUS         },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_HASH         },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_PERCENT      },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_DOLLAR       },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_AMPERSAND    },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_QUOTE        },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_LPAREN       },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_RPAREN       },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_ASTERISK     },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_PLUS         },
     {GLFW_KEY_COMMA,        SS_KEY_COMMA        },
     {GLFW_KEY_MINUS,        SS_KEY_MINUS        },
     {GLFW_KEY_PERIOD,       SS_KEY_PERIOD       },
@@ -154,18 +157,18 @@ static const GLFWKeyCode2BC g2b[] = {
     {GLFW_KEY_7,            SS_KEY_7            },
     {GLFW_KEY_8,            SS_KEY_8            },
     {GLFW_KEY_9,            SS_KEY_9            },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_COLON        },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_COLON        },
     {GLFW_KEY_SEMICOLON,    SS_KEY_SEMICOLON    },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_LESS         },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_LESS         },
     {GLFW_KEY_EQUAL,        SS_KEY_EQUALS       },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_GREATER      },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_QUESTION     },
-    {GLFW_KEY_UNKNOWN,      SS_KEY_AT           },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_GREATER      },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_QUESTION     },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_AT           },
     {GLFW_KEY_LEFT_BRACKET, SS_KEY_LBRACKET     },
     {GLFW_KEY_BACKSLASH,    SS_KEY_BACKSLASH    },
     {GLFW_KEY_RIGHT_BRACKET,SS_KEY_RBRACKET     },
     //{XK_caret, BC_KEY_CARET,
-    {GLFW_KEY_UNKNOWN,      SS_KEY_UNDERSCORE   },
+    {static_cast<u32>(GLFW_KEY_UNKNOWN),      SS_KEY_UNDERSCORE   },
     {GLFW_KEY_GRAVE_ACCENT, SS_KEY_BACKQUOTE    },
     {GLFW_KEY_A,            SS_KEY_A            },
     {GLFW_KEY_B,            SS_KEY_B            },
