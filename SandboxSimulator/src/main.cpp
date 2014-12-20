@@ -1,32 +1,88 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "MainState.h"
-#include <System/StateManagement/GameApp.h>
+#include <Engine.h>
 
-using namespace SSEngine;
 using namespace SandboxSimulator;
 
-int main()
+#define TEST_COMPONENT_TYPE 99
+class TestComponent : public Component
 {
-    WindowInitializer WinInit;
-    WinInit.Width           =   1280;
-    WinInit.Height          =   720;
-    WinInit.rgbaBits[0]     =   8;
-    WinInit.rgbaBits[1]     =   8;
-    WinInit.rgbaBits[2]     =   8;
-    WinInit.rgbaBits[3]     =   0;
-    WinInit.DepthBits       =   0;
-    WinInit.StencilBits     =   0;
-    WinInit.SamplesCount    =   0;
-    WinInit.FullScreen      =   false;
-    WinInit.Resizable       =   true;
-    WinInit.MajorVersion    =   3;
-    WinInit.MinorVersion    =   2;
-    WinInit.Title           =   "Sandbox Simulator";
+public:
+    TestComponent(SSEngine* Eng) : Component(Eng,TEST_COMPONENT_TYPE), m_QuitTime(Scalar(5))
+    {
+        m_Time.Start();
+    }
+    ~TestComponent()
+    {
+    }
+    
+    Timer m_Time;
+    Scalar m_QuitTime;
+};
 
-    GameApp* Game = new GameApp(new MainState());
-    Game->Start(WinInit);
-    delete(Game);
-    exit(0);
+class TestSystem : public EngineSystem
+{
+public:
+    TestSystem()
+    {
+    }
+    virtual ~TestSystem()
+    {
+    }
+    virtual void HandleMessage(EngineMessage* Msg)
+    {
+    }
+    
+    virtual void Initialize(SSEngine* ParentEngine)
+    {
+        m_Engine = ParentEngine;
+        m_Engine->Log("Test system initialized.\n");
+    }
+    virtual void Update(Scalar dt)
+    {
+        for(i32 i = 0;i < m_Components.size();i++)
+        {
+            TestComponent* T = (TestComponent*)m_Components[i];
+            
+            m_Engine->Log("Update! %f\n", T->m_Time.ElapsedTime());
+            
+            if(T->m_Time >= T->m_QuitTime)
+            {
+                m_Engine->Log("Shutting down.\n");
+                m_Engine->Broadcast(new ShutdownMessage());
+            }
+        }
+    }
+    virtual void Shutdown()
+    {
+        m_Engine->Log("Test system shutting down.\n");
+    }
+    
+    virtual void Serialize()
+    {
+    }
+    
+    virtual void Deserialize()
+    {
+    }
+    
+    SSEngine* m_Engine;
+};
+
+int main(i32 ArgC,Literal ArgV[])
+{
+    SSEngine* Eng = new SSEngine(ArgC,ArgV);
+    
+    TestSystem* S = new TestSystem();
+    S->AddComponentType(TEST_COMPONENT_TYPE);
+    Eng->RegisterSystem(S);
+    Eng->Initialize();
+    
+    Entity* E = Eng->GetSceneGraph()->CreateEntity();
+    Eng->GetSceneGraph()->AddComponent(E,new TestComponent(Eng));
+    
+    Eng->Run();
+    Eng->Shutdown();
+    return 0;
 }

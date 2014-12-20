@@ -18,8 +18,6 @@
 
 #include <memory>
 
-#include <memory>
-
 #ifdef __APPLE__
     #include <sys/malloc.h>
 #else

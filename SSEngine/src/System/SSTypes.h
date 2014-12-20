@@ -6,6 +6,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SSENGINE_VERSION_MAJOR 0
+#define SSENGINE_VERSION_MINOR 1
+
+#define MakeCString(s) new char[s]
+#define FreeCString(s) delete [] s
+
 typedef unsigned char       u8;
 typedef unsigned short      u16;
 typedef unsigned int        u32;
@@ -27,6 +33,12 @@ typedef double              f64;
 
 typedef char                Byte;
 typedef u8                  uByte;
+
+typedef const char*         Literal;
+typedef char*               CString;
+typedef f32                 Scalar;
+typedef bool                Flag;
+typedef i32                 UID;
 
 //Useful
 typedef unsigned short      uid;
