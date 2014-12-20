@@ -7,7 +7,6 @@
 //
 
 #include <Engine.h>
-#include <unistd.h>
 #include <iostream>
 #include <stdarg.h>
 
@@ -18,7 +17,6 @@ namespace SandboxSimulator
         m_LastTime = 0.0f;
         m_DoShutdown = false;
         m_RunTime.Start();
-        usleep(100);
         
         size_t plen = strlen(ArgV[0]);
         CString Path = MakeCString(plen);
@@ -28,8 +26,10 @@ namespace SandboxSimulator
             if(Path[i] == '/') { Path[i] = 0; break; }
             Path[i] = 0;
         }
-        chdir(Path);
-        Log("Path: %s\n",Path);
+        
+		//Doesn't work on windows
+		//chdir(Path);
+        //Log("Path: %s\n",Path);
     }
     
     SSEngine::~SSEngine()
@@ -45,6 +45,8 @@ namespace SandboxSimulator
          *  3.) Load init script (loads necessary systems & assets for startup)
          *  4.) Initialize systems
          */
+		Log("SSEngine v%d.%d", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
+
         /* Initialize entity manager */
         m_SceneGraph = new SceneGraph(this);
         
@@ -67,6 +69,7 @@ namespace SandboxSimulator
          *  2.) Profit ????
          */
         
+		if(m_Systems.size() == 0) m_DoShutdown = true;
         while(!m_DoShutdown)
         {
             Scalar dt = m_RunTime - m_LastTime;
@@ -78,11 +81,8 @@ namespace SandboxSimulator
             /* Process asynchronous messages */
             for(i32 m = 0;m < m_AsynchronousMessages.size();m++)
             {
-                for(i32 i = 0;i < m_Systems.size();i++)
-                {
-                    if(m_Systems[i]->AcceptsMessageType(m_AsynchronousMessages[m]->m_MessageType)) m_Systems[i]->HandleMessage(m_AsynchronousMessages[m]);
-                }
-                
+				m_AsynchronousMessages[m]->m_IsSynchronous = true;
+				Broadcast(m_AsynchronousMessages[m]);
                 delete m_AsynchronousMessages[m];
             }
             m_AsynchronousMessages.clear();
@@ -172,12 +172,15 @@ namespace SandboxSimulator
     
     void SSEngine::Log(Literal Text,...) const
     {
-        va_list Args;
-        va_start(Args,Text);
-        CString Str = MakeCString(strlen(Text) + 256);
-        vasprintf(&Str,Text,Args);
-        va_end(Args);
-        
-        printf("%f: %s",m_RunTime.ElapsedTime(),Str);
+        va_list List;
+		va_start(List, Text);
+		int Size = strlen(Text) + 512;
+		char *Formatted = AllocStr(Size);
+
+		vsnprintf(Formatted, Size, Text, List);
+		va_end(List);
+
+		// save to log file i32 Ret = fprintf(m_Log, "%s", Formatted);
+        printf("%f: %s",m_RunTime.ElapsedTime(),Formatted);
     }
 };

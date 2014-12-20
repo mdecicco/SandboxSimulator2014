@@ -16,6 +16,13 @@
 #include <Core/Timer.h>
 #include <vector>
 
+#ifdef __APPLE__
+#define AllocArray(Type,Size) (Type *)__alloca(Size * sizeof(Type))
+#else
+#define AllocArray(Type,Size) (Type *)malloc(Size * sizeof(Type))
+#endif
+#define AllocStr(Sz) AllocArray(char,Sz)
+
 namespace SandboxSimulator
 {
     class SSEngine

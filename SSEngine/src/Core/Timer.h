@@ -27,7 +27,7 @@ namespace SandboxSimulator
             operator Scalar() const;
         
         protected:
-        std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
+        //std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
         Flag m_Started;
     };
 }
