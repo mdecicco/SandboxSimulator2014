@@ -10,15 +10,35 @@
 #include <iostream>
 #include <stdarg.h>
 
+/* Systems */
+#include <Rendering/RenderSystem.h>
+
 namespace SandboxSimulator
 {
-    SSEngine::SSEngine(i32 ArgC,Literal ArgV[])
+    SSEngine::SSEngine()
     {
         m_LastTime = 0.0f;
         m_DoShutdown = false;
         m_RunTime.Start();
-        
-        size_t plen = strlen(ArgV[0]);
+    }
+    
+    SSEngine::~SSEngine()
+    {
+    }
+    
+    void SSEngine::Initialize(i32 ArgC,Literal ArgV[])
+    {
+		Log("Initializing Engine...\n");
+        /*
+         * Initialization process:
+         *  1.) Load engine configuration file
+         *  2.) Set engine variables
+         *  3.) Load init script (loads necessary systems & assets for startup)
+         *  4.) Initialize systems
+         */
+		Log("SSEngine v%d.%d", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
+
+		size_t plen = strlen(ArgV[0]);
         CString Path = MakeCString(plen);
         strcpy(Path,ArgV[0]);
         for(size_t i = plen - 1;i > 0;i--)
@@ -30,25 +50,13 @@ namespace SandboxSimulator
 		//Doesn't work on windows
 		//chdir(Path);
         //Log("Path: %s\n",Path);
-    }
-    
-    SSEngine::~SSEngine()
-    {
-    }
-    
-    void SSEngine::Initialize()
-    {
-        /*
-         * Initialization process:
-         *  1.) Load engine configuration file
-         *  2.) Set engine variables
-         *  3.) Load init script (loads necessary systems & assets for startup)
-         *  4.) Initialize systems
-         */
-		Log("SSEngine v%d.%d", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
 
         /* Initialize entity manager */
         m_SceneGraph = new SceneGraph(this);
+
+		/* Create Render System */
+		m_RenderSystem = new RenderSystem();
+		RegisterSystem(m_RenderSystem);
         
         /* Initialize engine systems */
         for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Initialize(this);
@@ -83,7 +91,6 @@ namespace SandboxSimulator
             {
 				m_AsynchronousMessages[m]->m_IsSynchronous = true;
 				Broadcast(m_AsynchronousMessages[m]);
-                delete m_AsynchronousMessages[m];
             }
             m_AsynchronousMessages.clear();
         }
@@ -97,8 +104,10 @@ namespace SandboxSimulator
          * Destroy all systems
          * Destroy self
          */
+		Log("Stopping Engine.\n");
         for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Shutdown();
         for(i32 i = 0;i < m_Systems.size();i++) delete m_Systems[i];
+		delete m_SceneGraph;
     }
 
     void SSEngine::RegisterSystem(EngineSystem* Sys)
@@ -151,10 +160,28 @@ namespace SandboxSimulator
             {
                 if(m_Systems[i]->AcceptsMessageType(Msg->m_MessageType)) m_Systems[i]->HandleMessage(Msg);
             }
+			delete Msg;
+			return;
         }
         //Save for the end of the frame
         m_AsynchronousMessages.push_back(Msg);
     }
+
+	void SSEngine::SendMessage(MESSAGE_TYPE Type) {
+		switch(Type)
+		{
+			case MT_SHUTDOWN:
+			{
+				Broadcast(new ShutdownMessage());
+				return;
+			}
+
+			default:
+			{
+				return;
+			}
+		}
+	}
     
     void SSEngine::Serialize() const
     {

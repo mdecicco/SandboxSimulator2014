@@ -48,7 +48,7 @@ namespace SandboxSimulator
             void AddComponent(Component* Comp);
             void RemoveComponent(Component* Comp);
         
-            virtual void HandleMessage(EngineMessage* Msg) = 0;
+            virtual void HandleMessage(const EngineMessage* Msg) = 0;
         
             virtual void Initialize(SSEngine* ParentEngine) = 0;
             virtual void Update(Scalar dt) = 0;

@@ -37,6 +37,7 @@ namespace SandboxSimulator
     void SceneGraph::AddComponent(Entity* E,Component* Comp)
     {
         E->m_Components.push_back(Comp);
+		Comp->AddRef();
         m_Engine->Broadcast(new ComponentAddedMessage(E,Comp));
     }
     

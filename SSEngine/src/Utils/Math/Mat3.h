@@ -4,7 +4,7 @@
 #include <System/SSTypes.h>
 #include <Utils/Math.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Mat3
 {
 public:

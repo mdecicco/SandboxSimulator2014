@@ -7,9 +7,9 @@ using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
-    SSEngine* Eng = new SSEngine(ArgC,ArgV);
+    SSEngine* Eng = new SSEngine();
     
-    Eng->Initialize();
+    Eng->Initialize(ArgC,ArgV);
     Eng->Run();
     Eng->Shutdown();
     return 0;

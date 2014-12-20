@@ -5,7 +5,7 @@
 
 #define PI 3.14159265
 
-namespace SSEngine {
+namespace SandboxSimulator {
 
 f32 ToRadian(f32 Angle);
 f32 ToDegree(f32 Rad);

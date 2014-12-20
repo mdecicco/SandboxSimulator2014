@@ -3,7 +3,7 @@
 #include <Utils/Math/Quat.h>
 #include <Utils/Math/Mat4.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 /*
  * Mat4
  */

@@ -25,14 +25,15 @@
 
 namespace SandboxSimulator
 {
+	class RenderSystem;
     class SSEngine
     {
         public:
-            SSEngine(i32 ArgC, Literal Argv[]);
+            SSEngine();
             ~SSEngine();
     
             /* Initialize engine */
-            void Initialize();
+            void Initialize(i32 ArgC,Literal ArgV[]);
             /* Run engine */
             void Run();
             /* Shutdown engine */
@@ -43,6 +44,7 @@ namespace SandboxSimulator
         
             /* Broadcast message to systems */
             void Broadcast(EngineMessage* Msg);
+			void SendMessage(MESSAGE_TYPE Type);
         
             /* Save the state of the engine */
             void Serialize() const;
@@ -55,11 +57,17 @@ namespace SandboxSimulator
             SceneGraph* GetSceneGraph() {return m_SceneGraph;}
     
         protected:
-            Timer m_RunTime;
-            Scalar m_LastTime;
-            std::vector<EngineSystem*> m_Systems;
+            /* Systems */
+			std::vector<EngineSystem*> m_Systems;
             std::vector<EngineMessage*> m_AsynchronousMessages;
+			RenderSystem* m_RenderSystem;
+
+			/* Managers */
             SceneGraph* m_SceneGraph;
+
+			/* Misc */
+			Timer m_RunTime;
+            Scalar m_LastTime;
             bool m_DoShutdown;
     };
 }

@@ -1,7 +1,7 @@
 #ifndef VECTOR_TWO_H
 #define VECTOR_TWO_H
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Vec2
 {
 public:

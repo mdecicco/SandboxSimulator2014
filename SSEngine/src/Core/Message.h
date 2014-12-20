@@ -23,7 +23,7 @@ namespace SandboxSimulator
     {
         public:
             EngineMessage() : m_IsSynchronous(false), m_MessageType(MT_INVALID) {}
-        ~EngineMessage() {}
+			~EngineMessage() {}
     
             bool m_IsSynchronous;
             MESSAGE_TYPE m_MessageType;

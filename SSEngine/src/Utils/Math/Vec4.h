@@ -3,7 +3,7 @@
 
 #include <System/SSTypes.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Vec4
 {
 public:

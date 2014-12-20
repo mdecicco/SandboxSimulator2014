@@ -5,7 +5,7 @@
 #include <Utils/Math/Mat4.h>
 #include <math.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Quat
 {
 public:

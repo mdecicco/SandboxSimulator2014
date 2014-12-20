@@ -5,7 +5,7 @@
 #include <System/SSTypes.h>
 #include <Utils/Math/Vec3.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Mat4;
 Mat4 ScaleTransform(Vec3 Scale);
 Mat4 RotateTransform(Vec3 Rot);

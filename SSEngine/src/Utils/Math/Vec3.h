@@ -5,7 +5,7 @@
 #include <math.h>
 #include <Utils/Math/Functions.h>
 
-namespace SSEngine {
+namespace SandboxSimulator {
 class Mat4;
 
 class Vec3
