@@ -29,7 +29,7 @@ namespace SandboxSimulator
             Shader();
             ~Shader();
 
-            bool Load(const char* Path);
+            bool Load(const char* Vert, const char* Frag);
 
             void Enable();
             void Disable();

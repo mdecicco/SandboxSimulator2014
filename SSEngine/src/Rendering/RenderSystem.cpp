@@ -8,7 +8,7 @@
 namespace SandboxSimulator
 {
 
-    RenderComponent::RenderComponent() : Component(CT_RENDER), m_VertBuff(0), m_NormBuff(0), m_TangBuff(0), m_TexCBuff(0), m_Vao(0), m_Shdr(0), m_NeedsUpdate(true)
+    RenderComponent::RenderComponent() : Component(CT_RENDER), m_VertBuff(0), m_NormBuff(0), m_TangBuff(0), m_TexCBuff(0), m_Vao(0), m_NeedsUpdate(true)
     {}
 
     RenderComponent::~RenderComponent()
@@ -256,24 +256,25 @@ namespace SandboxSimulator
         for(i32 i = 0; i < m_Components.size(); i++)
         {
             RenderComponent* r = (RenderComponent*)m_Components[i];
-            Shader* S = r->m_Shdr;
 
-            if(S) S->Enable();
-            Vec3 Albedo;
-            if(r->m_Material && r->m_Material->HasComponentType(MATERIAL_ALBEDO_TYPE))
-                Albedo = ((MaterialAlbedoComponent*)r->m_Material->GetComponentByType(MATERIAL_ALBEDO_TYPE))->GetValue();
+            if(r->m_Material)
+                r->m_Material->Bind();
             else
-                Albedo = Vec3(1,0,0);
-
-            GLint albedoLoc = glGetUniformLocation(S->GetPointer(), "Albedo");
-            glProgramUniform3f(S->GetPointer(), albedoLoc, Albedo.x, Albedo.y, Albedo.z);
+            {
+                //bind default material
+            }
 
             r->SyncBuffers();
             glBindVertexArray(r->m_Vao);
             glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
             glBindVertexArray(0);
 
-            if(S) S->Disable();
+            if(r->m_Material)
+                r->m_Material->Unbind();
+            else
+            {
+                //unbind default material
+            }
         }
 	}
 

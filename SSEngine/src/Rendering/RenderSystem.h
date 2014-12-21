@@ -38,8 +38,6 @@ namespace SandboxSimulator
             i32 GetVertexCount() const;
 
             void SyncBuffers();
-
-            void SetShader(Shader* Shdr) {m_Shdr = Shdr;}
             void SetMaterial(Material* Mat) {m_Material = Mat;}
 
         protected:
@@ -54,8 +52,6 @@ namespace SandboxSimulator
             GLuint m_TangBuff;
             GLuint m_TexCBuff;
             GLuint m_Vao;
-
-            Shader* m_Shdr;
 
             Material* m_Material;
 
@@ -84,6 +80,8 @@ namespace SandboxSimulator
 			GLFWwindow* m_Window;
 			Vec2 m_Resolution;
             bool m_FullScreen;
+
+            Material* m_DefaultMaterial;
 	};
 }
 

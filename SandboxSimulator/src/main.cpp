@@ -17,16 +17,11 @@ int main(i32 ArgC,Literal ArgV[])
 	Entity* E = Eng->GetSceneGraph()->CreateEntity();
 	Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
     RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-    Shader* S = new Shader();
-    S->Load("");
 
     Material* Mat = new Material();
-    MaterialAlbedoComponent* Albedo = new MaterialAlbedoComponent();
-    Albedo->SetValue(Vec3(0.0,0.0,1.0));
-    Mat->AddComponent(Albedo);
     r->SetMaterial(Mat);
-
-    r->SetShader(S);
+    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(0,0,1));
+    Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
 
     r->AddVertex(Vec3(0.5 , 0.5,0));
     r->AddVertex(Vec3(0.5 ,-0.5,0));
