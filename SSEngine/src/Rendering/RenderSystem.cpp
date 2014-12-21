@@ -256,7 +256,7 @@ namespace SandboxSimulator
         m_Engine->Log("OpenGL version: %s\n", glGetString(GL_VERSION));
         m_Engine->Log("OpenGL renderer: %s\n", glGetString(GL_RENDERER));
         m_Engine->Log("OpenGL vendor: %s\n", glGetString(GL_VENDOR));
-        m_Engine->Log("Resolution: %fx%f\n", m_Resolution.x, m_Resolution.y);
+        m_Engine->Log("Resolution: %dx%d\n", (int)m_Resolution.x, (int)m_Resolution.y);
         m_Engine->Log("Display mode: %s\n", m_FullScreen ? "Fullscreen" : "Windowed");
         m_Engine->Log("-------------------------\n");
 	}
