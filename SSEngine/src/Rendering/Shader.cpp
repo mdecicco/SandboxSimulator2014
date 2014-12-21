@@ -17,9 +17,12 @@ namespace SandboxSimulator
 
         const char* fragment_shader =
         "#version 400\n"
+        "uniform vec3 Albedo;"
+        "uniform float Opacity;"
         "out vec4 frag_colour;"
         "void main () {"
-        "  frag_colour = vec4 (1.0,0.0,0.0,1.0);"
+        "  vec3 outc = Albedo * Opacity;"
+        "  frag_colour = vec4 (outc, 1.0);"
         "}";
 
         m_VS = glCreateShader(GL_VERTEX_SHADER);

@@ -34,6 +34,8 @@ namespace SandboxSimulator
             void Enable();
             void Disable();
 
+            GLuint GetPointer() {return m_Ptr;}
+
         protected:
             friend class RenderSystem;
             GLuint m_VS;

@@ -64,35 +64,6 @@ namespace SandboxSimulator
             ShutdownMessage() { m_IsSynchronous = false; m_MessageType = MT_SHUTDOWN; }
             ~ShutdownMessage() { }
     };
-
-    class MakeRenderableMessage : public EngineMessage
-    {
-        public:
-            MakeRenderableMessage(Entity* E) : m_Entity(E)
-            {
-                m_IsSynchronous = false;
-                m_MessageType = MT_MAKE_RENDERABLE;
-            }
-            ~MakeRenderableMessage() {}
-
-            Entity* m_Entity;
-    };
-
-    class SetShaderMessage : public EngineMessage
-    {
-        public:
-            SetShaderMessage(Entity* E, const string& Path)
-            {
-                m_Entity = E;
-                m_ShaderPath = Path;
-                m_IsSynchronous = false;
-                m_MessageType = MT_SET_SHADER;
-            }
-            ~SetShaderMessage() { }
-
-            Entity* m_Entity;
-            string m_ShaderPath;
-    };
 }
 
 #endif

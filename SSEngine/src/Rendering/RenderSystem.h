@@ -7,6 +7,8 @@
 #include <Utils/Math.h>
 #include <list>
 
+#include <Rendering/Material.h>
+
 using namespace std;
 namespace SandboxSimulator
 {
@@ -38,6 +40,7 @@ namespace SandboxSimulator
             void SyncBuffers();
 
             void SetShader(Shader* Shdr) {m_Shdr = Shdr;}
+            void SetMaterial(Material* Mat) {m_Material = Mat;}
 
         protected:
             friend class RenderSystem;
@@ -53,6 +56,8 @@ namespace SandboxSimulator
             GLuint m_Vao;
 
             Shader* m_Shdr;
+
+            Material* m_Material;
 
             bool m_NeedsUpdate;
     };

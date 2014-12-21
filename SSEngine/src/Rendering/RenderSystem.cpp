@@ -185,33 +185,6 @@ namespace SandboxSimulator
     {
         switch(Msg->m_MessageType)
         {
-            case MT_MAKE_RENDERABLE:
-            {
-                MakeRenderableMessage* rMsg = (MakeRenderableMessage*)Msg;
-                m_Engine->GetSceneGraph()->AddComponent(rMsg->m_Entity, new RenderComponent());
-            }
-            case MT_SET_SHADER:
-            {
-                SetShaderMessage* sMsg = (SetShaderMessage*)Msg;
-                RenderComponent* r = (RenderComponent*)sMsg->m_Entity->GetComponentByType(CT_RENDER);
-                if(!r)
-                {
-                    m_Engine->Log("Error setting entity shader for entity <%d>. Entity is not renderable\n", sMsg->m_Entity->GetID());
-                    break;
-                }
-                Shader* S = 0;
-                if(sMsg->m_ShaderPath.size() != 0)
-                {
-                    S = new Shader();
-                    if(!S->Load(sMsg->m_ShaderPath.c_str()))
-                    {
-                        m_Engine->Log("Error: Could not load shader for entity <%d>.", sMsg->m_Entity->GetID());
-                        delete(S);
-                        break;
-                    }
-                }
-                r->m_Shdr = S;
-            }
             default:
             {
                 break;
@@ -287,9 +260,20 @@ namespace SandboxSimulator
 
             if(S) S->Enable();
 
+            if(r->m_Material)
+            {
+                Vec3 Albedo = r->m_Material->m_Albedo->GetData();
+                GLint albedoLoc = glGetUniformLocation(S->GetPointer(), "Albedo");
+                glProgramUniform3f(S->GetPointer(), albedoLoc, Albedo.x, Albedo.y, Albedo.z);
+
+                f32 Opacity = r->m_Material->m_Opacity->GetData();
+                GLint opacLoc = glGetUniformLocation(S->GetPointer(), "Opacity");
+                glProgramUniform1f(S->GetPointer(), opacLoc, Opacity);
+            }
+
             r->SyncBuffers();
             glBindVertexArray(r->m_Vao);
-            glDrawArrays(GL_LINE_LOOP, 0, r->GetVertexCount());
+            glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
             glBindVertexArray(0);
 
             if(S) S->Disable();
