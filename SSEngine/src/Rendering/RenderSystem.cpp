@@ -259,17 +259,14 @@ namespace SandboxSimulator
             Shader* S = r->m_Shdr;
 
             if(S) S->Enable();
+            Vec3 Albedo;
+            if(r->m_Material && r->m_Material->HasComponentType(MATERIAL_ALBEDO_TYPE))
+                Albedo = ((MaterialAlbedoComponent*)r->m_Material->GetComponentByType(MATERIAL_ALBEDO_TYPE))->GetValue();
+            else
+                Albedo = Vec3(1,0,0);
 
-            if(r->m_Material)
-            {
-                Vec3 Albedo = r->m_Material->m_Albedo->GetData();
-                GLint albedoLoc = glGetUniformLocation(S->GetPointer(), "Albedo");
-                glProgramUniform3f(S->GetPointer(), albedoLoc, Albedo.x, Albedo.y, Albedo.z);
-
-                f32 Opacity = r->m_Material->m_Opacity->GetData();
-                GLint opacLoc = glGetUniformLocation(S->GetPointer(), "Opacity");
-                glProgramUniform1f(S->GetPointer(), opacLoc, Opacity);
-            }
+            GLint albedoLoc = glGetUniformLocation(S->GetPointer(), "Albedo");
+            glProgramUniform3f(S->GetPointer(), albedoLoc, Albedo.x, Albedo.y, Albedo.z);
 
             r->SyncBuffers();
             glBindVertexArray(r->m_Vao);

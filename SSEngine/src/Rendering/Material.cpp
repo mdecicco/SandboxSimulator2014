@@ -2,25 +2,33 @@
 
 namespace SandboxSimulator
 {
-    Material::Material() : m_Albedo(new MaterialInput<Vec3>()),
-        m_Normal(new MaterialInput<Vec3>()),
-        m_Emissive(new MaterialInput<Vec3>()),
-        m_Metallic(new MaterialInput<f32>()),
-        m_Roughness(new MaterialInput<f32>()),
-        m_Specular(new MaterialInput<f32>()),
-        m_Opacity(new MaterialInput<f32>())
-    {
-
-    }
+    Material::Material()
+    {}
 
     Material::~Material()
+    {}
+
+    void Material::AddComponent(MaterialComponent *Comp)
     {
-        delete m_Albedo;
-        delete m_Normal;
-        delete m_Emissive;
-        delete m_Metallic;
-        delete m_Roughness;
-        delete m_Specular;
-        delete m_Opacity;
+        if(!HasComponentType(Comp->GetType()))
+            m_Components.push_back(Comp);
+    }
+
+    bool Material::HasComponentType(i32 Type)
+    {
+        for(i32 i = 0; i < m_Components.size(); i++)
+            if(m_Components[i]->GetType() == Type)
+                return true;
+
+        return false;
+    }
+
+    MaterialComponent* Material::GetComponentByType(i32 Type)
+    {
+        for(i32 i = 0; i < m_Components.size(); i++)
+            if(m_Components[i]->GetType() == Type)
+                return m_Components[i];
+
+        return nullptr;
     }
 }

@@ -1,5 +1,5 @@
-#ifndef SanboxSimulator_Material_h
-#define SanboxSimulator_Material_h
+#ifndef SandboxSimulator_Material_h
+#define SandboxSimulator_Material_h
 
 #include <vector>
 #include <string>
@@ -21,95 +21,48 @@
 
 namespace SandboxSimulator
 {
-    class MaterialNode
+    class MaterialComponent
     {
         public:
-            MaterialNode() {}
-            virtual ~MaterialNode() {}
-
-            virtual void Serialize() = 0;
-            virtual void Deserialize() = 0;
-
-            virtual void UpdateOuts() = 0;
-    };
-
-    template <class T>
-    class MaterialOutput
-    {
-        public:
-            MaterialOutput(T Data, MaterialNode* Node = nullptr) : m_Owner(Node), m_Data(Data) {}
-            void SetData(T Data) {m_Data = Data;}
-            T GetData() {if(m_Owner) m_Owner->UpdateOuts(); return m_Data;}
-        protected:
-            T m_Data;
-            MaterialNode* m_Owner;
-    };
-
-    template <class T>
-    class MaterialInput
-    {
-        public:
-            MaterialInput() {}
-            void SetInput(MaterialOutput<T>* In) {m_Input = In;}
-            T GetData() {if(m_Input) return m_Input->GetData(); return (T)0;}
+            MaterialComponent() {}
+            virtual ~MaterialComponent() {}
+            i32 GetType() {return m_Type;}
 
         protected:
-            MaterialOutput<T>* m_Input;
+            i32 m_Type;
+    };
+
+    #define MATERIAL_ALBEDO_TYPE 1
+    class MaterialAlbedoComponent : public MaterialComponent
+    {
+        public:
+            MaterialAlbedoComponent() : m_Val(Vec3())
+            {
+                m_Type = MATERIAL_ALBEDO_TYPE;
+            }
+
+            virtual ~MaterialAlbedoComponent() {}
+
+            Vec3 GetValue() {return m_Val;}
+            void SetValue(Vec3 Val) {m_Val = Val;}
+
+        protected:
+            Vec3 m_Val;
     };
 
     /* The actual material information that gets passed to the shader */
-    class Material : public MaterialNode
+    class Material
     {
         public:
             Material();
             ~Material();
 
-            virtual void Serialize() {}
-            virtual void Deserialize() {}
-            virtual void UpdateOuts() {}
+            void AddComponent(MaterialComponent* Comp);
+            bool HasComponentType(i32 Type);
+            MaterialComponent* GetComponentByType(i32 Type);
 
-            MaterialInput<Vec3>* m_Albedo;
-            MaterialInput<Vec3>* m_Normal;
-            MaterialInput<Vec3>* m_Emissive;
-
-            MaterialInput<f32>* m_Specular;
-            MaterialInput<f32>* m_Roughness;
-            MaterialInput<f32>* m_Opacity;
-            MaterialInput<f32>* m_Metallic;
-    };
-
-    //Some Nodes for basic materials
-    class ConstVec3Node : public MaterialNode
-    {
-        public:
-            ConstVec3Node() : m_Output(new MaterialOutput<Vec3>(Vec3(), this)) {}
-            virtual void Serialize() {}
-            virtual void Deserialize() {}
-
-            virtual void UpdateOuts() {}
-
-            MaterialOutput<Vec3>* m_Output;
-    };
-
-    class MultiplyNode : public MaterialNode
-    {
-        public:
-            MultiplyNode() : m_AInput(new MaterialInput<f32>()), m_BInput(new MaterialInput<f32>()), m_Output(new MaterialOutput<f32>(0.0f, this))
-            {
-
-            }
-
-            virtual void Serialize() {}
-            virtual void Deserialize() {}
-
-            virtual void UpdateOuts()
-            {
-                m_Output->SetData(m_AInput->GetData() * m_BInput->GetData());
-            }
-
-            MaterialInput<f32>* m_AInput;
-            MaterialInput<f32>* m_BInput;
-            MaterialOutput<f32>* m_Output;
+        protected:
+            std::vector<MaterialComponent*> m_Components;
     };
 }
 
