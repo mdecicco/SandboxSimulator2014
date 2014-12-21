@@ -36,7 +36,7 @@ namespace SandboxSimulator
          *  3.) Load init script (loads necessary systems & assets for startup)
          *  4.) Initialize systems
          */
-		Log("SSEngine v%d.%d", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
+        Log("SSEngine v%d.%d\n", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
 
 		size_t plen = strlen(ArgV[0]);
         CString Path = MakeCString(plen);
@@ -46,7 +46,7 @@ namespace SandboxSimulator
             if(Path[i] == '/') { Path[i] = 0; break; }
             Path[i] = 0;
         }
-        
+        //FreeCString(Path);
 		//Doesn't work on windows
 		//chdir(Path);
         //Log("Path: %s\n",Path);
@@ -56,6 +56,9 @@ namespace SandboxSimulator
 
 		/* Create Render System */
 		m_RenderSystem = new RenderSystem();
+        m_RenderSystem->AddComponentType(CT_RENDER);
+        m_RenderSystem->AddMessageType(MT_MAKE_RENDERABLE);
+        m_RenderSystem->AddMessageType(MT_SET_SHADER);
 		RegisterSystem(m_RenderSystem);
         
         /* Initialize engine systems */
@@ -65,23 +68,12 @@ namespace SandboxSimulator
     void SSEngine::Run()
     {
         Log("Starting engine.\n");
-        /*
-         * Single-threaded run loop:
-         *  1.) Update input
-         *  2.) Update systems
-         *  3.) Process & send messages
-         *  4.) Go to 1
-         *
-         * Multi-threaded run loop:
-         *  1.) Start system threads
-         *  2.) Profit ????
-         */
         
 		if(m_Systems.size() == 0) m_DoShutdown = true;
         while(!m_DoShutdown)
         {
-            Scalar dt = m_RunTime - m_LastTime;
-            m_LastTime = m_RunTime;
+            Scalar dt = m_RunTime.ElapsedTime() - m_LastTime;
+            m_LastTime = m_RunTime.ElapsedTime();
             
             /* Update systems */
             for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Update(dt);
@@ -98,12 +90,6 @@ namespace SandboxSimulator
     
     void SSEngine::Shutdown()
     {
-        /*
-         * Stop all systems
-         * Unload all assets
-         * Destroy all systems
-         * Destroy self
-         */
 		Log("Stopping Engine.\n");
         for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Shutdown();
         for(i32 i = 0;i < m_Systems.size();i++) delete m_Systems[i];
@@ -209,5 +195,6 @@ namespace SandboxSimulator
 
 		// save to log file i32 Ret = fprintf(m_Log, "%s", Formatted);
         printf("%f: %s",m_RunTime.ElapsedTime(),Formatted);
+        //free(Formatted);
     }
-};
+}

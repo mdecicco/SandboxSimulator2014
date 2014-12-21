@@ -10,17 +10,7 @@
 #include <Engine.h>
 
 namespace SandboxSimulator
-{
-    void Component::AddRef()
-    {
-        m_RefCount++;
-    }
-    void Component::Destroy()
-    {
-        m_RefCount--;
-        if(m_RefCount < 0) delete this;
-    }
-    
+{   
     EngineSystem::EngineSystem()
     {
     }
@@ -43,12 +33,12 @@ namespace SandboxSimulator
         return false;
     }
     
-    void EngineSystem::AddComponentType(i32 ComponentType)
+    void EngineSystem::AddComponentType(COMPONENT_TYPE ComponentType)
     {
         m_ComponentTypes.push_back(ComponentType);
     }
     
-    bool EngineSystem::AcceptsComponentType(i32 ComponentType) const
+    bool EngineSystem::AcceptsComponentType(COMPONENT_TYPE ComponentType) const
     {
         for(i32 i = 0;i < m_ComponentTypes.size();i++)
             if(m_ComponentTypes[i] == ComponentType)

@@ -14,18 +14,50 @@
 
 namespace SandboxSimulator
 {
-    class Component;
     class SSEngine;
+
+    enum COMPONENT_TYPE
+    {
+        CT_RENDER,
+        CT_COUNT
+    };
+
+    class Component
+    {
+        public:
+            Component(COMPONENT_TYPE Type);
+            virtual ~Component();
+
+            void AddRef();
+            void Destroy();
+
+            void SetEngine(SSEngine* Eng) {m_Engine = Eng;}
+
+            COMPONENT_TYPE GetType() const {return m_Type;}
+
+        protected:
+            SSEngine* m_Engine;
+            i32 m_RefCount;
+            COMPONENT_TYPE m_Type;
+    };
+
     class Entity
     {
         public:
             Entity() : m_UID(-1) {}
-            ~Entity();
+            ~Entity() {}
         
+            void AddRef() {m_RefCount++;}
+            void Destroy();
+
+            Component* GetComponentByType(COMPONENT_TYPE Type);
+            UID GetID() {return m_UID;}
+
         protected:
             friend class SceneGraph;
             std::vector<Component*> m_Components;
             UID m_UID;
+            i32 m_RefCount;
     };
     
     class SceneGraph

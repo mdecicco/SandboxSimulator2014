@@ -14,6 +14,7 @@
 
 namespace SandboxSimulator
 {
+    class RenderSystem;
     class Timer
     {
         public:
@@ -24,11 +25,10 @@ namespace SandboxSimulator
             void Stop();
         
             Scalar ElapsedTime() const;
-            operator Scalar() const;
         
         protected:
-        //std::chrono::time_point<std::chrono::steady_clock> m_StartTime;
-        Flag m_Started;
+            double m_StartTime;
+            Flag m_Started;
     };
 }
 

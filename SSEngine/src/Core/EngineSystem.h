@@ -10,28 +10,13 @@
 #define SandboxSimulator_EngineSystem_h
 
 #include <System/SSTypes.h>
+#include <Core/SceneGraph.h>
 #include <vector>
 
 namespace SandboxSimulator
 {
     class SSEngine;
     class EngineMessage;
-
-    class Component
-    {
-        public:
-            Component(SSEngine* eng, i32 Type) : m_Engine(eng), m_RefCount(0), m_Type(Type) {}
-        virtual ~Component() {}
-        
-            void AddRef();
-            void Destroy();
-        
-            i32 GetType() const {return m_Type;}
-        protected:
-            SSEngine* m_Engine;
-            i32 m_RefCount;
-            i32 m_Type;
-    };
     
     class EngineSystem
     {
@@ -42,8 +27,8 @@ namespace SandboxSimulator
             void AddMessageType(i32 MsgType);
             bool AcceptsMessageType(i32 MsgType) const;
         
-            void AddComponentType(i32 ComponentType);
-            bool AcceptsComponentType(i32 ComponentType) const;
+            void AddComponentType(COMPONENT_TYPE ComponentType);
+            bool AcceptsComponentType(COMPONENT_TYPE ComponentType) const;
         
             void AddComponent(Component* Comp);
             void RemoveComponent(Component* Comp);
@@ -59,7 +44,7 @@ namespace SandboxSimulator
         
         protected:
             std::vector<i32> m_MessageTypes;
-            std::vector<i32> m_ComponentTypes;
+            std::vector<COMPONENT_TYPE> m_ComponentTypes;
             std::vector<Component*> m_Components;
     };
 }
