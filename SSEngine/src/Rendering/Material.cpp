@@ -48,23 +48,17 @@ namespace SandboxSimulator
             "  gl_Position = vec4 (vp, 1.0);"
             "}";
 
-            string fragment_shader = "#version 400\n";
-            //inject uniforms and functions
+            string fragment_header = "";
             for(i32 i = 0; i < MI_COUNT; i++)
             {
 				if(m_Inputs[i]->IsConnected()) 
 				{
-					fragment_shader += m_Inputs[i]->Input->Parent->GetUniformDefinitions();
-					fragment_shader += m_Inputs[i]->Input->Parent->GetFunctionDefinitions();
+                    fragment_header += m_Inputs[i]->Input->Parent->GetUniformDefinitions();
+                    fragment_header += m_Inputs[i]->Input->Parent->GetFunctionDefinitions();
 				}
             }
 
-            fragment_shader += "out vec4 frag_colour;"
-                               "void main () {"
-                               "vec3 Albedo = vec3(1,1,1);"
-                               "float Opacity = 1.0;";
-
-            //inject into main function
+            string fragment_body = "";
             for(i32 i = 0; i < MI_COUNT; i++)
             {
                 if(m_Inputs[i]->IsConnected()) 
@@ -73,12 +67,12 @@ namespace SandboxSimulator
                     {
                         case MI_ALBEDO:
                         {
-                            fragment_shader += "Albedo = "+m_Inputs[i]->Input->VarName+";";
+                            fragment_body += "Albedo = "+m_Inputs[i]->Input->Getter+";";
                             break;
                         }
                         case MI_OPACITY:
                         {
-                            fragment_shader += "Opacity = "+m_Inputs[i]->Input->VarName+";";
+                            fragment_body += "Opacity = "+m_Inputs[i]->Input->Getter+";";
                             break;
                         }
                         default:
@@ -89,9 +83,17 @@ namespace SandboxSimulator
                 }
             }
 
-            //Rest of the shader (Where things like filling deferred buffers will happen)
-            fragment_shader += "frag_colour = vec4(Albedo,Opacity);"
-                                "}";
+            //Shader "Template" with that information injected
+            string fragment_shader = "#version 400\n";
+            fragment_shader +=
+                    fragment_header +
+                    "out vec4 frag_colour;"
+                    "void main () {"
+                    "    vec3 Albedo = vec3(1,1,1);"
+                    "    float Opacity = 1.0;"
+                    +    fragment_body +
+                    "    frag_colour = vec4(Albedo,Opacity);"
+                    "}";
             m_Shader->Load(vertex_shader.c_str(), fragment_shader.c_str());
 
             m_Shader->Enable();

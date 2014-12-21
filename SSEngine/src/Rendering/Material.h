@@ -48,6 +48,7 @@ namespace SandboxSimulator
 
             string VarName;
             string VarType;
+            string Getter;
     };
 
     class MaterialNodeInput
@@ -126,6 +127,7 @@ namespace SandboxSimulator
                 m_UniformDefinitions = "uniform vec3 "+name+";";
                 m_FunctionDefinitions = "";
                 m_MainLogic = "";
+                m_Output->Getter = name; // but this could be something like texture(name, TexCoordUniform)
             }
 
             ~MatVec3Node()
