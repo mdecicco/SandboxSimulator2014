@@ -14,8 +14,8 @@ int main(i32 ArgC,Literal ArgV[])
     
     Eng->Initialize(ArgC,ArgV);
 
-	Entity* E = Eng->GetSceneGraph()->CreateEntity();
-	Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
+    Entity* E = Eng->GetSceneGraph()->CreateEntity();
+    Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
     RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
 
     Material* Mat = new Material();
