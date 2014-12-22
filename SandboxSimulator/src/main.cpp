@@ -20,7 +20,7 @@ int main(i32 ArgC,Literal ArgV[])
 
     Material* Mat = new Material();
     r->SetMaterial(Mat);
-    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(0,0,1));
+    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(1,0,1));
     Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
 
     r->AddVertex(Vec3(0.5 , 0.5,0));
