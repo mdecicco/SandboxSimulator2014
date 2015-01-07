@@ -15,6 +15,7 @@
 #include <Core/Message.h>
 #include <Core/Timer.h>
 #include <vector>
+#include <SFML/Network.hpp>
 
 #ifdef __APPLE__
 #define AllocArray(Type,Size) (Type *)__alloca(Size * sizeof(Type))
