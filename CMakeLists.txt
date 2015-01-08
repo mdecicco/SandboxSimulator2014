@@ -34,7 +34,7 @@ ADD_DEFINITIONS( -DASSIMP_BUILD_BOOST_WORKAROUND )
 MESSAGE( STATUS "Building a non-boost version of Assimp." )
 
 find_package(OpenGL REQUIRED)
-find_package(SFML 2 COMPONENTS audio network system REQUIRED)
+find_package(SFML 2 COMPONENTS network system REQUIRED)
 
 include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${OPENGL_INCLUDE_DIR} ${GLEWDIR}/include ${ZDIR} ${SOILDIR} ${SFMLDIR}/include )
 
