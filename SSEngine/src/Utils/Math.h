@@ -42,7 +42,7 @@ namespace SandboxSimulator
 
                 if (client.receive(data, 100, received) != sf::Socket::Done)
                 {
-                    // error...
+                    keepGoing = false;
                 }
 				std::string output;
 				for(int i = 0; i < received && i < 100; i++)
@@ -50,7 +50,6 @@ namespace SandboxSimulator
 
                 std::cout << "Received " << received << " bytes" << std::endl;
                 std::cout << output << std::endl;
-                if(data[0] == 'q') keepGoing = false;
             }
             printf("Closed connection...\n");
         }
