@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <stdio.h>
 
 #include <Engine.h>
@@ -7,35 +7,47 @@
 #include <Core/Message.h>
 #include <Utils/Math.h>
 
+#include <SFML/Network.hpp>
+#include <System/SSThread.h>
+
+#include <vector>
+
 using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
-    
+
     Eng->Initialize(ArgC,ArgV);
+	Eng->Run();
 
-    Entity* E = Eng->GetSceneGraph()->CreateEntity();
-    Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
-    RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-
-    Material* Mat = new Material();
-    r->SetMaterial(Mat);
-    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(1,0,1));
-    Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
-
-    r->AddVertex(Vec3(0.5 , 0.5,0));
-    r->AddVertex(Vec3(0.5 ,-0.5,0));
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-    r->AddVertex(Vec3(-0.5, 0.5,0));
-    r->AddVertex(Vec3( 0.5, 0.5,0));
-
-    TCPServer* Test = new TCPServer();
-    Test->Start();
+    sf::TcpListener listener;
+    // bind the listener to a port
+    if (listener.listen(56000) != sf::Socket::Done)
+    {
+        // error...
+    }
     
-    Eng->Run();
+    // accept a new connection
+    std::vector<ClientThread*> Clients = std::vector<ClientThread*>();
+
+    bool keepGoing = true;
+    while(keepGoing) {
+        sf::TcpSocket client;
+        if (listener.accept(client) != sf::Socket::Done)
+        {
+            printf("Error connecting client!\n");
+            keepGoing = false;
+        }
+        ClientThread* T = new ClientThread(&client);
+        T->start();
+        Clients.push_back(T);
+    }
+
+    for(int i = 0; i < Clients.size(); i++) {
+        Clients[i]->join();
+    }
+    
     Eng->Shutdown();
     return 0;
 }

@@ -55,11 +55,8 @@ namespace SandboxSimulator
         m_SceneGraph = new SceneGraph(this);
 
 		/* Create Render System */
-		m_RenderSystem = new RenderSystem();
-        m_RenderSystem->AddComponentType(CT_RENDER);
-        m_RenderSystem->AddMessageType(MT_MAKE_RENDERABLE);
-        m_RenderSystem->AddMessageType(MT_SET_SHADER);
-		RegisterSystem(m_RenderSystem);
+		//m_RenderSystem = new RenderSystem();
+		//RegisterSystem(m_RenderSystem);
         
         /* Initialize engine systems */
         for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Initialize(this);

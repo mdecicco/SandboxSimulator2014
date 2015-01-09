@@ -61,7 +61,7 @@ namespace SandboxSimulator
             /* Systems */
 			std::vector<EngineSystem*> m_Systems;
             std::vector<EngineMessage*> m_AsynchronousMessages;
-			RenderSystem* m_RenderSystem;
+			//RenderSystem* m_RenderSystem;
 
 			/* Managers */
             SceneGraph* m_SceneGraph;

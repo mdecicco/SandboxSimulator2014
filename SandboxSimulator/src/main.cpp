@@ -5,7 +5,6 @@
 #include <Core/SceneGraph.h>
 #include <Rendering/RenderSystem.h>
 #include <Core/Message.h>
-#include <Utils/Math.h>
 
 using namespace SandboxSimulator;
 
@@ -13,6 +12,7 @@ int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
     
+	Eng->RegisterSystem(new RenderSystem());
     Eng->Initialize(ArgC,ArgV);
 
     Entity* E = Eng->GetSceneGraph()->CreateEntity();
@@ -32,9 +32,6 @@ int main(i32 ArgC,Literal ArgV[])
     r->AddVertex(Vec3(-0.5, 0.5,0));
     r->AddVertex(Vec3( 0.5, 0.5,0));
 
-    TCPServer* Test = new TCPServer();
-    Test->Start();
-    
     Eng->Run();
     Eng->Shutdown();
     return 0;

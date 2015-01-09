@@ -177,6 +177,9 @@ namespace SandboxSimulator
 	{
 		m_Resolution = Vec2(800,600);
         m_FullScreen = false;
+		AddComponentType(CT_RENDER);
+        AddMessageType(MT_MAKE_RENDERABLE);
+        AddMessageType(MT_SET_SHADER);
 	}
 
 	RenderSystem::~RenderSystem() {}
