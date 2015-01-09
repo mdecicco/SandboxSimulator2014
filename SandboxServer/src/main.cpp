@@ -8,7 +8,7 @@
 #include <Utils/Math.h>
 
 #include <SFML/Network.hpp>
-#include <System/SSThread.h>
+#include <ClientThread.h>
 
 #include <vector>
 
@@ -33,19 +33,19 @@ int main(i32 ArgC,Literal ArgV[])
 
     bool keepGoing = true;
     while(keepGoing) {
-        sf::TcpSocket client;
-        if (listener.accept(client) != sf::Socket::Done)
+        sf::TcpSocket* client = new sf::TcpSocket();
+        if (listener.accept(*client) != sf::Socket::Done)
         {
             printf("Error connecting client!\n");
             keepGoing = false;
         }
-        ClientThread* T = new ClientThread(&client);
-        T->start();
+        ClientThread* T = new ClientThread(client);
+        T->Start();
         Clients.push_back(T);
     }
 
     for(int i = 0; i < Clients.size(); i++) {
-        Clients[i]->join();
+        Clients[i]->Join();
     }
     
     Eng->Shutdown();
