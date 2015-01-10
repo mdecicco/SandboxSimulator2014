@@ -6,6 +6,9 @@
 #include <Rendering/RenderSystem.h>
 #include <Core/Message.h>
 
+#include <Network/Socket.h>
+#include <System/SSTypes.h>
+
 using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
@@ -31,6 +34,47 @@ int main(i32 ArgC,Literal ArgV[])
     r->AddVertex(Vec3(-0.5,-0.5,0));
     r->AddVertex(Vec3(-0.5, 0.5,0));
     r->AddVertex(Vec3( 0.5, 0.5,0));
+
+    UdpSocket* Socket = new UdpSocket();
+    Socket->Bind(sf::Socket::AnyPort);
+    sf::Packet* packet = new sf::Packet();
+    (*packet) << (i32) 1 << (i8)PT_CONNECT;
+    Socket->Send(packet, "127.0.0.1", 3889);
+
+    //Connections ACK, returned assigned client id
+    sf::IpAddress sender;
+    u16 port;
+    packet = Socket->Receive(sender, port);
+    i8 PacketType;
+    i8 ClientID;
+    (*packet) >> PacketType >> ClientID;
+    //
+
+    //Send test packet
+    packet = new sf::Packet();
+    (*packet) << (i32) 2 << (i8)PT_UPDATE << ClientID << (i8)4;
+    Socket->Send(packet, "127.0.0.1", 3889);
+
+    //Get ACK for that packet
+    bool sent = false;
+    while(!sent)
+    {
+        packet = Socket->Receive(sender, port);
+        i8 PacketType;
+        (*packet) >> PacketType;
+        switch(PacketType)
+        {
+            case PT_ACK:
+                //a packet was acknowledged, get the ack packet ID and remove it from pending ack queue (TODO)
+                i32 PacketID;
+                (*packet) >> PacketID;
+                printf("Packet %d acknowledged by server!\n", PacketID);
+                break;
+            default:
+                //process as usual, probably the world state.
+                break;
+        }
+    }
 
     Eng->Run();
     Eng->Shutdown();

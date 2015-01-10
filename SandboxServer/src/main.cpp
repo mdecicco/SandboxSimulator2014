@@ -7,8 +7,7 @@
 #include <Core/Message.h>
 #include <Utils/Math.h>
 
-#include <SFML/Network.hpp>
-#include <ClientThread.h>
+#include <ServerListener.h>
 
 #include <vector>
 
@@ -17,37 +16,32 @@ using namespace SandboxSimulator;
 int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
-
+    Eng->RegisterSystem(new RenderSystem());
     Eng->Initialize(ArgC,ArgV);
-	Eng->Run();
 
-    sf::TcpListener listener;
-    // bind the listener to a port
-    if (listener.listen(56000) != sf::Socket::Done)
-    {
-        // error...
-    }
-    
-    // accept a new connection
-    std::vector<ClientThread*> Clients = std::vector<ClientThread*>();
+    Entity* E = Eng->GetSceneGraph()->CreateEntity();
+    Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
+    RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
 
-    bool keepGoing = true;
-    while(keepGoing) {
-        sf::TcpSocket* client = new sf::TcpSocket();
-        if (listener.accept(*client) != sf::Socket::Done)
-        {
-            printf("Error connecting client!\n");
-            keepGoing = false;
-        }
-        ClientThread* T = new ClientThread(client);
-        T->Start();
-        Clients.push_back(T);
-    }
+    Material* Mat = new Material();
+    r->SetMaterial(Mat);
+    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(1,0,1));
+    Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
 
-    for(int i = 0; i < Clients.size(); i++) {
-        Clients[i]->Join();
-    }
-    
+    r->AddVertex(Vec3(0.5 , 0.5,0));
+    r->AddVertex(Vec3(0.5 ,-0.5,0));
+    r->AddVertex(Vec3(-0.5,-0.5,0));
+
+    r->AddVertex(Vec3(-0.5,-0.5,0));
+    r->AddVertex(Vec3(-0.5, 0.5,0));
+    r->AddVertex(Vec3( 0.5, 0.5,0));
+
+    ClientManager* clientManager = new ClientManager();
+    ServerListener* Listener = new ServerListener(3889, clientManager);
+    Listener->Start();
+
+    Eng->Run();
+    Listener->Join();
     Eng->Shutdown();
     return 0;
 }

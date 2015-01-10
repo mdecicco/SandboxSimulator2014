@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <SFML/Network.hpp>
+
 #define SSENGINE_VERSION_MAJOR 0
 #define SSENGINE_VERSION_MINOR 1
 
@@ -18,10 +20,10 @@ typedef unsigned int        u32;
 typedef unsigned long long  u64;
 typedef uintptr_t           Ptr;
 
-typedef int8_t              i8;
-typedef int16_t             i16;
-typedef int32_t             i32;
-typedef int64_t             i64;
+typedef sf::Int8            i8;
+typedef sf::Int16           i16;
+typedef sf::Int32           i32;
+typedef sf::Int64           i64;
 
 typedef signed char         s8;
 typedef signed short        s16;
