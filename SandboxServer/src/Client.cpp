@@ -4,12 +4,12 @@
 
 namespace SandboxSimulator
 {
-    Client::Client(i8 clientID, std::string ip, u16 port)
+    Client::Client(i8 clientID, std::string ip, u16 port, UdpSocket* Socket)
     {
         m_Port = port;
         m_IP = ip;
         m_Id = clientID;
-        m_Socket = new UdpSocket();
+        m_Socket = Socket;
 
         sf::Packet* packet = new sf::Packet();
         (*packet) << (i8)PT_CONNECT << m_Id;
@@ -17,7 +17,7 @@ namespace SandboxSimulator
         delete packet;
     }
 
-    Client::~Client() 
+    Client::~Client()
     {}
 
     void Client::Disconnect()
@@ -67,10 +67,10 @@ namespace SandboxSimulator
         m_Clients.clear();
     }
 
-    Client* ClientManager::NewClient(i8 ClientID, std::string Address, u16 Port)
+    Client* ClientManager::NewClient(i8 ClientID, std::string Address, u16 Port, UdpSocket* Socket)
     {
         if(!HasClient(ClientID) && !HasClient(Address, Port)) {
-            Client* c = new Client(ClientID, Address, Port);
+            Client* c = new Client(ClientID, Address, Port, Socket);
             m_Clients.push_back(c);
             return c;
         }

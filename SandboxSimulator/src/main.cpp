@@ -13,6 +13,7 @@ using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
+    /*
     SSEngine* Eng = new SSEngine();
     
 	Eng->RegisterSystem(new RenderSystem());
@@ -34,6 +35,7 @@ int main(i32 ArgC,Literal ArgV[])
     r->AddVertex(Vec3(-0.5,-0.5,0));
     r->AddVertex(Vec3(-0.5, 0.5,0));
     r->AddVertex(Vec3( 0.5, 0.5,0));
+    */
 
     UdpSocket* Socket = new UdpSocket();
     Socket->Bind(sf::Socket::AnyPort);
@@ -76,7 +78,7 @@ int main(i32 ArgC,Literal ArgV[])
         }
     }
 
-    Eng->Run();
-    Eng->Shutdown();
+    //Eng->Run();
+    //Eng->Shutdown();
     return 0;
 }

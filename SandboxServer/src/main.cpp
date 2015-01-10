@@ -15,33 +15,10 @@ using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
-    SSEngine* Eng = new SSEngine();
-    Eng->RegisterSystem(new RenderSystem());
-    Eng->Initialize(ArgC,ArgV);
-
-    Entity* E = Eng->GetSceneGraph()->CreateEntity();
-    Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
-    RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-
-    Material* Mat = new Material();
-    r->SetMaterial(Mat);
-    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(1,0,1));
-    Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
-
-    r->AddVertex(Vec3(0.5 , 0.5,0));
-    r->AddVertex(Vec3(0.5 ,-0.5,0));
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-    r->AddVertex(Vec3(-0.5, 0.5,0));
-    r->AddVertex(Vec3( 0.5, 0.5,0));
-
     ClientManager* clientManager = new ClientManager();
     ServerListener* Listener = new ServerListener(3889, clientManager);
     Listener->Start();
 
-    Eng->Run();
     Listener->Join();
-    Eng->Shutdown();
     return 0;
 }

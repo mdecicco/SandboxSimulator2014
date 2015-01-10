@@ -11,7 +11,7 @@ namespace SandboxSimulator {
 class Client
 {
     public:
-        Client(i8 clientID, std::string ip, u16 port);
+        Client(i8 clientID, std::string ip, u16 port, UdpSocket* Socket);
         ~Client();
 
         void Disconnect();
@@ -39,7 +39,7 @@ class ClientManager
         ClientManager() : m_Clients(std::vector<Client*>()) {}
         ~ClientManager();
 
-        Client* NewClient(i8 ClientID, std::string Address, u16 Port);
+        Client* NewClient(i8 ClientID, std::string Address, u16 Port, UdpSocket* Socket);
         bool HasClient(i8 ClientID);
         bool HasClient(std::string Address, u16 Port);
         bool HasClient(i8 ClientID, std::string Address, u16 Port);
