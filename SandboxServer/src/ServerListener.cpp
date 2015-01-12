@@ -3,7 +3,7 @@
 
 namespace SandboxSimulator
 {
-    ServerListener::ServerListener(u16 Port, ClientManager* clientManager) : m_Port(Port), m_Socket(new UdpSocket()), m_KeepGoing(true), m_ClientManager(clientManager)
+    ServerListener::ServerListener(u16 Port, ServerSystem* clientManager, sf::Mutex* mutex) : m_Mutex(mutex), m_Port(Port), m_Socket(new UdpSocket()), m_KeepGoing(true), m_ClientManager(clientManager), m_LastClientID(0)
     {}
 
     ServerListener::~ServerListener()
@@ -21,27 +21,30 @@ namespace SandboxSimulator
             i32 PacketID;
             i8 PacketType;
             (*packet) >> PacketID >> PacketType;
-            i8 ClientID;
+            u16 ClientID;
             i8 NumClients = m_ClientManager->NumClients();
 
             switch(PacketType)
             {
                 case PT_CONNECT:
                     if(NumClients < 256) {
-                        Byte NewClientID = NumClients+1;
+                        u16 NewClientID = m_LastClientID+1;
                         if(!m_ClientManager->HasClient(sender.toString(), port)) {
                             m_ClientManager->NewClient(NewClientID, sender.toString(), port, m_Socket)->Acknowledge(PacketID);
-                        } else
                             printf("New client connected with id %d\n", (i32)NewClientID);
+                            m_LastClientID++;
+                        } else
+                            printf("Client already connected!%d\n");
                     } else {
                         printf("Reached maximum client ID limit: 255\n");
                     }
                 break;
                 case PT_DISCONNECT:
                     (*packet) >> ClientID;
-                    if(m_ClientManager->RemoveClient(ClientID, sender.toString(), port)) {
+                    if(m_ClientManager->HasClient(ClientID, sender.toString(), port)) {
                         Client* c = m_ClientManager->GetClient(ClientID);
-                        c->Disconnect();
+                        m_ClientManager->RemoveClient(c);
+                        c->Disconnect(DR_QUIT);
                     } else {
                         printf("The provided client ID could not be desconnected as it was not found.");
                     }

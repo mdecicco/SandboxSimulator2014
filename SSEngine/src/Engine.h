@@ -56,6 +56,8 @@ namespace SandboxSimulator
             void Log(Literal Text,...) const;
         
             SceneGraph* GetSceneGraph() {return m_SceneGraph;}
+
+            Scalar GetElapsedTime() {return m_RunTime.ElapsedTime();}
     
         protected:
             /* Systems */

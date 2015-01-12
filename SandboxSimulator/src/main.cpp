@@ -48,7 +48,7 @@ int main(i32 ArgC,Literal ArgV[])
     u16 port;
     packet = Socket->Receive(sender, port);
     i8 PacketType;
-    i8 ClientID;
+    u16 ClientID;
     (*packet) >> PacketType >> ClientID;
     //
 
@@ -58,8 +58,8 @@ int main(i32 ArgC,Literal ArgV[])
     Socket->Send(packet, "127.0.0.1", 3889);
 
     //Get ACK for that packet
-    bool sent = false;
-    while(!sent)
+    bool Connected = true;
+    while(Connected)
     {
         packet = Socket->Receive(sender, port);
         i8 PacketType;
@@ -71,6 +71,19 @@ int main(i32 ArgC,Literal ArgV[])
                 i32 PacketID;
                 (*packet) >> PacketID;
                 printf("Packet %d acknowledged by server!\n", PacketID);
+                break;
+            case PT_PING:
+                    printf("Server pinged us! LOL let's just ignore it, nothing bad will happen... right?\n");
+                break;
+            case PT_DISCONNECT:
+                i8 Reason;
+                (*packet) >> Reason;
+                if(Reason == DR_TIMEOUT)
+                    printf("Disconnected, reason: timed out.\n");
+                else if (Reason == DR_QUIT)
+                    printf("Disconnected, reason: quit.\n");
+
+                Connected = false;
                 break;
             default:
                 //process as usual, probably the world state.

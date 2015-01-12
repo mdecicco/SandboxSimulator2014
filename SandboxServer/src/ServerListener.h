@@ -5,22 +5,28 @@
 #include <Network/Socket.h>
 #include <Client.h>
 
+#include <ServerSystem.h>
+
 #include <map>
 
 namespace SandboxSimulator {
 class ServerListener : public Thread
 {
     public:
-        ServerListener(u16 Port, ClientManager* clientManager);
+        ServerListener(u16 Port, ServerSystem* system, sf::Mutex* mutex);
         ~ServerListener();
         void Stop();
 
     private:
         virtual void run();
-        ClientManager* m_ClientManager;
+
+        ServerSystem* m_ClientManager;
+        (i8) m_LastClientID;
         UdpSocket* m_Socket;
         bool m_KeepGoing;
         u16 m_Port;
+
+        sf::Mutex* m_Mutex;
 };
 }
 

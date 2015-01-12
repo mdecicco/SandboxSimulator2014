@@ -1,15 +1,20 @@
 #include <Client.h>
 #include <iostream>
 #include <assert.h>
+#include <Engine.h>
 
 namespace SandboxSimulator
 {
-    Client::Client(i8 clientID, std::string ip, u16 port, UdpSocket* Socket)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex)
     {
+        m_Mutex = mutex;
+        m_Engine = engine;
+        m_LastMessageTime = m_Engine->GetElapsedTime();
         m_Port = port;
         m_IP = ip;
         m_Id = clientID;
         m_Socket = Socket;
+        m_PendingPing = false;
 
         sf::Packet* packet = new sf::Packet();
         (*packet) << (i8)PT_CONNECT << m_Id;
@@ -20,27 +25,39 @@ namespace SandboxSimulator
     Client::~Client()
     {}
 
-    void Client::Disconnect()
+    void Client::Disconnect(DISCONNECT_REASONS Reason)
     {
-    
+        if(Reason == DR_TIMEOUT)
+            m_Engine->Log("Disconnecting client, reason: timed out\n");
+        else if (Reason == DR_QUIT)
+            m_Engine->Log("Disconnecting client, reason: quit\n");
+        sf::Packet* p = new sf::Packet();
+        (*p) << (i8) PT_DISCONNECT << (i8) Reason;
+        Send(p);
     }
 
     void Client::ParsePacket(PACKET_TYPE Type, sf::Packet* Packet)
     {
+        m_Mutex->lock();
+        m_LastMessageTime = m_Engine->GetElapsedTime();
         switch(Type)
         {
             case PT_UPDATE:
                 i8 rec;
                 (*Packet) >> rec;
-                printf("%d: %d\n", m_Id, rec);
+                m_Engine->Log("Received message from client %d: %d\n", m_Id, rec);
                 break;
             case PT_EVENT:
 
+                break;
+            case PT_PING:
+                if(m_PendingPing) m_PendingPing = false;
                 break;
             default:
 
                 break;
         }
+        m_Mutex->unlock();
     }
 
     void Client::Acknowledge(i32 PacketID)
@@ -51,101 +68,17 @@ namespace SandboxSimulator
         delete packet;
     }
 
+    void Client::Ping()
+    {
+        sf::Packet* packet = new sf::Packet();
+        (*packet) << (i8)PT_PING;
+        Send(packet);
+        m_PendingPing = true;
+        delete packet;
+    }
+
     void Client::Send(sf::Packet* Packet)
     {
         m_Socket->Send(Packet, m_IP, m_Port);
-    }
-
-    /*--------------------------- Client Manager ---------------------------------*/
-
-    ClientManager::~ClientManager() 
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-        {
-            delete m_Clients[i];
-        }
-        m_Clients.clear();
-    }
-
-    Client* ClientManager::NewClient(i8 ClientID, std::string Address, u16 Port, UdpSocket* Socket)
-    {
-        if(!HasClient(ClientID) && !HasClient(Address, Port)) {
-            Client* c = new Client(ClientID, Address, Port, Socket);
-            m_Clients.push_back(c);
-            return c;
-        }
-
-        return NULL;
-    }
-
-    bool ClientManager::HasClient(i8 ClientID)
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetID() == i)
-                return true;
-
-        return false;
-    }
-
-    bool ClientManager::HasClient(std::string Address, u16 Port)
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetAddress() == Address && m_Clients[i]->GetPort() == Port)
-                return true;
-
-        return false;
-    }
-
-    bool ClientManager::HasClient(i8 ClientID, std::string Address, u16 Port)
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetID() == ClientID && m_Clients[i]->GetAddress() == Address && m_Clients[i]->GetPort() == Port)
-                return true;
-
-        return false;
-    }
-
-    Client* ClientManager::GetClient(i32 Index)
-    {
-        return m_Clients[Index];
-    }
-
-    Client* ClientManager::GetClient(i8 ClientID)
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetID() == ClientID) return m_Clients[i];
-
-        return NULL;
-    }
-
-    Client* ClientManager::GetClient(std::string Address, u16 Port)
-    {
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetAddress() == Address && m_Clients[i]->GetPort() == Port)
-                return m_Clients[i];
-
-        return NULL;
-    }
-
-    bool ClientManager::RemoveClient(i8 ClientID)
-    {
-        if(HasClient(ClientID))
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetID() == ClientID) {
-                m_Clients.erase(m_Clients.begin()+i);
-                return true;
-            }
-        return false;
-    }
-
-    bool ClientManager::RemoveClient(i8 ClientID, std::string Address, u16 Port)
-    {
-        if(HasClient(ClientID, Address, Port))
-        for(i32 i = 0; i < m_Clients.size(); i++)
-            if(m_Clients[i]->GetID() == ClientID) {
-                m_Clients.erase(m_Clients.begin()+i);
-                return true;
-            }
-        return false;
     }
 }

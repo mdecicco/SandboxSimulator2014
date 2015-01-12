@@ -12,7 +12,15 @@ enum PACKET_TYPE
     PT_EVENT,
     PT_UPDATE,
     PT_ACK,
+    PT_PING,
     PT_COUNT
+};
+
+enum DISCONNECT_REASONS
+{
+    DR_TIMEOUT,
+    DR_QUIT,
+    DR_COUNT
 };
 
 class TcpSocket

@@ -8,6 +8,7 @@
 #include <Utils/Math.h>
 
 #include <ServerListener.h>
+#include <ServerSystem.h>
 
 #include <vector>
 
@@ -15,9 +16,21 @@ using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
-    ClientManager* clientManager = new ClientManager();
-    ServerListener* Listener = new ServerListener(3889, clientManager);
+    sf::Mutex* mutex = new sf::Mutex();
+
+    SSEngine* Eng = new SSEngine();
+    
+    ServerSystem* system = new ServerSystem(mutex);
+    //Eng->RegisterSystem(new RenderSystem());
+    Eng->RegisterSystem(system);
+
+    Eng->Initialize(ArgC,ArgV);
+
+    ServerListener* Listener = new ServerListener(3889, system, mutex);
     Listener->Start();
+
+    Eng->Run();
+    Eng->Shutdown();
 
     Listener->Join();
     return 0;

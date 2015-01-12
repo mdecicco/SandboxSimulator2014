@@ -10,6 +10,7 @@
 #define SandboxSimulator_Timer_h
 
 #include <System/SSTypes.h>
+#include <SFML/System.hpp>
 #include <chrono>
 
 namespace SandboxSimulator
@@ -27,7 +28,8 @@ namespace SandboxSimulator
             Scalar ElapsedTime() const;
         
         protected:
-            double m_StartTime;
+            Scalar m_StartTime;
+            sf::Clock* m_Clock;
             Flag m_Started;
     };
 }

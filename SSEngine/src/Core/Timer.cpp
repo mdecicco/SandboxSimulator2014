@@ -22,8 +22,9 @@ namespace SandboxSimulator
     void Timer::Start()
     {
         if(m_Started) return;
-        m_Started = true;
-        m_StartTime = glfwGetTime();
+        m_Clock = new sf::Clock();
+        m_Clock->restart();
+        m_StartTime = m_Clock->getElapsedTime().asSeconds();
     }
     void Timer::Stop()
     {
@@ -32,7 +33,7 @@ namespace SandboxSimulator
     
     Scalar Timer::ElapsedTime() const
     {
-        return glfwGetTime() - m_StartTime;
+        return m_Clock->getElapsedTime().asSeconds();
         return Scalar(0);
     }
 }

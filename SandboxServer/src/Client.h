@@ -1,5 +1,5 @@
 #ifndef SandboxSimulator_ClientThread_h
-#define SandboxSimulotar_ClientThread_h
+#define SandboxSimulator_ClientThread_h
 
 #include <System/SSThread.h>
 #include <Network/Socket.h>
@@ -8,53 +8,41 @@
 #include <vector>
 
 namespace SandboxSimulator {
+class SSEngine;
+
 class Client
 {
+    //All functions need to be thread safe
     public:
-        Client(i8 clientID, std::string ip, u16 port, UdpSocket* Socket);
+        Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex);
         ~Client();
 
-        void Disconnect();
+        void Disconnect(DISCONNECT_REASONS Reason);
 
         void ParsePacket(PACKET_TYPE Type, sf::Packet* Packet);
 
         void Acknowledge(i32 PacketID);
         void Send(sf::Packet* Packet);
 
+        void Ping();
+
         //Getters
-        i8 GetID() { return m_Id; }
+        u16 GetID() { return m_Id; }
         u16 GetPort() { return m_Port; }
         std::string GetAddress() { return m_IP; }
+        Scalar GetLastMessageTime() { return m_LastMessageTime; }
+        bool HasPendingPing() { return m_PendingPing; }
 
     private:
-        i8 m_Id;
-        UdpSocket* m_Socket;
-        std::string m_IP;
+        u16 m_Id;
         u16 m_Port;
-};
-
-class ClientManager
-{
-    public:
-        ClientManager() : m_Clients(std::vector<Client*>()) {}
-        ~ClientManager();
-
-        Client* NewClient(i8 ClientID, std::string Address, u16 Port, UdpSocket* Socket);
-        bool HasClient(i8 ClientID);
-        bool HasClient(std::string Address, u16 Port);
-        bool HasClient(i8 ClientID, std::string Address, u16 Port);
-
-        Client* GetClient(i32 Index);
-        Client* GetClient(i8 ClientID);
-        Client* GetClient(std::string Address, u16 Port);
-
-        bool RemoveClient(i8 ClientID);
-        bool RemoveClient(i8 ClientID, std::string Address, u16 Port);
-
-        i32 NumClients() { return m_Clients.size(); }
-
-    private:
-        std::vector<Client*> m_Clients;
+        std::string m_IP;
+        SSEngine* m_Engine;
+        UdpSocket* m_Socket;
+        
+        Scalar m_LastMessageTime;
+        bool m_PendingPing;
+        sf::Mutex* m_Mutex;
 };
 }
 
