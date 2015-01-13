@@ -34,7 +34,7 @@ class Client
         bool HasPendingPing() { return m_PendingPing; }
 
         //Misc
-        sf::Packet* CreatePacket();
+        sf::Packet* CreatePacket(PACKET_TYPE Type);
 
     private:
         u16 m_Id;

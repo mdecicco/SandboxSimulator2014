@@ -16,8 +16,8 @@ namespace SandboxSimulator
         m_Socket = Socket;
         m_PendingPing = false;
 
-        sf::Packet* packet = CreatePacket();
-        (*packet) << (i8)PT_CONNECT << m_Id;
+        sf::Packet* packet = CreatePacket(PT_CONNECT);
+        (*packet) << m_Id;
         m_Socket->Send(packet, m_IP, m_Port);
         delete packet;
     }
@@ -31,8 +31,8 @@ namespace SandboxSimulator
             m_Engine->Log("Disconnecting client, reason: timed out\n");
         else if (Reason == DR_QUIT)
             m_Engine->Log("Disconnecting client, reason: quit\n");
-        sf::Packet* p = CreatePacket();
-        (*p) << (i8) PT_DISCONNECT << (i8) Reason;
+        sf::Packet* p = CreatePacket(PT_DISCONNECT);
+        (*p) << (i8) Reason;
         Send(p);
     }
 
@@ -65,16 +65,15 @@ namespace SandboxSimulator
 
     void Client::Acknowledge(u32 PacketID)
     {
-        sf::Packet* packet = CreatePacket();
-        (*packet) << (i8)PT_ACK << PacketID;
+        sf::Packet* packet = CreatePacket(PT_ACK);
+        (*packet) << PacketID;
         Send(packet);
         delete packet;
     }
 
     void Client::Ping()
     {
-        sf::Packet* packet = CreatePacket();
-        (*packet) << (i8)PT_PING;
+        sf::Packet* packet = CreatePacket(PT_PING);
         Send(packet);
         m_PendingPing = true;
         delete packet;
@@ -85,11 +84,11 @@ namespace SandboxSimulator
         m_Socket->Send(Packet, m_IP, m_Port);
     }
 
-    sf::Packet* Client::CreatePacket()
+    sf::Packet* Client::CreatePacket(PACKET_TYPE Type)
     {
         sf::Packet* packet = new sf::Packet();
         m_LastPacketID++;
-        (*packet) << m_LastPacketID;
+        (*packet) << m_LastPacketID << (i8) Type;
         return packet;
     }
 }
