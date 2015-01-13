@@ -10,7 +10,6 @@ namespace SandboxSimulator
 
     ConnectionSystem::~ConnectionSystem()
     {
-        Shutdown();
         delete m_Socket;
     }
 
@@ -49,11 +48,12 @@ namespace SandboxSimulator
     {
         if(m_Connected || m_ConnectionAttempted) {
             sf::Packet* Quit = CreatePacket(PT_DISCONNECT);
-            (*Quit) << m_ClientID << (i8) DR_QUIT;
+            (*Quit) << (i8) DR_QUIT;
             m_Socket->Send(Quit, m_ServerAddress, m_ServerPort);
             delete Quit;
             m_Connected = false;
             m_ConnectionAttempted = false;
+            m_Engine->Log("Disconnected from server at %s:%d.\n", m_ServerAddress.c_str(), m_ServerPort);
         } else {
             m_Engine->Log("Could not disconnect: no connection established.\n");
         }
@@ -76,11 +76,12 @@ namespace SandboxSimulator
 
         if(m_Connected || m_ConnectionAttempted) {
             packet = m_Socket->Receive(sender, port);
-            if(packet) {
+            if(packet && port == m_ServerPort) {
                 i8 PacketType;
                 u32 PacketID;
                 (*packet) >> PacketID >> PacketType;
                 m_LastMessageTime = m_Engine->GetElapsedTime();
+                
                 switch(PacketType)
                 {
                     case PT_CONNECT:
@@ -89,13 +90,16 @@ namespace SandboxSimulator
                             (*packet) >> ClientID;
                             m_ClientID = ClientID;
                             m_Connected = true;
+                            m_Engine->Log("Connected to server at %s:%d.\n", sender.toString().c_str(), port);
                         } else {
                             m_Engine->Log("Could not connect to server, already connected to a server or a connection was not requested!");
                         }
                         break;
                     case PT_ACK:
                         //a packet was acknowledged, get the ack packet ID and remove it from pending ack queue (TODO)
-                        m_Engine->Log("Packet %d acknowledged by server!\n", PacketID);
+                        u32 AckPacketID;
+                        (*packet) >> AckPacketID;
+                        m_Engine->Log("Packet %d acknowledged by server!\n", AckPacketID);
                         break;
                     case PT_PING:
                         Acknowledge(PacketID);
@@ -109,6 +113,7 @@ namespace SandboxSimulator
                             m_Engine->Log("Disconnected, reason: quit.\n");
 
                         m_Connected = false;
+                        m_ConnectionAttempted = false;
                         break;
                     default:
                         //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);
@@ -128,7 +133,7 @@ namespace SandboxSimulator
     void ConnectionSystem::Acknowledge(i32 PacketID)
     {
         sf::Packet* Ack = CreatePacket(PT_ACK);
-        (*Ack) << m_ClientID << PacketID;
+        (*Ack) << PacketID;
         Send(Ack);
         delete Ack;
     }

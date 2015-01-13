@@ -44,6 +44,7 @@ class ConnectionSystem : public EngineSystem
         bool m_Connected;
 
         u32 m_LastPacketID;
+    
         u16 m_ClientID;
         u32 m_EntityID;
 };

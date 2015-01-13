@@ -51,7 +51,10 @@ namespace SandboxSimulator
 
                 break;
             case PT_ACK:
+                u32 AckPacketID;
+                (*Packet) >> AckPacketID;//Remove packet from ack queue
                 if(m_PendingPing) m_PendingPing = false;
+                //Acknowledge(PacketID); <- Don't need to acknowledge acknowledgements...
                 break;
             default:
 

@@ -17,13 +17,13 @@ int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
     
-    //ConnectionSystem* ConnSystem = new ConnectionSystem();
-    //Eng->RegisterSystem(ConnSystem);
+    ConnectionSystem* ConnSystem = new ConnectionSystem();
+    Eng->RegisterSystem(ConnSystem);
 	Eng->RegisterSystem(new RenderSystem());
     Eng->Initialize(ArgC,ArgV);
 
     //Has to happen after the engine is initialized
-    //ConnSystem->Connect("127.0.0.1", 3889);
+    ConnSystem->Connect("127.0.0.1", 3889);
 
     Entity* E = Eng->GetSceneGraph()->CreateEntity();
     Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());

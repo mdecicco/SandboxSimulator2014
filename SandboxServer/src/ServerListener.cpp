@@ -23,7 +23,7 @@ namespace SandboxSimulator
                 i8 PacketType;
                 (*packet) >> PacketID >> PacketType;
                 u16 ClientID;
-                u8 NumClients = m_ClientManager->NumClients();
+                u16 NumClients = m_ClientManager->NumClients();
 
                 switch(PacketType)
                 {

@@ -14,10 +14,10 @@
 #define MakeCString(s) new char[s]
 #define FreeCString(s) delete [] s
 
-typedef unsigned char       u8;
-typedef unsigned short      u16;
-typedef unsigned int        u32;
-typedef unsigned long long  u64;
+typedef sf::Uint8           u8;
+typedef sf::Uint16          u16;
+typedef sf::Uint32          u32;
+typedef sf::Uint64          u64;
 typedef uintptr_t           Ptr;
 
 typedef sf::Int8            i8;
