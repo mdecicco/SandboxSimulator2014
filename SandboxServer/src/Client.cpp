@@ -25,7 +25,7 @@ namespace SandboxSimulator
     Client::~Client()
     {}
 
-    void Client::Disconnect(DISCONNECT_REASONS Reason)
+    void Client::Disconnect(DISCONNECT_REASON Reason)
     {
         if(Reason == DR_TIMEOUT)
             m_Engine->Log("Disconnecting client, reason: timed out\n");

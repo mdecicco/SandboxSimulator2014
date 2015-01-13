@@ -5,6 +5,7 @@
 #include <System/SSTypes.h>
 
 #define TIMEOUT_LIMIT 10
+#define CLIENT_LIMIT 256
 
 namespace SandboxSimulator{
 enum PACKET_TYPE
@@ -18,7 +19,7 @@ enum PACKET_TYPE
     PT_COUNT
 };
 
-enum DISCONNECT_REASONS
+enum DISCONNECT_REASON
 {
     DR_TIMEOUT,
     DR_QUIT,

@@ -17,11 +17,13 @@ int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
     
-    ConnectionSystem* ConnSystem = new ConnectionSystem();
-    Eng->RegisterSystem(ConnSystem);
+    //ConnectionSystem* ConnSystem = new ConnectionSystem();
+    //Eng->RegisterSystem(ConnSystem);
 	Eng->RegisterSystem(new RenderSystem());
     Eng->Initialize(ArgC,ArgV);
-    ConnSystem->Connect("127.0.0.1", 3889);
+
+    //Has to happen after the engine is initialized
+    //ConnSystem->Connect("127.0.0.1", 3889);
 
     Entity* E = Eng->GetSceneGraph()->CreateEntity();
     Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
@@ -29,7 +31,7 @@ int main(i32 ArgC,Literal ArgV[])
 
     Material* Mat = new Material();
     r->SetMaterial(Mat);
-    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(1,0,1));
+    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(0,0,1));
     Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
 
     r->AddVertex(Vec3(0.5 , 0.5,0));

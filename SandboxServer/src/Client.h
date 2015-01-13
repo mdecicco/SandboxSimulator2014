@@ -17,7 +17,7 @@ class Client
         Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex);
         ~Client();
 
-        void Disconnect(DISCONNECT_REASONS Reason);
+        void Disconnect(DISCONNECT_REASON Reason);
 
         void ParsePacket(PACKET_TYPE Type, sf::Packet* Packet, u32 PacketID);
 
