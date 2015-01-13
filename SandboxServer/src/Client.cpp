@@ -5,7 +5,7 @@
 
 namespace SandboxSimulator
 {
-    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex) : m_LastPacketID(0)
     {
         m_Mutex = mutex;
         m_Engine = engine;
@@ -16,7 +16,7 @@ namespace SandboxSimulator
         m_Socket = Socket;
         m_PendingPing = false;
 
-        sf::Packet* packet = new sf::Packet();
+        sf::Packet* packet = CreatePacket();
         (*packet) << (i8)PT_CONNECT << m_Id;
         m_Socket->Send(packet, m_IP, m_Port);
         delete packet;
@@ -31,12 +31,12 @@ namespace SandboxSimulator
             m_Engine->Log("Disconnecting client, reason: timed out\n");
         else if (Reason == DR_QUIT)
             m_Engine->Log("Disconnecting client, reason: quit\n");
-        sf::Packet* p = new sf::Packet();
+        sf::Packet* p = CreatePacket();
         (*p) << (i8) PT_DISCONNECT << (i8) Reason;
         Send(p);
     }
 
-    void Client::ParsePacket(PACKET_TYPE Type, sf::Packet* Packet)
+    void Client::ParsePacket(PACKET_TYPE Type, sf::Packet* Packet, u32 PacketID)
     {
         m_Mutex->lock();
         m_LastMessageTime = m_Engine->GetElapsedTime();
@@ -50,7 +50,7 @@ namespace SandboxSimulator
             case PT_EVENT:
 
                 break;
-            case PT_PING:
+            case PT_ACK:
                 if(m_PendingPing) m_PendingPing = false;
                 break;
             default:
@@ -60,9 +60,9 @@ namespace SandboxSimulator
         m_Mutex->unlock();
     }
 
-    void Client::Acknowledge(i32 PacketID)
+    void Client::Acknowledge(u32 PacketID)
     {
-        sf::Packet* packet = new sf::Packet();
+        sf::Packet* packet = CreatePacket();
         (*packet) << (i8)PT_ACK << PacketID;
         Send(packet);
         delete packet;
@@ -70,7 +70,7 @@ namespace SandboxSimulator
 
     void Client::Ping()
     {
-        sf::Packet* packet = new sf::Packet();
+        sf::Packet* packet = CreatePacket();
         (*packet) << (i8)PT_PING;
         Send(packet);
         m_PendingPing = true;
@@ -80,5 +80,13 @@ namespace SandboxSimulator
     void Client::Send(sf::Packet* Packet)
     {
         m_Socket->Send(Packet, m_IP, m_Port);
+    }
+
+    sf::Packet* Client::CreatePacket()
+    {
+        sf::Packet* packet = new sf::Packet();
+        m_LastPacketID++;
+        (*packet) << m_LastPacketID;
+        return packet;
     }
 }

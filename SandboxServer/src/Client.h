@@ -19,9 +19,9 @@ class Client
 
         void Disconnect(DISCONNECT_REASONS Reason);
 
-        void ParsePacket(PACKET_TYPE Type, sf::Packet* Packet);
+        void ParsePacket(PACKET_TYPE Type, sf::Packet* Packet, u32 PacketID);
 
-        void Acknowledge(i32 PacketID);
+        void Acknowledge(u32 PacketID);
         void Send(sf::Packet* Packet);
 
         void Ping();
@@ -33,12 +33,16 @@ class Client
         Scalar GetLastMessageTime() { return m_LastMessageTime; }
         bool HasPendingPing() { return m_PendingPing; }
 
+        //Misc
+        sf::Packet* CreatePacket();
+
     private:
         u16 m_Id;
         u16 m_Port;
         std::string m_IP;
         SSEngine* m_Engine;
         UdpSocket* m_Socket;
+        u32 m_LastPacketID;
         
         Scalar m_LastMessageTime;
         bool m_PendingPing;

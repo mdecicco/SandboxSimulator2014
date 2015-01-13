@@ -4,8 +4,6 @@
 #include <Core/EngineSystem.h>
 #include <Client.h>
 
-#define TIMEOUT_LIMIT 10
-
 namespace SandboxSimulator
 {
 class ServerSystem : public EngineSystem

@@ -24,7 +24,8 @@ namespace SandboxSimulator
         sf::Packet* packet = new sf::Packet();
         if (m_Socket.receive(*packet, address, port) != sf::Socket::Done)
         {
-            printf("Error trying to receive packet.\n");
+            //printf("Error trying to receive packet.\n");
+            return NULL;
         }
         return packet;
     }

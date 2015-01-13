@@ -4,6 +4,8 @@
 #include <SFML/Network.hpp>
 #include <System/SSTypes.h>
 
+#define TIMEOUT_LIMIT 10
+
 namespace SandboxSimulator{
 enum PACKET_TYPE
 {
