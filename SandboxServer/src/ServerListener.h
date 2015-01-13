@@ -2,6 +2,7 @@
 #define SandboxSimulator_ServerListener_h
 
 #include <System/SSThread.h>
+#include <System/SSTypes.h>
 #include <Network/Socket.h>
 #include <Client.h>
 
@@ -21,7 +22,7 @@ class ServerListener : public Thread
         virtual void run();
 
         ServerSystem* m_ClientManager;
-        (i8) m_LastClientID;
+        u16 m_LastClientID;
         UdpSocket* m_Socket;
         bool m_KeepGoing;
         u16 m_Port;
