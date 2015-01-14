@@ -1,0 +1,4 @@
+#ifndef SandboxSimulator_Serialization_h
+#define SandboxSimulator_Serialization_h
+
+#endif

@@ -1,5 +1,8 @@
 #include <ServerSystem.h>
+#include <Rendering/RenderSystem.h>
 #include <Engine.h>
+
+#include <Network/Serialization.h>
 
 namespace SandboxSimulator
 {
@@ -64,8 +67,18 @@ namespace SandboxSimulator
     {
         m_Mutex->lock();
         if(!HasClient(ClientID) && !HasClient(Address, Port)) {
-            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex);
+            Entity* E = m_Engine->GetSceneGraph()->CreateEntity();
+            m_Engine->GetSceneGraph()->AddComponent(E, new RenderComponent());
+            RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
+            r->SetShape(RC_SQUARE);
+
+            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, E->GetID());
             m_Clients.push_back(c);
+
+            //Send serialized world state
+            c->SendWorldState(m_Engine);
+            //
+
             m_Mutex->unlock();
             return c;
         }

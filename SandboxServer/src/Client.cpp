@@ -5,7 +5,7 @@
 
 namespace SandboxSimulator
 {
-    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex) : m_LastPacketID(0)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID)
     {
         m_Mutex = mutex;
         m_Engine = engine;
@@ -42,11 +42,6 @@ namespace SandboxSimulator
         m_LastMessageTime = m_Engine->GetElapsedTime();
         switch(Type)
         {
-            case PT_UPDATE:
-                i8 rec;
-                (*Packet) >> rec;
-                m_Engine->Log("Received message from client %d: %d\n", m_Id, rec);
-                break;
             case PT_EVENT:
 
                 break;
@@ -90,5 +85,13 @@ namespace SandboxSimulator
         m_LastPacketID++;
         (*packet) << m_LastPacketID << (i8) Type;
         return packet;
+    }
+
+    void Client::SendWorldState(SSEngine* Eng)
+    {
+        sf::Packet* packet = CreatePacket(PT_STATE_UPDATE);
+        (*packet) << m_ClientEntityID;
+        Eng->GetSceneGraph()->BinarySerialize(packet);
+        Send(packet);
     }
 }

@@ -35,29 +35,40 @@ namespace SandboxSimulator
 
             COMPONENT_TYPE GetType() const {return m_Type;}
 
+            virtual void BinarySerialize(sf::Packet* Packet) = 0;
+            virtual void BinaryDeserialize(sf::Packet* Packet) = 0;
+
         protected:
             SSEngine* m_Engine;
             i32 m_RefCount;
             COMPONENT_TYPE m_Type;
     };
 
+    class SceneGraph;
+
     class Entity
     {
         public:
-            Entity() : m_UID(-1) {}
+            Entity(SceneGraph* scene) : m_SceneGraph(scene), m_UID(-1) {}
             ~Entity() {}
         
             void AddRef() {m_RefCount++;}
             void Destroy();
 
             Component* GetComponentByType(COMPONENT_TYPE Type);
-            UID GetID() {return m_UID;}
+
+            void BinarySerialize(sf::Packet* Packet);
+            void BinaryDeserialize(sf::Packet* Packet);
+
+            UID GetID() { return m_UID; }
 
         protected:
             friend class SceneGraph;
-            std::vector<Component*> m_Components;
+            Component* m_Components[CT_COUNT];
             UID m_UID;
             i32 m_RefCount;
+
+            SceneGraph* m_SceneGraph;
     };
     
     class SceneGraph
@@ -72,6 +83,9 @@ namespace SandboxSimulator
             void AddComponent(Entity* E,Component* Comp);
             void RemoveComponent(Entity* E,Component* Comp);
             void RemoveComponentByType(Entity* E,i32 Type);
+
+            void BinarySerialize(sf::Packet* Packet);
+            void BinaryDeserialize(sf::Packet* Packet);
         
         protected:
             i32 m_DeadEntityCount;

@@ -13,7 +13,7 @@ enum PACKET_TYPE
     PT_CONNECT,
     PT_DISCONNECT,
     PT_EVENT,
-    PT_UPDATE,
+    PT_STATE_UPDATE,
     PT_ACK,
     PT_PING,
     PT_COUNT

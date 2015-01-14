@@ -8,7 +8,7 @@
 namespace SandboxSimulator
 {
 
-    RenderComponent::RenderComponent() : Component(CT_RENDER), m_VertBuff(0), m_NormBuff(0), m_TangBuff(0), m_TexCBuff(0), m_Vao(0), m_NeedsUpdate(true)
+    RenderComponent::RenderComponent() : Component(CT_RENDER), m_VertBuff(0), m_NormBuff(0), m_TangBuff(0), m_TexCBuff(0), m_Vao(0), m_NeedsUpdate(true), m_Shape(RC_NONE)
     {}
 
     RenderComponent::~RenderComponent()
@@ -170,6 +170,44 @@ namespace SandboxSimulator
                 glBindBuffer(GL_ARRAY_BUFFER,0);
             }
         }
+    }
+
+    void RenderComponent::SetShape(RC_SHAPES Shape)
+    {
+        m_Shape = Shape;
+        Material* Mat = new Material();
+        SetMaterial(Mat);
+        MatVec3Node* AlbedoNode = new MatVec3Node("Color", Vec3(0,0,1));
+        Mat->SetInput(MI_ALBEDO, AlbedoNode->GetOutput());
+        switch(Shape)
+        {
+            case RC_TRIANGLE:
+                AddVertex(Vec3(0   , 0.5,0));
+                AddVertex(Vec3(0.5 ,-0.5,0));
+                AddVertex(Vec3(-0.5,-0.5,0));
+                break;
+            case RC_SQUARE:
+                AddVertex(Vec3(0.5 , 0.5,0));
+                AddVertex(Vec3(0.5 ,-0.5,0));
+                AddVertex(Vec3(-0.5,-0.5,0));
+
+                AddVertex(Vec3(-0.5,-0.5,0));
+                AddVertex(Vec3(-0.5, 0.5,0));
+                AddVertex(Vec3( 0.5, 0.5,0));
+                break;
+        }
+    }
+
+    void RenderComponent::BinarySerialize(sf::Packet* Packet)
+    {
+        (*Packet) << (i8)CT_RENDER << (i8)m_Shape;
+    }
+
+    void RenderComponent::BinaryDeserialize(sf::Packet* Packet)
+    {
+        i8 Shape;
+        (*Packet) >> Shape;
+        SetShape((RC_SHAPES)Shape);
     }
 
     /* Render System */

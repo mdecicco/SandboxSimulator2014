@@ -11,6 +11,8 @@
 #include <Core/Message.h>
 #include <Engine.h>
 
+#include <Rendering/RenderSystem.h>
+
 namespace SandboxSimulator
 {
     Component::Component(COMPONENT_TYPE Type) : m_RefCount(0), m_Type(Type) {}
@@ -35,13 +37,47 @@ namespace SandboxSimulator
 
     Component* Entity::GetComponentByType(COMPONENT_TYPE Type)
     {
-        for(i32 i = 0; i < m_Components.size(); i++)
-        {
-            if(m_Components[i]->GetType() == Type)
-                return m_Components[i];
+        return m_Components[Type];
+    }
+
+    void Entity::BinarySerialize(sf::Packet* Packet)
+    {
+        u8 numComponents = 0;
+        for(i32 i = 0; i < CT_COUNT; i++) {
+            if(m_Components[i]) 
+                numComponents++;
         }
 
-        return nullptr;
+        (*Packet) << m_UID << numComponents;
+
+        for(i32 i = 0; i < CT_COUNT; i++)
+        {
+            if(m_Components[i])
+                m_Components[i]->BinarySerialize(Packet);
+        }
+    }
+
+    void Entity::BinaryDeserialize(sf::Packet* Packet)
+    {
+        u8 numComponents;
+        (*Packet) >> m_UID >> numComponents;
+
+        for(int i = 0; i < numComponents; i++)
+        {
+            u8 ComponentType;
+            (*Packet) >> ComponentType;
+            switch((COMPONENT_TYPE)ComponentType)
+            {
+                case CT_RENDER:
+                    m_SceneGraph->AddComponent(this, new RenderComponent());
+                    break;
+                default:
+
+                    break;
+            }
+
+            m_Components[ComponentType]->BinaryDeserialize(Packet);
+        }
     }
 
     SceneGraph::SceneGraph(SSEngine* Eng) : m_Engine(Eng)
@@ -54,7 +90,7 @@ namespace SandboxSimulator
     
     Entity* SceneGraph::CreateEntity()
     {
-        Entity* E = new Entity();
+        Entity* E = new Entity(this);
         m_Entities.push_back(E);
         E->m_UID = (UID)m_Entities.size() - 1;
         return E;
@@ -62,48 +98,63 @@ namespace SandboxSimulator
 
     void SceneGraph::DestroyEntity(Entity* E)
     {
-        for(i32 i = 0;i < E->m_Components.size();i++) E->m_Components[i]->Destroy();
-        E->m_Components.clear();
+        for(i32 i = 0;i < CT_COUNT;i++) {   
+            E->m_Components[i]->Destroy();
+            delete E->m_Components[i];
+        }
     }
     
     void SceneGraph::AddComponent(Entity* E,Component* Comp)
     {
         //Check if entity already has a component of that type
-        if(E->GetComponentByType(Comp->GetType()))
-        {
-            m_Engine->Log("Entity <%d> already has a component of that type!", E->GetID());
-            return;
-        }
-
         Comp->SetEngine(m_Engine);
-        E->m_Components.push_back(Comp);
+        E->m_Components[Comp->GetType()] = Comp;
 		Comp->AddRef();
         m_Engine->Broadcast(new ComponentAddedMessage(E,Comp));
     }
     
     void SceneGraph::RemoveComponent(Entity* E,Component* Comp)
     {
-        for(i32 i = 0;i < E->m_Components.size();i++)
+        for(i32 i = 0;i < CT_COUNT;i++)
         {
             if(E->m_Components[i] == Comp)
             {
                 m_Engine->Broadcast(new ComponentRemovedMessage(E,Comp));
                 E->m_Components[i]->Destroy();
-                E->m_Components.erase(E->m_Components.begin() + i);
+                delete E->m_Components[i];
             }
         }
     }
     
     void SceneGraph::RemoveComponentByType(Entity* E,i32 Type)
     {
-        for(i32 i = 0;i < E->m_Components.size();i++)
+        if(E->m_Components[Type]) {
+            m_Engine->Broadcast(new ComponentRemovedMessage(E,E->m_Components[Type]));
+            E->m_Components[Type]->Destroy();
+            delete E->m_Components[Type];
+        }
+    }
+
+    void SceneGraph::BinarySerialize(sf::Packet* Packet)
+    {
+        (*Packet) << (u32)m_Entities.size();
+        for(i32 i = 0; i < m_Entities.size(); i++)
         {
-            if(E->m_Components[i]->GetType() == Type)
-            {
-                m_Engine->Broadcast(new ComponentRemovedMessage(E,E->m_Components[i]));
-                E->m_Components[i]->Destroy();
-                E->m_Components.erase(E->m_Components.begin() + i);
+            m_Entities[i]->BinarySerialize(Packet);
+        }
+    }
+
+    void SceneGraph::BinaryDeserialize(sf::Packet* Packet)
+    {
+        u32 numEntities;
+        (*Packet) >> numEntities;
+        for(i32 i = 0; i < numEntities; i++)
+        {
+            if(i >= m_Entities.size()) {
+                CreateEntity();
             }
+
+            m_Entities[i]->BinaryDeserialize(Packet);
         }
     }
 }

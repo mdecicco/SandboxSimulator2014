@@ -40,10 +40,7 @@ typedef const char*         Literal;
 typedef char*               CString;
 typedef f32                 Scalar;
 typedef bool                Flag;
-typedef i32                 UID;
-
-//Useful
-typedef unsigned short      uid;
+typedef u32                 UID;
 
 #ifdef __gnu_linux__
     #define INT32_MAX    __INT32_MAX__

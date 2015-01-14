@@ -14,7 +14,7 @@ class Client
 {
     //All functions need to be thread safe
     public:
-        Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex);
+        Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID);
         ~Client();
 
         void Disconnect(DISCONNECT_REASON Reason);
@@ -35,6 +35,7 @@ class Client
 
         //Misc
         sf::Packet* CreatePacket(PACKET_TYPE Type);
+        void SendWorldState(SSEngine* Eng);
 
     private:
         u16 m_Id;
@@ -47,6 +48,8 @@ class Client
         Scalar m_LastMessageTime;
         bool m_PendingPing;
         sf::Mutex* m_Mutex;
+
+        UID m_ClientEntityID;
 };
 }
 

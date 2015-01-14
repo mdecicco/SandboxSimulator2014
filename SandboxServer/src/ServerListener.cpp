@@ -31,7 +31,7 @@ namespace SandboxSimulator
                         if(NumClients < CLIENT_LIMIT) {
                             u16 NewClientID = m_LastClientID+1;
                             if(!m_ClientManager->HasClient(sender.toString(), port)) {
-                                m_ClientManager->NewClient(NewClientID, sender.toString(), port, m_Socket)->Acknowledge(PacketID);
+                                m_ClientManager->NewClient(NewClientID, sender.toString(), port, m_Socket);
                                 printf("New client connected with id %d\n", (i32)NewClientID);
                                 m_LastClientID++;
                             } else

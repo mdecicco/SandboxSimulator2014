@@ -115,6 +115,10 @@ namespace SandboxSimulator
                         m_Connected = false;
                         m_ConnectionAttempted = false;
                         break;
+                    case PT_STATE_UPDATE:
+                        (*packet) >> m_EntityID;;
+                        m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
+                        break;
                     default:
                         //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);
                         break;

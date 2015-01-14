@@ -12,6 +12,14 @@
 using namespace std;
 namespace SandboxSimulator
 {
+    enum RC_SHAPES
+    {
+        RC_NONE,
+        RC_TRIANGLE,
+        RC_SQUARE,
+        RC_COUNT
+    };
+
     class RenderComponent : public Component
     {
         public:
@@ -35,10 +43,15 @@ namespace SandboxSimulator
             void SetTangent(i32 Idx,const Vec3& v);
             Vec3 GetTangent(i32 Idx) const;
 
+            void SetShape(RC_SHAPES Shape);
+
             i32 GetVertexCount() const;
 
             void SyncBuffers();
             void SetMaterial(Material* Mat) {m_Material = Mat;}
+
+            virtual void BinarySerialize(sf::Packet* Packet);
+            virtual void BinaryDeserialize(sf::Packet* Packet);
 
         protected:
             friend class RenderSystem;
@@ -56,6 +69,8 @@ namespace SandboxSimulator
             Material* m_Material;
 
             bool m_NeedsUpdate;
+
+            RC_SHAPES m_Shape;
     };
 
 	class RenderSystem : public EngineSystem

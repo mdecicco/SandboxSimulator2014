@@ -25,23 +25,6 @@ int main(i32 ArgC,Literal ArgV[])
     //Has to happen after the engine is initialized
     ConnSystem->Connect("127.0.0.1", 3889);
 
-    Entity* E = Eng->GetSceneGraph()->CreateEntity();
-    Eng->GetSceneGraph()->AddComponent(E, new RenderComponent());
-    RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-
-    Material* Mat = new Material();
-    r->SetMaterial(Mat);
-    MatVec3Node* Vec3Node = new MatVec3Node("ConstInputTest", Vec3(0,0,1));
-    Mat->SetInput(MI_ALBEDO, Vec3Node->GetOutput());
-
-    r->AddVertex(Vec3(0.5 , 0.5,0));
-    r->AddVertex(Vec3(0.5 ,-0.5,0));
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-
-    r->AddVertex(Vec3(-0.5,-0.5,0));
-    r->AddVertex(Vec3(-0.5, 0.5,0));
-    r->AddVertex(Vec3( 0.5, 0.5,0));
-
     Eng->Run();
     Eng->Shutdown();
     return 0;
