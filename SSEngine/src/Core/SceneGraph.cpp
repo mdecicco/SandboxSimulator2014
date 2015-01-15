@@ -11,8 +11,6 @@
 #include <Core/Message.h>
 #include <Engine.h>
 
-#include <memory>
-
 #include <Rendering/RenderSystem.h>
 
 namespace SandboxSimulator
@@ -92,39 +90,26 @@ namespace SandboxSimulator
     
     Entity* SceneGraph::CreateEntity()
     {
-        for(i32 i = 0; i < m_Entities.size(); i++)
-        {
-            if(m_Entities[i] == nullptr)
-            {
-                EntityPtr ptr(new Entity(this));
-                ptr.get()->m_UID = i;
-                m_Entities[i] = std::move(ptr);
-                return ptr.get();
-            }
-        }
-        
+        UID id = m_Entities.size();
+        //increment id until we get one that hasn't been used.
+        while(HasEntity(id))
+            id++;
+
         EntityPtr ptr(new Entity(this));
-        ptr.get()->m_UID = m_Entities.size();
-        m_Entities.push_back(std::move(ptr));
+        ptr.get()->m_UID = id;
+        m_Entities.insert(EntityPair(m_Entities.size(), std::move(ptr)));
         return m_Entities[m_Entities.size()-1].get();
     }
     
     bool SceneGraph::CreateEntity(UID EntID)
     {
-        while(EntID > m_Entities.size())
-            m_Entities.push_back(std::move(EntityPtr(nullptr)));
-        
-        if(EntID == m_Entities.size()) {
-            EntityPtr ptr(new Entity(this));
-            ptr.get()->m_UID = EntID;
-            m_Entities.push_back(std::move(ptr));
-            return true;
-        }
-        
+        if(HasEntity(EntID))
+            return false;
+
         EntityPtr ptr(new Entity(this));
         ptr.get()->m_UID = EntID;
-        m_Entities[EntID] = std::move(ptr);
-        return true;
+        m_Entities.insert(EntityPair(EntID, std::move(ptr)));
+        return m_Entities[m_Entities.size()-1].get();
     }
 
     void SceneGraph::DestroyEntity(Entity* E)
@@ -169,10 +154,9 @@ namespace SandboxSimulator
     void SceneGraph::BinarySerialize(sf::Packet* Packet)
     {
         (*Packet) << (u32)m_Entities.size();
-        for(i32 i = 0; i < m_Entities.size(); i++)
-        {
-            m_Entities[i].get()->BinarySerialize(Packet);
-        }
+        
+        for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it)
+            it->second->BinarySerialize(Packet);
     }
 
     void SceneGraph::BinaryDeserialize(sf::Packet* Packet)
@@ -183,12 +167,17 @@ namespace SandboxSimulator
         {
             UID id;
             (*Packet) >> id;
-            if(id >= m_Entities.size() || m_Entities[id] == nullptr) {
+            if(!HasEntity(id)) {
                 if(CreateEntity(id))
-                    m_Entities[id].get()->BinaryDeserialize(Packet);
+                    GetEntity(id)->BinaryDeserialize(Packet);
             } else {
-                m_Entities[id].get()->BinaryDeserialize(Packet);
+                GetEntity(id)->BinaryDeserialize(Packet);
             }
         }
+    }
+
+    bool SceneGraph::HasEntity(UID EntID)
+    {
+        return m_Entities.find(EntID) != m_Entities.end();
     }
 }

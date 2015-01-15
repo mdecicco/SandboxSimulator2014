@@ -34,7 +34,7 @@ class ServerSystem : public EngineSystem
         bool RemoveClient(u16 ClientID);
         bool RemoveClient(u16 ClientID, std::string Address, u16 Port);
 
-        i32 NumClients() { return m_Clients.size(); }
+        u32 NumClients() { return (u32)m_Clients.size(); }
         //
 
     private:

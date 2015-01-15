@@ -12,7 +12,12 @@
 #include <System/SSTypes.h>
 #include <vector>
 
+#include <memory>
+
 #define EntityPtr std::unique_ptr<Entity>
+#define EntityMap std::map<UID, EntityPtr>
+#define EntityPair std::pair<UID, EntityPtr>
+#define GetEntity(n) m_Entities.find(n)->second.get()
 
 namespace SandboxSimulator
 {
@@ -72,28 +77,29 @@ namespace SandboxSimulator
 
             SceneGraph* m_SceneGraph;
     };
-    
+
     class SceneGraph
     {
         public:
             SceneGraph(SSEngine* Eng);
             ~SceneGraph();
-        
+
             Entity* CreateEntity();
             void DestroyEntity(Entity* E);
-        
+
             void AddComponent(Entity* E,Component* Comp);
             void RemoveComponent(Entity* E,Component* Comp);
             void RemoveComponentByType(Entity* E,i32 Type);
 
             void BinarySerialize(sf::Packet* Packet);
             void BinaryDeserialize(sf::Packet* Packet);
-        
+
         protected:
+            //Entity* GetEntity(UID EntityID);
+            bool HasEntity(UID EntID);
             bool CreateEntity(UID EntID);
-        
-            i32 m_DeadEntityCount;
-            std::vector<EntityPtr> m_Entities;
+
+            std::map<UID, EntityPtr> m_Entities;
             SSEngine* m_Engine;
     };
 }
