@@ -42,12 +42,14 @@ namespace SandboxSimulator
     {
         if(m_NeedsUpdate) {
             string vertex_shader =
-            "#version 400\n"
+            "#version 330\n"
             "in vec3 vp;"
+            "uniform mat4 Transform;"
+            "uniform mat4 Projection;"
             "out vec3 NormalVert;"
             "void main () {"
             "  NormalVert = vec3(0,0,1);"
-            "  gl_Position = vec4 (vp, 1.0);"
+            "  gl_Position = Projection * Transform * vec4(vp, 1.0);"
             "}";
 
             string fragment_header = "";
@@ -111,7 +113,7 @@ namespace SandboxSimulator
             }
 
             //Shader "Template" with that information injected
-            string fragment_shader = "#version 400\n";
+            string fragment_shader = "#version 330\n";
             fragment_shader +=
                     fragment_header +
                     "in vec3 NormalVert;"

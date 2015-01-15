@@ -22,10 +22,13 @@
 namespace SandboxSimulator
 {
     class SSEngine;
+    class Entity;
 
     enum COMPONENT_TYPE
     {
         CT_RENDER,
+        CT_TRANSFORM,
+        CT_CAMERA,
         CT_COUNT
     };
 
@@ -45,10 +48,15 @@ namespace SandboxSimulator
             virtual void BinarySerialize(sf::Packet* Packet) = 0;
             virtual void BinaryDeserialize(sf::Packet* Packet) = 0;
 
+            void SetParent(Entity* Ent) { m_Parent = Ent; }
+            Entity* GetParent() { return m_Parent; }
+
         protected:
             SSEngine* m_Engine;
             i32 m_RefCount;
             COMPONENT_TYPE m_Type;
+
+            Entity* m_Parent;
     };
 
     class SceneGraph;
@@ -56,7 +64,13 @@ namespace SandboxSimulator
     class Entity
     {
         public:
-            Entity(SceneGraph* scene) : m_SceneGraph(scene), m_UID(-1) {}
+            Entity(SceneGraph* scene) : m_SceneGraph(scene), m_UID(-1) 
+            {
+                for(i32 i = 0; i < CT_COUNT; i++)
+                    m_HasType[i] = false;
+            }
+
+
             ~Entity() {}
         
             void AddRef() {m_RefCount++;}
@@ -69,9 +83,15 @@ namespace SandboxSimulator
 
             UID GetID() { return m_UID; }
 
+            bool HasComponentType(COMPONENT_TYPE Type)
+            {
+                return m_HasType[Type];
+            }
+
         protected:
             friend class SceneGraph;
             Component* m_Components[CT_COUNT];
+            bool m_HasType[CT_COUNT];
             UID m_UID;
             i32 m_RefCount;
 
@@ -85,6 +105,7 @@ namespace SandboxSimulator
             ~SceneGraph();
 
             Entity* CreateEntity();
+            Entity* CreateEntity(UID EntID);
             void DestroyEntity(Entity* E);
 
             void AddComponent(Entity* E,Component* Comp);
@@ -97,7 +118,6 @@ namespace SandboxSimulator
         protected:
             //Entity* GetEntity(UID EntityID);
             bool HasEntity(UID EntID);
-            bool CreateEntity(UID EntID);
 
             std::map<UID, EntityPtr> m_Entities;
             SSEngine* m_Engine;

@@ -11,6 +11,8 @@
 
 #include <ConnectionSystem.h>
 
+#include <Rendering/CameraComponent.h>
+
 using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
@@ -18,14 +20,17 @@ int main(i32 ArgC,Literal ArgV[])
     SSEngine* Eng = new SSEngine();
     
     ConnectionSystem* ConnSystem = new ConnectionSystem();
+    RenderSystem* RendSyst = new RenderSystem();
     Eng->RegisterSystem(ConnSystem);
-	Eng->RegisterSystem(new RenderSystem());
+	Eng->RegisterSystem(RendSyst);
     Eng->Initialize(ArgC,ArgV);
 
     //Has to happen after the engine is initialized
     ConnSystem->Connect("127.0.0.1", 3889);
+    
 
     Eng->Run();
     Eng->Shutdown();
+    //}
     return 0;
 }

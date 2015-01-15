@@ -214,6 +214,7 @@ namespace SandboxSimulator
 	RenderSystem::RenderSystem() 
 	{
 		m_Resolution = Vec2(800,600);
+        m_ActiveCamera = nullptr;
         m_FullScreen = false;
 		AddComponentType(CT_RENDER);
         AddMessageType(MT_MAKE_RENDERABLE);
@@ -298,24 +299,43 @@ namespace SandboxSimulator
         {
             RenderComponent* r = (RenderComponent*)m_Components[i];
 
-            if(r->m_Material)
-                r->m_Material->Bind();
-            else
-            {
-                //bind default material
+            Material* Mat = r->m_Material;
+            
+            GLenum err = glGetError();
+            while (err != GL_NO_ERROR) {
+                err = glGetError();
             }
+            Mat->Bind();
+            Shader* shader = Mat->GetShader();
+
+            GLuint shdrID = shader->GetPointer();
+            GLint ProjLoc = glGetUniformLocation(shdrID, "Projection");
+            GLint TransLoc = glGetUniformLocation(shdrID, "Transform");
+
+            Mat4 Proj;
+            if(m_ActiveCamera != nullptr) {
+                Proj = m_ActiveCamera->GetProjection();
+            } else {
+                Proj = PerspectiveProjection(90, m_Resolution.x, m_Resolution.y, 0.1f, 1000.0f);
+            }
+            glUniformMatrix4fv(ProjLoc, 1, GL_FALSE, &Proj.m[0][0]);
+            err = glGetError();
+
+            Mat4 Trans;
+            if(r->GetParent()->HasComponentType(CT_TRANSFORM)) {
+                TransformComponent* t = (TransformComponent*)r->GetParent()->GetComponentByType(CT_TRANSFORM);
+                Trans = t->GetMat4();
+            } else {
+                Trans = Mat4(1.0f);
+            }
+            glUniformMatrix4fv(TransLoc, 1, GL_FALSE, &Trans.m[0][0]);
 
             r->SyncBuffers();
             glBindVertexArray(r->m_Vao);
             glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
             glBindVertexArray(0);
 
-            if(r->m_Material)
-                r->m_Material->Unbind();
-            else
-            {
-                //unbind default material
-            }
+            Mat->Unbind();
         }
 	}
 

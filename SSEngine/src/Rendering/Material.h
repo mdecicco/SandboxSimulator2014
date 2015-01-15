@@ -109,6 +109,7 @@ namespace SandboxSimulator
             void Unbind();
 
             void SetInput(MATERIAL_INPUT Type, MaterialNodeOutput* Out);
+            Shader* GetShader() {return m_Shader;}
 
         protected:
             MaterialNodeInput* m_Inputs[MI_COUNT];

@@ -8,6 +8,7 @@
 #include <list>
 
 #include <Rendering/Material.h>
+#include <Rendering/CameraComponent.h>
 
 using namespace std;
 namespace SandboxSimulator
@@ -90,6 +91,11 @@ namespace SandboxSimulator
 
             GLFWwindow* GetWindow() {return m_Window;}
 
+            void SetCamera(CameraComponent* CameraComp)
+            {
+                m_ActiveCamera = CameraComp;
+            }
+
         protected:
 			SSEngine* m_Engine;
 			GLFWwindow* m_Window;
@@ -97,6 +103,7 @@ namespace SandboxSimulator
             bool m_FullScreen;
 
             Material* m_DefaultMaterial;
+            CameraComponent* m_ActiveCamera;
 	};
 }
 

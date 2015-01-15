@@ -68,8 +68,11 @@ namespace SandboxSimulator
         if(!HasClient(ClientID) && !HasClient(Address, Port)) {
             Entity* E = m_Engine->GetSceneGraph()->CreateEntity();
             m_Engine->GetSceneGraph()->AddComponent(E, new RenderComponent());
+            m_Engine->GetSceneGraph()->AddComponent(E, new TransformComponent());
             RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
             r->SetShape(RC_SQUARE);
+            TransformComponent* t = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
+            t->Translate(Vec3(0,0,-2));
 
             Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, E->GetID());
             m_Clients.push_back(c);

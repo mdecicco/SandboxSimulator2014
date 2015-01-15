@@ -15,7 +15,8 @@
 
 namespace SandboxSimulator
 {
-    Component::Component(COMPONENT_TYPE Type) : m_RefCount(0), m_Type(Type) {}
+    Component::Component(COMPONENT_TYPE Type) : m_RefCount(0), m_Type(Type) 
+    {}
     Component::~Component() {}
 
     void Component::AddRef()
@@ -44,7 +45,7 @@ namespace SandboxSimulator
     {
         u8 numComponents = 0;
         for(i32 i = 0; i < CT_COUNT; i++) {
-            if(m_Components[i]) 
+            if(HasComponentType((COMPONENT_TYPE)i)) 
                 numComponents++;
         }
 
@@ -52,7 +53,7 @@ namespace SandboxSimulator
 
         for(i32 i = 0; i < CT_COUNT; i++)
         {
-            if(m_Components[i])
+            if(HasComponentType((COMPONENT_TYPE)i))
                 m_Components[i]->BinarySerialize(Packet);
         }
     }
@@ -66,14 +67,19 @@ namespace SandboxSimulator
         {
             u8 ComponentType;
             (*Packet) >> ComponentType;
-            switch((COMPONENT_TYPE)ComponentType)
-            {
-                case CT_RENDER:
-                    m_SceneGraph->AddComponent(this, new RenderComponent());
-                    break;
-                default:
+            if(!HasComponentType((COMPONENT_TYPE)ComponentType)) {
+                switch((COMPONENT_TYPE)ComponentType)
+                {
+                    case CT_RENDER:
+                        m_SceneGraph->AddComponent(this, new RenderComponent());
+                        break;
+                    case CT_TRANSFORM:
+                        m_SceneGraph->AddComponent(this, new TransformComponent());
+                        break;
+                    default:
 
-                    break;
+                        break;
+                }
             }
 
             m_Components[ComponentType]->BinaryDeserialize(Packet);
@@ -101,15 +107,15 @@ namespace SandboxSimulator
         return m_Entities[m_Entities.size()-1].get();
     }
     
-    bool SceneGraph::CreateEntity(UID EntID)
+    Entity* SceneGraph::CreateEntity(UID EntID)
     {
         if(HasEntity(EntID))
-            return false;
+            return nullptr;
 
         EntityPtr ptr(new Entity(this));
         ptr.get()->m_UID = EntID;
         m_Entities.insert(EntityPair(EntID, std::move(ptr)));
-        return m_Entities[m_Entities.size()-1].get();
+        return GetEntity(EntID);
     }
 
     void SceneGraph::DestroyEntity(Entity* E)
@@ -123,10 +129,14 @@ namespace SandboxSimulator
     void SceneGraph::AddComponent(Entity* E,Component* Comp)
     {
         //Check if entity already has a component of that type
-        Comp->SetEngine(m_Engine);
-        E->m_Components[Comp->GetType()] = Comp;
-		Comp->AddRef();
-        m_Engine->Broadcast(new ComponentAddedMessage(E,Comp));
+        if(E) {
+            Comp->SetEngine(m_Engine);
+            E->m_Components[Comp->GetType()] = Comp;
+            E->m_HasType[Comp->GetType()] = true;
+            Comp->SetParent(E);
+		    Comp->AddRef();
+            m_Engine->Broadcast(new ComponentAddedMessage(E,Comp));
+        }
     }
     
     void SceneGraph::RemoveComponent(Entity* E,Component* Comp)
@@ -168,7 +178,7 @@ namespace SandboxSimulator
             UID id;
             (*Packet) >> id;
             if(!HasEntity(id)) {
-                if(CreateEntity(id))
+                if(CreateEntity(id) != nullptr)
                     GetEntity(id)->BinaryDeserialize(Packet);
             } else {
                 GetEntity(id)->BinaryDeserialize(Packet);
