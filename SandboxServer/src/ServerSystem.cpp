@@ -62,7 +62,6 @@ namespace SandboxSimulator
 
     }
 
-    //Needs to be thread safe from here down
     Client* ServerSystem::NewClient(u16 ClientID, std::string Address, u16 Port, UdpSocket* Socket)
     {
         m_Mutex->lock();

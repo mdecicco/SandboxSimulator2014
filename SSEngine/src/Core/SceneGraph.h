@@ -12,6 +12,8 @@
 #include <System/SSTypes.h>
 #include <vector>
 
+#define EntityPtr std::unique_ptr<Entity>
+
 namespace SandboxSimulator
 {
     class SSEngine;
@@ -88,8 +90,10 @@ namespace SandboxSimulator
             void BinaryDeserialize(sf::Packet* Packet);
         
         protected:
+            bool CreateEntity(UID EntID);
+        
             i32 m_DeadEntityCount;
-            std::vector<Entity*> m_Entities;
+            std::vector<EntityPtr> m_Entities;
             SSEngine* m_Engine;
     };
 }

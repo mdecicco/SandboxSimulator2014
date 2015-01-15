@@ -21,7 +21,6 @@ int main(i32 ArgC,Literal ArgV[])
     SSEngine* Eng = new SSEngine();
     
     ServerSystem* system = new ServerSystem(mutex);
-    //Eng->RegisterSystem(new RenderSystem());
     Eng->RegisterSystem(system);
 
     Eng->Initialize(ArgC,ArgV);

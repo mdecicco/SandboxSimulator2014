@@ -11,6 +11,8 @@
 #include <Core/Message.h>
 #include <Engine.h>
 
+#include <memory>
+
 #include <Rendering/RenderSystem.h>
 
 namespace SandboxSimulator
@@ -60,7 +62,7 @@ namespace SandboxSimulator
     void Entity::BinaryDeserialize(sf::Packet* Packet)
     {
         u8 numComponents;
-        (*Packet) >> m_UID >> numComponents;
+        (*Packet) >> numComponents;
 
         for(int i = 0; i < numComponents; i++)
         {
@@ -90,10 +92,39 @@ namespace SandboxSimulator
     
     Entity* SceneGraph::CreateEntity()
     {
-        Entity* E = new Entity(this);
-        m_Entities.push_back(E);
-        E->m_UID = (UID)m_Entities.size() - 1;
-        return E;
+        for(i32 i = 0; i < m_Entities.size(); i++)
+        {
+            if(m_Entities[i] == nullptr)
+            {
+                EntityPtr ptr(new Entity(this));
+                ptr.get()->m_UID = i;
+                m_Entities[i] = std::move(ptr);
+                return ptr.get();
+            }
+        }
+        
+        EntityPtr ptr(new Entity(this));
+        ptr.get()->m_UID = m_Entities.size();
+        m_Entities.push_back(std::move(ptr));
+        return m_Entities[m_Entities.size()-1].get();
+    }
+    
+    bool SceneGraph::CreateEntity(UID EntID)
+    {
+        while(EntID > m_Entities.size())
+            m_Entities.push_back(std::move(EntityPtr(nullptr)));
+        
+        if(EntID == m_Entities.size()) {
+            EntityPtr ptr(new Entity(this));
+            ptr.get()->m_UID = EntID;
+            m_Entities.push_back(std::move(ptr));
+            return true;
+        }
+        
+        EntityPtr ptr(new Entity(this));
+        ptr.get()->m_UID = EntID;
+        m_Entities[EntID] = std::move(ptr);
+        return true;
     }
 
     void SceneGraph::DestroyEntity(Entity* E)
@@ -140,7 +171,7 @@ namespace SandboxSimulator
         (*Packet) << (u32)m_Entities.size();
         for(i32 i = 0; i < m_Entities.size(); i++)
         {
-            m_Entities[i]->BinarySerialize(Packet);
+            m_Entities[i].get()->BinarySerialize(Packet);
         }
     }
 
@@ -150,11 +181,14 @@ namespace SandboxSimulator
         (*Packet) >> numEntities;
         for(i32 i = 0; i < numEntities; i++)
         {
-            if(i >= m_Entities.size()) {
-                CreateEntity();
+            UID id;
+            (*Packet) >> id;
+            if(id >= m_Entities.size() || m_Entities[id] == nullptr) {
+                if(CreateEntity(id))
+                    m_Entities[id].get()->BinaryDeserialize(Packet);
+            } else {
+                m_Entities[id].get()->BinaryDeserialize(Packet);
             }
-
-            m_Entities[i]->BinaryDeserialize(Packet);
         }
     }
 }
