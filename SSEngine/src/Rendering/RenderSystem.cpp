@@ -258,6 +258,7 @@ namespace SandboxSimulator
 		}
 
 		glfwMakeContextCurrent(m_Window);
+        glClearColor(1.0f,1.0f,1.0f, 1.0f);
 
 		m_Engine->Log("-----Graphic Profile-----\n");
 

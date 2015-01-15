@@ -1,0 +1,10 @@
+TODO
+1) Finish input system.
+2) Create state system.
+3) Make input send packets to the server.
+4) Basic controllable player entity that can move around in the world.
+5) Pass view matrix to render system.
+6) Double check that uniforms exist before trying to use them.
+7) Make better shader and shader gen code.
+8) Clean up / make better network communication.
+9) Start physics integration with client side prediction.
