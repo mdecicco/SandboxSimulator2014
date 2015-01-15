@@ -41,6 +41,8 @@ class ServerSystem : public EngineSystem
         SSEngine* m_Engine;
         sf::Mutex* m_Mutex;
         std::vector<Client*> m_Clients;
+
+        Scalar m_TimeSinceLastUpdate;
 };
 }
 

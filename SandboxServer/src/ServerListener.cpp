@@ -57,8 +57,6 @@ namespace SandboxSimulator
                         if(m_ClientManager->HasClient(ClientID, sender.toString(), port)) {
                             Client* c = m_ClientManager->GetClient(ClientID);
                             c->ParsePacket((PACKET_TYPE)PacketType, packet, PacketID);
-                            if(PacketType != PT_ACK)
-                                c->Acknowledge(PacketID);
                         } else
                             printf("Client %d is not connected.\n", ClientID);
                     break;

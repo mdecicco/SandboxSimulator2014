@@ -3,7 +3,6 @@
 
 #include <Core/EngineSystem.h>
 #include <Rendering/Shader.h>
-#include <GLFW/glfw3.h>
 #include <Utils/Math.h>
 #include <list>
 

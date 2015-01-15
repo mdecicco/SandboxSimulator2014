@@ -3,9 +3,11 @@
 #include <assert.h>
 #include <Engine.h>
 
+#include <Core/TransformComponent.h>
+
 namespace SandboxSimulator
 {
-    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID), m_LastUpdateSequence(0)
     {
         m_Mutex = mutex;
         m_Engine = engine;
@@ -49,10 +51,15 @@ namespace SandboxSimulator
                 u32 AckPacketID;
                 (*Packet) >> AckPacketID;//Remove packet from ack queue
                 if(m_PendingPing) m_PendingPing = false;
-                //Acknowledge(PacketID); <- Don't need to acknowledge acknowledgements...
                 break;
-            default:
-
+            case PT_PLAYER_UPDATE:
+                if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0) {
+                    Vec3 Pos;
+                    (*Packet) >> Pos.x >> Pos.y >> Pos.z;
+                    TransformComponent* Trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(m_ClientEntityID)->GetComponentByType(CT_TRANSFORM);
+                    Trans->SetPosition(Pos);
+                    m_LastUpdateSequence = PacketID;
+                }
                 break;
         }
         m_Mutex->unlock();
@@ -87,11 +94,14 @@ namespace SandboxSimulator
         return packet;
     }
 
-    void Client::SendWorldState(SSEngine* Eng)
+    void Client::SendWorldState(SSEngine* Eng, bool InclClient)
     {
         sf::Packet* packet = CreatePacket(PT_STATE_UPDATE);
         (*packet) << m_ClientEntityID;
-        Eng->GetSceneGraph()->BinarySerialize(packet);
+        if(InclClient) {
+            Eng->GetSceneGraph()->BinarySerialize(packet);
+        } else
+            Eng->GetSceneGraph()->BinarySerialize(packet, m_ClientEntityID);
         Send(packet);
     }
 }

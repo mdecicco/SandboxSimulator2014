@@ -16,6 +16,7 @@ enum PACKET_TYPE
     PT_STATE_UPDATE,
     PT_ACK,
     PT_PING,
+    PT_PLAYER_UPDATE,
     PT_COUNT
 };
 

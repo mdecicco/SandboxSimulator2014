@@ -5,8 +5,7 @@
 #include <Network/Socket.h>
 #include <string>
 
-namespace SandboxSimulator
-{
+namespace SandboxSimulator {
 class ConnectionSystem : public EngineSystem
 {
     public:
@@ -32,6 +31,9 @@ class ConnectionSystem : public EngineSystem
         void Connect(std::string ServerAddress, u16 ServerPort);
         void Disconnect();
 
+        UID GetEntityID() { return m_EntityID; }
+        bool IsConnected() { return m_Connected; }
+
     private:
         Scalar m_LastMessageTime;
 
@@ -44,9 +46,10 @@ class ConnectionSystem : public EngineSystem
         bool m_Connected;
 
         u32 m_LastPacketID;
+        u32 m_LastStateUpdateSequence;
     
         u16 m_ClientID;
-        u32 m_EntityID;
+        UID m_EntityID;
 };
 };
 

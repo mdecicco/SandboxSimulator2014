@@ -3,7 +3,7 @@
 
 namespace SandboxSimulator
 {
-    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false)
+    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false), m_LastStateUpdateSequence(0)
     {
 
     }
@@ -116,8 +116,11 @@ namespace SandboxSimulator
                         m_ConnectionAttempted = false;
                         break;
                     case PT_STATE_UPDATE:
-                        (*packet) >> m_EntityID;;
-                        m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
+                        if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                            (*packet) >> m_EntityID;
+                            m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
+                            m_LastStateUpdateSequence = PacketID;
+                        }
                         break;
                     default:
                         //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);

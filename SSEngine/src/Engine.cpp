@@ -20,6 +20,9 @@ namespace SandboxSimulator
         m_LastTime = 0.0f;
         m_DoShutdown = false;
         m_RunTime.Start();
+
+        m_InputSystem = new InputSystem();
+        RegisterSystem(m_InputSystem);
     }
     
     SSEngine::~SSEngine()

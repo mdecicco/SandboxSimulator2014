@@ -14,6 +14,9 @@ class TransformComponent : public Component
         //Transformation controls
         void Translate(Vec3 Delta);
 
+        //Setters
+        void SetPosition(Vec3 Pos) {m_Position = Pos; m_NeedsUpdate = true;}
+
         //Getters
         Mat4 GetMat4();
         Vec3 GetPosition();

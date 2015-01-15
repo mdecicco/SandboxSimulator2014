@@ -6,7 +6,7 @@
 
 namespace SandboxSimulator
 {
-    ServerSystem::ServerSystem(sf::Mutex* mutex) : m_Clients(std::vector<Client*>()), m_Mutex(mutex)
+    ServerSystem::ServerSystem(sf::Mutex* mutex) : m_Clients(std::vector<Client*>()), m_Mutex(mutex), m_TimeSinceLastUpdate(0)
     {}
 
     ServerSystem::~ServerSystem()
@@ -31,6 +31,7 @@ namespace SandboxSimulator
 	void ServerSystem::Update(Scalar dt)
     {
         m_Mutex->lock();
+        m_TimeSinceLastUpdate += dt;
         if(m_Engine) {
             Scalar ElapsedTime = m_Engine->GetElapsedTime();
             //printf("%f: Updating server system\n", ElapsedTime);
@@ -42,6 +43,13 @@ namespace SandboxSimulator
                         c->Disconnect(DR_TIMEOUT);
                 } else if(ElapsedTime - m_Clients[i]->GetLastMessageTime() > TIMEOUT_LIMIT / 2 && !m_Clients[i]->HasPendingPing())
                     m_Clients[i]->Ping();
+            }
+
+            if(m_TimeSinceLastUpdate > 0.1) {
+                for(i32 i = 0; i < m_Clients.size(); i++) {
+                    m_Clients[i]->SendWorldState(m_Engine, false);
+                }
+                m_TimeSinceLastUpdate = 0.0;
             }
         }
         m_Mutex->unlock();
@@ -78,7 +86,7 @@ namespace SandboxSimulator
             m_Clients.push_back(c);
 
             //Send serialized world state
-            c->SendWorldState(m_Engine);
+            c->SendWorldState(m_Engine, true);
             //
 
             m_Mutex->unlock();

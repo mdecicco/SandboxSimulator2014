@@ -16,6 +16,8 @@
 #include <Core/Timer.h>
 #include <vector>
 #include <SFML/Network.hpp>
+#include <System/PlatformIncludes.h>
+#include <System/InputSystem.h>
 
 #ifdef __APPLE__
 #define AllocArray(Type,Size) (Type *)__alloca(Size * sizeof(Type))
@@ -58,6 +60,8 @@ namespace SandboxSimulator
             SceneGraph* GetSceneGraph() {return m_SceneGraph;}
 
             Scalar GetElapsedTime() {return m_RunTime.ElapsedTime();}
+
+            InputSystem* GetInputSystem() { return m_InputSystem; }
     
         protected:
             /* Systems */
@@ -67,6 +71,7 @@ namespace SandboxSimulator
 
 			/* Managers */
             SceneGraph* m_SceneGraph;
+            InputSystem* m_InputSystem;
 
 			/* Misc */
 			Timer m_RunTime;

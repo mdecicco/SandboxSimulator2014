@@ -10,27 +10,32 @@
 #include <System/SSTypes.h>
 
 #include <ConnectionSystem.h>
+#include <Core/StateSystem.h>
 
-#include <Rendering/CameraComponent.h>
+#include <GameState.h>
 
 using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
 {
     SSEngine* Eng = new SSEngine();
-    
+
+    //Engine Systems
+    StateManagerSystem* StateSystem = new StateManagerSystem();
     ConnectionSystem* ConnSystem = new ConnectionSystem();
-    RenderSystem* RendSyst = new RenderSystem();
+    RenderSystem* RendSystem = new RenderSystem();
+
     Eng->RegisterSystem(ConnSystem);
-	Eng->RegisterSystem(RendSyst);
+    Eng->RegisterSystem(StateSystem);
+    Eng->RegisterSystem(RendSystem);
     Eng->Initialize(ArgC,ArgV);
 
-    //Has to happen after the engine is initialized
-    ConnSystem->Connect("127.0.0.1", 3889);
-    
+    //Input won't process unless it has an active glfw window.
+    Eng->GetInputSystem()->SetWindow(RendSystem->GetWindow());
+
+    StateSystem->SetState(new GameState(ConnSystem));
 
     Eng->Run();
     Eng->Shutdown();
-    //}
     return 0;
 }

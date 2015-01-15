@@ -113,12 +113,13 @@ namespace SandboxSimulator
             void RemoveComponentByType(Entity* E,i32 Type);
 
             void BinarySerialize(sf::Packet* Packet);
+            void BinarySerialize(sf::Packet* Packet, UID ExcludeID);
             void BinaryDeserialize(sf::Packet* Packet);
+            Entity* GetEntityById(UID ID) { return GetEntity(ID); }
 
-        protected:
-            //Entity* GetEntity(UID EntityID);
             bool HasEntity(UID EntID);
 
+        protected:
             std::map<UID, EntityPtr> m_Entities;
             SSEngine* m_Engine;
     };

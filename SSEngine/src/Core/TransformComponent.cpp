@@ -34,9 +34,6 @@ namespace SandboxSimulator
 
     void TransformComponent::BinaryDeserialize(sf::Packet* Packet)
     {
-        i8 x;
-        i8 y;
-        i8 z;
         (*Packet) >> m_Position.x >> m_Position.y >> m_Position.z;
     }
 };

@@ -35,7 +35,7 @@ class Client
 
         //Misc
         sf::Packet* CreatePacket(PACKET_TYPE Type);
-        void SendWorldState(SSEngine* Eng);
+        void SendWorldState(SSEngine* Eng, bool IncludeClientEntity);
 
     private:
         u16 m_Id;
@@ -44,7 +44,8 @@ class Client
         SSEngine* m_Engine;
         UdpSocket* m_Socket;
         u32 m_LastPacketID;
-        
+        u32 m_LastUpdateSequence;
+
         Scalar m_LastMessageTime;
         bool m_PendingPing;
         sf::Mutex* m_Mutex;

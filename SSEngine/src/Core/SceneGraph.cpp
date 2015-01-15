@@ -128,7 +128,6 @@ namespace SandboxSimulator
     
     void SceneGraph::AddComponent(Entity* E,Component* Comp)
     {
-        //Check if entity already has a component of that type
         if(E) {
             Comp->SetEngine(m_Engine);
             E->m_Components[Comp->GetType()] = Comp;
@@ -167,6 +166,16 @@ namespace SandboxSimulator
         
         for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it)
             it->second->BinarySerialize(Packet);
+    }
+
+    void SceneGraph::BinarySerialize(sf::Packet* Packet, UID ExcludeID)
+    {
+        (*Packet) << (u32)m_Entities.size();
+
+        for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it) {
+            if(it->second->m_UID != ExcludeID)
+                it->second->BinarySerialize(Packet);
+        }
     }
 
     void SceneGraph::BinaryDeserialize(sf::Packet* Packet)
