@@ -58,6 +58,15 @@ namespace SandboxSimulator
         }
     }
 
+    void Entity::BinarySerializePosition(sf::Packet* Packet)
+    {
+        if(HasComponentType(CT_TRANSFORM)) {
+            TransformComponent* Trans = (TransformComponent*)GetComponentByType(CT_TRANSFORM);
+            Vec3 Pos = Trans->GetPosition();
+            (*Packet) << m_UID << Pos.x << Pos.y << Pos.z;
+        }
+    }
+
     void Entity::BinaryDeserialize(sf::Packet* Packet)
     {
         u8 numComponents;
@@ -83,6 +92,16 @@ namespace SandboxSimulator
             }
 
             m_Components[ComponentType]->BinaryDeserialize(Packet);
+        }
+    }
+
+    void Entity::BinaryDeserializePosition(sf::Packet* Packet)
+    {
+        if(HasComponentType(CT_TRANSFORM)) {
+            Vec3 Pos = Vec3();
+            (*Packet) >> Pos.x >> Pos.y >> Pos.z;
+            TransformComponent* Trans = (TransformComponent*)GetComponentByType(CT_TRANSFORM);
+            Trans->SetPosition(Pos);
         }
     }
 
@@ -181,6 +200,27 @@ namespace SandboxSimulator
         }
     }
 
+    void SceneGraph::BinarySerializePositions(sf::Packet* Packet)
+    {
+        (*Packet) << (u32)m_Entities.size();
+
+        for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it)
+            it->second->BinarySerializePosition(Packet);
+    }
+
+    void SceneGraph::BinarySerializePositions(sf::Packet* Packet, UID ExcludeID)
+    {
+        if(HasEntity(ExcludeID))
+            (*Packet) << (u32)m_Entities.size()-1;
+        else
+            (*Packet) << (u32)m_Entities.size();
+
+        for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it) {
+            if(it->second->m_UID != ExcludeID)
+                it->second->BinarySerializePosition(Packet);
+        }
+    }
+
     void SceneGraph::BinaryDeserialize(sf::Packet* Packet)
     {
         u32 numEntities;
@@ -194,6 +234,24 @@ namespace SandboxSimulator
                     GetEntity(id)->BinaryDeserialize(Packet);
             } else {
                 GetEntity(id)->BinaryDeserialize(Packet);
+            }
+        }
+    }
+
+    void SceneGraph::BinaryDeserializePositions(sf::Packet* Packet)
+    {
+        u32 numEntities;
+        (*Packet) >> numEntities;
+        for(i32 i = 0; i < numEntities; i++)
+        {
+            UID id;
+            (*Packet) >> id;
+            if(HasEntity(id)) {
+                GetEntity(id)->BinaryDeserializePosition(Packet);
+            } else {
+                //Just advance the packet by the byte amount, we should get a packet telling us about the new entity and a new position for it later on.
+                Vec3 Pos;
+                (*Packet) >> Pos.x >> Pos.y >> Pos.z;
             }
         }
     }

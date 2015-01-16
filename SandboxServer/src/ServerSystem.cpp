@@ -47,7 +47,7 @@ namespace SandboxSimulator
 
             if(m_TimeSinceLastUpdate > 0.1) {
                 for(i32 i = 0; i < m_Clients.size(); i++) {
-                    m_Clients[i]->SendWorldState(m_Engine, false);
+                    m_Clients[i]->SendPositionUpdate(m_Engine, false);
                 }
                 //m_Engine->Log("Updating clients states\n");
                 m_TimeSinceLastUpdate = 0.0;
@@ -89,6 +89,10 @@ namespace SandboxSimulator
             //Send serialized world state
             c->SendWorldState(m_Engine, true);
             //
+            //Resend world state to other clients, so they know about this.
+            for(i32 i = 0; i < m_Clients.size(); i++) {
+                m_Clients[i]->SendWorldState(m_Engine, false);
+            }
 
             m_Mutex->unlock();
             return c;

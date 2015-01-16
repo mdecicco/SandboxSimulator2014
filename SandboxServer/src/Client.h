@@ -36,6 +36,7 @@ class Client
         //Misc
         sf::Packet* CreatePacket(PACKET_TYPE Type);
         void SendWorldState(SSEngine* Eng, bool IncludeClientEntity);
+        void SendPositionUpdate(SSEngine* Eng, bool IncludeClientEntity);
 
     private:
         u16 m_Id;

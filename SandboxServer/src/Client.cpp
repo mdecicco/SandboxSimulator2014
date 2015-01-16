@@ -105,4 +105,15 @@ namespace SandboxSimulator
             Eng->GetSceneGraph()->BinarySerialize(packet, m_ClientEntityID);
         Send(packet);
     }
+
+    void Client::SendPositionUpdate(SSEngine* Eng, bool InclClient)
+    {
+        sf::Packet* packet = CreatePacket(PT_POS_UPDATE);
+        (*packet) << m_ClientEntityID;
+        if(InclClient) {
+            Eng->GetSceneGraph()->BinarySerializePositions(packet);
+        } else
+            Eng->GetSceneGraph()->BinarySerializePositions(packet, m_ClientEntityID);
+        Send(packet);
+    }
 }

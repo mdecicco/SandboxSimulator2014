@@ -3,7 +3,7 @@
 
 namespace SandboxSimulator
 {
-    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false), m_LastStateUpdateSequence(0)
+    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false), m_LastStateUpdateSequence(0), m_NeedsUpdate(true)
     {
 
     }
@@ -119,6 +119,13 @@ namespace SandboxSimulator
                         if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
                             (*packet) >> m_EntityID;
                             m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
+                            m_LastStateUpdateSequence = PacketID;
+                        }
+                        break;
+                    case PT_POS_UPDATE:
+                        if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                            (*packet) >> m_EntityID;
+                            m_Engine->GetSceneGraph()->BinaryDeserializePositions(packet);
                             m_LastStateUpdateSequence = PacketID;
                         }
                         break;

@@ -34,6 +34,9 @@ class ConnectionSystem : public EngineSystem
         UID GetEntityID() { return m_EntityID; }
         bool IsConnected() { return m_Connected; }
 
+        bool NeedsUpdate() {return m_NeedsUpdate;}
+        void NeedsUpdate(bool t) {m_NeedsUpdate = t;}
+
     private:
         Scalar m_LastMessageTime;
 
@@ -44,6 +47,7 @@ class ConnectionSystem : public EngineSystem
 
         bool m_ConnectionAttempted;
         bool m_Connected;
+        bool m_NeedsUpdate;
 
         u32 m_LastPacketID;
         u32 m_LastStateUpdateSequence;

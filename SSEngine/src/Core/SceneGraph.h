@@ -79,7 +79,9 @@ namespace SandboxSimulator
             Component* GetComponentByType(COMPONENT_TYPE Type);
 
             void BinarySerialize(sf::Packet* Packet);
+            void BinarySerializePosition(sf::Packet* Packet);
             void BinaryDeserialize(sf::Packet* Packet);
+            void BinaryDeserializePosition(sf::Packet* Packet);
 
             UID GetID() { return m_UID; }
 
@@ -114,7 +116,10 @@ namespace SandboxSimulator
 
             void BinarySerialize(sf::Packet* Packet);
             void BinarySerialize(sf::Packet* Packet, UID ExcludeID);
+            void BinarySerializePositions(sf::Packet* Packet);
+            void BinarySerializePositions(sf::Packet* Packet, UID ExcludeID);
             void BinaryDeserialize(sf::Packet* Packet);
+            void BinaryDeserializePositions(sf::Packet* Packet);
             Entity* GetEntityById(UID ID) { return GetEntity(ID); }
 
             bool HasEntity(UID EntID);
