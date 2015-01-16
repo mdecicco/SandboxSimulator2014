@@ -49,6 +49,7 @@ namespace SandboxSimulator
                 for(i32 i = 0; i < m_Clients.size(); i++) {
                     m_Clients[i]->SendWorldState(m_Engine, false);
                 }
+                //m_Engine->Log("Updating clients states\n");
                 m_TimeSinceLastUpdate = 0.0;
             }
         }

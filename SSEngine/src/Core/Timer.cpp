@@ -13,6 +13,7 @@ namespace SandboxSimulator
 {
     Timer::Timer() : m_Started(false)
     {
+        m_Clock = new sf::Clock();
     }
 
     Timer::~Timer()
@@ -22,12 +23,12 @@ namespace SandboxSimulator
     void Timer::Start()
     {
         if(m_Started) return;
-        m_Clock = new sf::Clock();
         m_Clock->restart();
         m_StartTime = m_Clock->getElapsedTime().asSeconds();
     }
     void Timer::Stop()
     {
+        m_Clock->restart();
         m_Started = false;
     }
     

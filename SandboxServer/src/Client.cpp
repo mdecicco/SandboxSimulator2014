@@ -59,7 +59,7 @@ namespace SandboxSimulator
                     TransformComponent* Trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(m_ClientEntityID)->GetComponentByType(CT_TRANSFORM);
                     Trans->SetPosition(Pos);
                     m_LastUpdateSequence = PacketID;
-                    Acknowledge(PacketID);
+                    //Acknowledge(PacketID);
                 }
                 break;
         }

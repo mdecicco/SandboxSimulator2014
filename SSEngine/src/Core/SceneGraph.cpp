@@ -170,7 +170,10 @@ namespace SandboxSimulator
 
     void SceneGraph::BinarySerialize(sf::Packet* Packet, UID ExcludeID)
     {
-        (*Packet) << (u32)m_Entities.size();
+        if(HasEntity(ExcludeID))
+            (*Packet) << (u32)m_Entities.size()-1;
+        else
+            (*Packet) << (u32)m_Entities.size();
 
         for (EntityMap::iterator it=m_Entities.begin(); it!=m_Entities.end(); ++it) {
             if(it->second->m_UID != ExcludeID)

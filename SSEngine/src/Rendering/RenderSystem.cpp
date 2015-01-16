@@ -177,8 +177,6 @@ namespace SandboxSimulator
         m_Shape = Shape;
         Material* Mat = new Material();
         SetMaterial(Mat);
-        MatVec3Node* AlbedoNode = new MatVec3Node("Color", Vec3(0,0,1));
-        Mat->SetInput(MI_ALBEDO, AlbedoNode->GetOutput());
         switch(Shape)
         {
             case RC_TRIANGLE:
@@ -258,6 +256,7 @@ namespace SandboxSimulator
 		}
 
 		glfwMakeContextCurrent(m_Window);
+        //glfwSwapInterval(1);
         glClearColor(1.0f,1.0f,1.0f, 1.0f);
 
 		m_Engine->Log("-----Graphic Profile-----\n");
@@ -296,6 +295,13 @@ namespace SandboxSimulator
         glViewport(0,0,w,h);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        Mat4 Proj;
+        if(m_ActiveCamera != nullptr) {
+            Proj = m_ActiveCamera->GetProjection();
+        } else {
+            Proj = PerspectiveProjection(90, m_Resolution.x, m_Resolution.y, 0.1f, 1000.0f);
+        }
+
         for(i32 i = 0; i < m_Components.size(); i++)
         {
             RenderComponent* r = (RenderComponent*)m_Components[i];
@@ -313,12 +319,6 @@ namespace SandboxSimulator
             GLint ProjLoc = glGetUniformLocation(shdrID, "Projection");
             GLint TransLoc = glGetUniformLocation(shdrID, "Transform");
 
-            Mat4 Proj;
-            if(m_ActiveCamera != nullptr) {
-                Proj = m_ActiveCamera->GetProjection();
-            } else {
-                Proj = PerspectiveProjection(90, m_Resolution.x, m_Resolution.y, 0.1f, 1000.0f);
-            }
             glUniformMatrix4fv(ProjLoc, 1, GL_FALSE, &Proj.m[0][0]);
             err = glGetError();
 

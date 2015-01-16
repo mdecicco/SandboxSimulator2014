@@ -1,4 +1,5 @@
 #include <Core/StateSystem.h>
+#include <Engine.h>
 
 namespace SandboxSimulator
 {

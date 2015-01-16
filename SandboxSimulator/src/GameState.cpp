@@ -27,16 +27,16 @@ namespace SandboxSimulator
             bool posChanged = false;
 
             if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
-                Pos += Vec3(0,0,-1*(f32)dt);
+                Pos += Vec3(0,0,-1*dt);
                 posChanged = true;
             } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
-                Pos += Vec3(0,0,1*(f32)dt);
+                Pos += Vec3(0,0,1*dt);
                 posChanged = true;
             } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_A)) {
-                Pos += Vec3(-1*(f32)dt,0,0);
+                Pos += Vec3(-1*dt,0,0);
                 posChanged = true;
             } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_D)) {
-                Pos += Vec3(1*(f32)dt,0,0);
+                Pos += Vec3(1*dt,0,0);
                 posChanged = true;
             }
 

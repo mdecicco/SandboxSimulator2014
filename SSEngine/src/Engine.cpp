@@ -15,7 +15,7 @@
 
 namespace SandboxSimulator
 {
-    SSEngine::SSEngine()
+    SSEngine::SSEngine() : m_FrameCounter(0), m_NumFrames(0)
     {
         m_LastTime = 0.0f;
         m_DoShutdown = false;
@@ -56,10 +56,6 @@ namespace SandboxSimulator
 
         /* Initialize entity manager */
         m_SceneGraph = new SceneGraph(this);
-
-		/* Create Render System */
-		//m_RenderSystem = new RenderSystem();
-		//RegisterSystem(m_RenderSystem);
         
         /* Initialize engine systems */
         for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Initialize(this);
@@ -74,9 +70,18 @@ namespace SandboxSimulator
         {
             Scalar dt = m_RunTime.ElapsedTime() - m_LastTime;
             m_LastTime = m_RunTime.ElapsedTime();
+
+            m_NumFrames++;
+            m_FrameCounter += dt;
             
             /* Update systems */
-            for(i32 i = 0;i < m_Systems.size();i++) m_Systems[i]->Update(dt);
+            Scalar Before = GetElapsedTime();
+            for(i32 i = 0;i < m_Systems.size();i++) {
+                m_Systems[i]->Update(dt);
+            }
+            Scalar After = GetElapsedTime();
+            Scalar du = After - Before;
+            //printf("Total update delta time: %0.2f\n", du*1000.0f);
             
             /* Process asynchronous messages */
             for(i32 m = 0;m < m_AsynchronousMessages.size();m++)
@@ -85,6 +90,12 @@ namespace SandboxSimulator
 				Broadcast(m_AsynchronousMessages[m]);
             }
             m_AsynchronousMessages.clear();
+
+            if(m_FrameCounter >= 1) {
+                printf("%d fps \n",m_NumFrames);
+                m_FrameCounter = 0;
+                m_NumFrames = 0;
+            }
         }
     }
     

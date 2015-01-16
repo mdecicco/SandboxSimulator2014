@@ -26,6 +26,8 @@
 #endif
 #define AllocStr(Sz) AllocArray(char,Sz)
 
+#define Profile(Stuff, i) { Scalar first = GetElapsedTime(); Stuff; Scalar second = GetElapsedTime(); printf("%d - %s Executed in %0.2f ms.\n",i, #Stuff,(second-first) * 1000.0f); }
+
 namespace SandboxSimulator
 {
 	class RenderSystem;
@@ -77,6 +79,8 @@ namespace SandboxSimulator
 			Timer m_RunTime;
             Scalar m_LastTime;
             bool m_DoShutdown;
+            int m_NumFrames;
+            Scalar m_FrameCounter;
     };
 }
 
