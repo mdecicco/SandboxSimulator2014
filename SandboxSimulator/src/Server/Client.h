@@ -35,7 +35,7 @@ class Client
 
         //Misc
         sf::Packet* CreatePacket(PACKET_TYPE Type);
-        void SendWorldState(SSEngine* Eng, bool IncludeClientEntity);
+        void SendWorldState(SSEngine* Eng);
         void SendPositionUpdate(SSEngine* Eng, bool IncludeClientEntity);
 
     private:
@@ -48,7 +48,10 @@ class Client
         u32 m_LastUpdateSequence;
 
         Scalar m_LastMessageTime;
+
         bool m_PendingPing;
+        u32 m_PendingPingID;
+    
         sf::Mutex* m_Mutex;
 
         UID m_ClientEntityID;

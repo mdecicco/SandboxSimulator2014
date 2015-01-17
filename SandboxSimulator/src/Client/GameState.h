@@ -2,13 +2,15 @@
 #define SandboxSimulator_GameState_h
 
 #include <Core/StateSystem.h>
-#include <ConnectionSystem.h>
+#include <Client/ConnectionSystem.h>
+
+#include <string>
 
 namespace SandboxSimulator {
 class GameState : public State
 {
     public:
-        GameState(ConnectionSystem* Conn);
+        GameState(ConnectionSystem* Conn, std::string Address, u16 Port);
         ~GameState();
 
     protected:
@@ -19,6 +21,8 @@ class GameState : public State
 
     private:
         Scalar m_LastPacketTime;
+        u16 m_Port;
+        std::string m_Address;
 };
 }
 

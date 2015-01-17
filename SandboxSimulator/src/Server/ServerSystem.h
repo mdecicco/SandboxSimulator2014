@@ -2,7 +2,7 @@
 #define SandboxSimulator_ServerSystem_h
 
 #include <Core/EngineSystem.h>
-#include <Client.h>
+#include <Server/Client.h>
 
 namespace SandboxSimulator
 {

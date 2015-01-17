@@ -1,11 +1,11 @@
-#include <GameState.h>
+#include <Client/GameState.h>
 #include <Engine.h>
 
 #include <Core/TransformComponent.h>
 
 namespace SandboxSimulator
 {
-    GameState::GameState(ConnectionSystem* Conn) : m_Connection(Conn), m_LastPacketTime(0)
+    GameState::GameState(ConnectionSystem* Conn, std::string Address, u16 Port) : m_Connection(Conn), m_LastPacketTime(0), m_Port(Port), m_Address(Address)
     {}
 
     GameState::~GameState()
@@ -14,7 +14,7 @@ namespace SandboxSimulator
     void GameState::Init(StateManagerSystem *StateManager)
     {
         m_StateManager = StateManager;
-        m_Connection->Connect("127.0.0.1", 3889);
+        m_Connection->Connect(m_Address, m_Port);
     }
 
     void GameState::Update(Scalar dt)

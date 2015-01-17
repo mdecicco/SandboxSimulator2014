@@ -4,9 +4,9 @@
 #include <System/SSThread.h>
 #include <System/SSTypes.h>
 #include <Network/Socket.h>
-#include <Client.h>
 
-#include <ServerSystem.h>
+#include <Server/Client.h>
+#include <Server/ServerSystem.h>
 
 #include <map>
 

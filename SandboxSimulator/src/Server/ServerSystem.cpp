@@ -1,4 +1,4 @@
-#include <ServerSystem.h>
+#include <Server/ServerSystem.h>
 #include <Rendering/RenderSystem.h>
 #include <Engine.h>
 
@@ -84,15 +84,16 @@ namespace SandboxSimulator
             t->Translate(Vec3(0,0,-2));
 
             Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, E->GetID());
-            m_Clients.push_back(c);
 
             //Send serialized world state
-            c->SendWorldState(m_Engine, true);
+            c->SendWorldState(m_Engine);
             //
             //Resend world state to other clients, so they know about this.
             for(i32 i = 0; i < m_Clients.size(); i++) {
-                m_Clients[i]->SendWorldState(m_Engine, false);
+                m_Clients[i]->SendWorldState(m_Engine);
             }
+
+            m_Clients.push_back(c);
 
             m_Mutex->unlock();
             return c;

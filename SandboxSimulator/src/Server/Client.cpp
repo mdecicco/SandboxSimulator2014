@@ -1,4 +1,4 @@
-#include <Client.h>
+#include <Server/Client.h>
 #include <iostream>
 #include <assert.h>
 #include <Engine.h>
@@ -7,7 +7,7 @@
 
 namespace SandboxSimulator
 {
-    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID), m_LastUpdateSequence(0)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID), m_LastUpdateSequence(0), m_PendingPing(false), m_PendingPingID(0)
     {
         m_Mutex = mutex;
         m_Engine = engine;
@@ -49,8 +49,10 @@ namespace SandboxSimulator
                 break;
             case PT_ACK:
                 u32 AckPacketID;
-                (*Packet) >> AckPacketID;//Remove packet from ack queue
-                if(m_PendingPing) m_PendingPing = false;
+                (*Packet) >> AckPacketID;
+                //Remove packet from ack queue
+                if(m_PendingPing && m_PendingPingID == AckPacketID)
+                    m_PendingPing = false;
                 break;
             case PT_PLAYER_UPDATE:
                 if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0) {
@@ -61,6 +63,9 @@ namespace SandboxSimulator
                     m_LastUpdateSequence = PacketID;
                     //Acknowledge(PacketID);
                 }
+                break;
+            case PT_PING:
+                Acknowledge(PacketID);
                 break;
         }
         m_Mutex->unlock();
@@ -77,6 +82,7 @@ namespace SandboxSimulator
     void Client::Ping()
     {
         sf::Packet* packet = CreatePacket(PT_PING);
+        m_PendingPingID = m_LastPacketID;
         Send(packet);
         m_PendingPing = true;
         delete packet;
@@ -95,14 +101,11 @@ namespace SandboxSimulator
         return packet;
     }
 
-    void Client::SendWorldState(SSEngine* Eng, bool InclClient)
+    void Client::SendWorldState(SSEngine* Eng)
     {
         sf::Packet* packet = CreatePacket(PT_STATE_UPDATE);
         (*packet) << m_ClientEntityID;
-        if(InclClient) {
-            Eng->GetSceneGraph()->BinarySerialize(packet);
-        } else
-            Eng->GetSceneGraph()->BinarySerialize(packet, m_ClientEntityID);
+        Eng->GetSceneGraph()->BinarySerialize(packet);
         Send(packet);
     }
 

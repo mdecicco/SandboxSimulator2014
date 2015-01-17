@@ -25,6 +25,7 @@ class ConnectionSystem : public EngineSystem
         //Connection functions
         bool Send(sf::Packet* Packet);
         void Acknowledge(i32 PacketID);
+        void Ping();
 
         sf::Packet* CreatePacket(PACKET_TYPE Type);
 
@@ -48,6 +49,9 @@ class ConnectionSystem : public EngineSystem
         bool m_ConnectionAttempted;
         bool m_Connected;
         bool m_NeedsUpdate;
+
+        bool m_PendingPing;
+        u32 m_PendingPingID;
 
         u32 m_LastPacketID;
         u32 m_LastStateUpdateSequence;

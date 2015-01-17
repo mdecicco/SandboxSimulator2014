@@ -4,7 +4,7 @@
 #include <SFML/Network.hpp>
 #include <System/SSTypes.h>
 
-#define TIMEOUT_LIMIT 10
+#define TIMEOUT_LIMIT 10000
 #define CLIENT_LIMIT 256
 
 namespace SandboxSimulator{

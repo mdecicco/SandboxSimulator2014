@@ -1,9 +1,9 @@
-#include <ConnectionSystem.h>
+#include <Client/ConnectionSystem.h>
 #include <Engine.h>
 
 namespace SandboxSimulator
 {
-    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false), m_LastStateUpdateSequence(0), m_NeedsUpdate(true)
+    ConnectionSystem::ConnectionSystem() :  m_LastPacketID(0), m_ClientID(0), m_LastMessageTime(0), m_Connected(false), m_ConnectionAttempted(false), m_LastStateUpdateSequence(0), m_NeedsUpdate(true), m_PendingPing(false), m_PendingPingID(0)
     {
 
     }
@@ -65,7 +65,11 @@ namespace SandboxSimulator
         sf::IpAddress sender;
         u16 port;
 
+        //Handle timing out
         Scalar DeltaMessageTime = m_Engine->GetElapsedTime() - m_LastMessageTime;
+        if(DeltaMessageTime >= (TIMEOUT_LIMIT * 0.5) && m_Connected && !m_PendingPing) {
+            Ping();
+        }
         if(DeltaMessageTime >= TIMEOUT_LIMIT && m_Connected) {
             Disconnect();
             m_Engine->Log("Connection lost: timed out.\n");
@@ -99,10 +103,13 @@ namespace SandboxSimulator
                         //a packet was acknowledged, get the ack packet ID and remove it from pending ack queue (TODO)
                         u32 AckPacketID;
                         (*packet) >> AckPacketID;
-                        m_Engine->Log("Packet %d acknowledged by server!\n", AckPacketID);
+                        //m_Engine->Log("Packet %d acknowledged by server!\n", AckPacketID);
+                        if(m_PendingPing && AckPacketID == m_PendingPingID)
+                            m_PendingPing = false;
                         break;
                     case PT_PING:
                         Acknowledge(PacketID);
+                        m_PendingPing = false;
                         break;
                     case PT_DISCONNECT:
                         i8 Reason;
@@ -116,11 +123,8 @@ namespace SandboxSimulator
                         m_ConnectionAttempted = false;
                         break;
                     case PT_STATE_UPDATE:
-                        if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
-                            (*packet) >> m_EntityID;
-                            m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
-                            m_LastStateUpdateSequence = PacketID;
-                        }
+                        (*packet) >> m_EntityID;
+                        m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
                         break;
                     case PT_POS_UPDATE:
                         if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
@@ -150,6 +154,15 @@ namespace SandboxSimulator
         (*Ack) << PacketID;
         Send(Ack);
         delete Ack;
+    }
+
+    void ConnectionSystem::Ping()
+    {
+        sf::Packet* Ping = CreatePacket(PT_PING);
+        m_PendingPingID = m_LastPacketID;
+        Send(Ping);
+        m_PendingPing = true;
+        delete Ping;
     }
 
     bool ConnectionSystem::Send(sf::Packet* Packet)

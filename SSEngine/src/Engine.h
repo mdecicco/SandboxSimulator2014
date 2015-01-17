@@ -34,7 +34,7 @@ namespace SandboxSimulator
     class SSEngine
     {
         public:
-            SSEngine();
+            SSEngine(bool ShowFps);
             ~SSEngine();
     
             /* Initialize engine */
@@ -81,6 +81,7 @@ namespace SandboxSimulator
             bool m_DoShutdown;
             int m_NumFrames;
             Scalar m_FrameCounter;
+            bool m_ShowFps;
     };
 }
 

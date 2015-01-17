@@ -15,7 +15,7 @@
 
 namespace SandboxSimulator
 {
-    SSEngine::SSEngine() : m_FrameCounter(0), m_NumFrames(0)
+    SSEngine::SSEngine(bool ShowFps) : m_FrameCounter(0), m_NumFrames(0), m_ShowFps(ShowFps)
     {
         m_LastTime = 0.0f;
         m_DoShutdown = false;
@@ -75,14 +75,10 @@ namespace SandboxSimulator
             m_FrameCounter += dt;
             
             /* Update systems */
-            Scalar Before = GetElapsedTime();
             for(i32 i = 0;i < m_Systems.size();i++) {
                 m_Systems[i]->Update(dt);
             }
-            Scalar After = GetElapsedTime();
-            Scalar du = After - Before;
-            //printf("Total update delta time: %0.2f\n", du*1000.0f);
-            
+
             /* Process asynchronous messages */
             for(i32 m = 0;m < m_AsynchronousMessages.size();m++)
             {
@@ -92,7 +88,8 @@ namespace SandboxSimulator
             m_AsynchronousMessages.clear();
 
             if(m_FrameCounter >= 1) {
-                printf("%d fps \n",m_NumFrames);
+                if(m_ShowFps)
+                    printf("%d fps \n",m_NumFrames);
                 m_FrameCounter = 0;
                 m_NumFrames = 0;
             }
