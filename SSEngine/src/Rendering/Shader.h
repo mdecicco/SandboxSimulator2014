@@ -51,6 +51,7 @@ namespace SandboxSimulator
             ~Shader();
         
             virtual bool OnLoad();
+            bool LoadShader();
         
             void Enable();
             void Disable();
@@ -68,6 +69,8 @@ namespace SandboxSimulator
             GLuint m_PID;
             i32 m_ListID;
             i32 m_UniformLocs[SU_COUNT];
+
+            bool m_Loaded;
     };
 }
 

@@ -46,6 +46,7 @@ namespace SandboxSimulator
                 m_Connection->Send(Packet);
                 m_LastPacketTime = m_Engine->GetElapsedTime();
                 m_Connection->NeedsUpdate(false);
+                delete Packet;
             }
         }
     }

@@ -92,9 +92,7 @@ namespace SandboxSimulator
                     {
                         case PT_CONNECT:
                             if(!m_Connected && m_ConnectionAttempted) {
-                                u16 ClientID;
-                                (*packet) >> ClientID;
-                                m_ClientID = ClientID;
+                                (*packet) >> m_ClientID;
                                 m_Connected = true;
                                 m_Engine->Log("Connected to server at %s:%d.\n", sender.toString().c_str(), port);
                             } else {
@@ -140,10 +138,10 @@ namespace SandboxSimulator
                             break;
                     }
 
-                    delete packet;
                 } else {
                     KeepChecking = false;
                 }
+                delete packet;
             }
         }
     }
