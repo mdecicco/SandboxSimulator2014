@@ -27,6 +27,9 @@ namespace SandboxSimulator
 
         m_InputSystem = new InputSystem();
         RegisterSystem(m_InputSystem);
+
+        m_TimeOfDay = 0.0f;
+        m_GameTimeRate = 1.0f / 16.0f;
     }
     
     SSEngine::~SSEngine()
@@ -74,6 +77,14 @@ namespace SandboxSimulator
         {
             Scalar dt = GetElapsedTime() - m_LastTime;
             m_LastTime = GetElapsedTime();
+
+            //1 game second = 1/60th of a game minute
+            //1 game minute = 1/60th of a game hour
+            //1 game hour   = 1/24th of a game day
+            //1 game day    = 1.0
+            //1 game second = 1/60 * 1/60 * 1/24 = 86400^-1 = 0.00001157407
+            m_TimeOfDay += (m_GameTimeRate * 0.00001157407f) * dt;
+            if(m_TimeOfDay >= 1.0f) m_TimeOfDay = 0.0f;
 
             m_NumFrames++;
             m_FrameCounter += dt;
@@ -214,5 +225,69 @@ namespace SandboxSimulator
 		// save to log file i32 Ret = fprintf(m_Log, "%s", Formatted);
         printf("%f: %s",m_RunTime.ElapsedTime(),Formatted);
         //free(Formatted);
+    }
+
+    Scalar SSEngine::NormalizeTime(i32 Hour,i32 Minute,i32 Second,bool AM) const
+    {
+        if(Hour   > 12) Hour   = 12;
+        if(Hour   < 1 ) Hour   = 1;
+        if(Minute > 59) Minute = 59;
+        if(Minute < 0 ) Minute = 0;
+        if(Second > 59) Second = 59;
+        if(Second < 0 ) Second = 0;
+        Scalar Hr = Hour - 1;
+        if(!AM) Hr += 12.0f;
+        Hr = Hr / 24.0f;
+        Hr += Scalar(Minute) * 0.00069444446f;
+        Hr += Scalar(Second) * 1.1574074e-05f;
+        if(Hr > 1.0f) Hr = 1.0f - Hr;
+        if(Hr < 0.0f) Hr += 1.0f;
+        return Hr;
+    }
+
+    i32 SSEngine::GetHour() const
+    {
+        Scalar Hour = (24.0f * m_TimeOfDay);
+        int h = int(floor(Hour)) + 1;
+        if(h > 12) h -= 12;
+        return h;
+    }
+
+    i32 SSEngine::GetMinute() const
+    {
+        Scalar Hour   = (24.0f * m_TimeOfDay);
+        Scalar Minute = (Hour - floor(Hour)) * 60.0f;
+        return floor(Minute);
+    }
+
+    i32 SSEngine::GetSecond() const
+    {
+        Scalar Hour   = (24.0f * m_TimeOfDay);
+        Scalar Minute = (Hour - floor(Hour)) * 60.0f;
+        Scalar Second = (Minute - floor(Minute)) * 60.0f;
+        return floor(Second);
+    }
+
+    bool SSEngine::IsAM() const
+    {
+        return m_TimeOfDay < 0.5f - (1.0f / 24.0f) || m_TimeOfDay > 1.0f - (1.0f / 24.0f);
+    }
+
+    string SSEngine::GetTimeString() const
+    {
+        Scalar Hour   = (24.0f * m_TimeOfDay);
+        Scalar Minute = (Hour   - floor(Hour)) * 60.0f;
+        Scalar Second = (Minute - floor(Minute)) * 60.0f;
+        int h = int(floor(Hour  )) + 1;
+        int m = int(floor(Minute));
+        int s = int(floor(Second));
+        if(h > 12) { h -= 12; }
+        bool ml10 = Minute < 10;
+        bool sl10 = Second < 10;
+        char str[32];
+        memset(str,0,32);
+        bool IsMorning = m_TimeOfDay < 0.5f - (1.0f / 24.0f) || m_TimeOfDay > 1.0f - (1.0f / 24.0f);
+        //snprintf(str,32,"%d:%s%d:%s%d %s",h,(ml10 ? "0" : ""),m,(sl10 ? "0" : ""),s,IsMorning ? "AM" : "PM");
+        return string(str);
     }
 }

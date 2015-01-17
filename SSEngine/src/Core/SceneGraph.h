@@ -29,6 +29,7 @@ namespace SandboxSimulator
         CT_RENDER,
         CT_TRANSFORM,
         CT_CAMERA,
+        CT_LIGHT,
         CT_COUNT
     };
 

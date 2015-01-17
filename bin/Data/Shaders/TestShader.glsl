@@ -1,21 +1,36 @@
 [SHDR]
 [Vertex]
-    #version 330
-    in vec3 vp;
-    uniform mat4 u_Model;
-    uniform mat4 u_Projection;
-    out vec3 NormalVert;
-    void main () {
-        NormalVert = vec3(0,0,1);
-        gl_Position = u_Projection * u_Model * vec4(vp, 1.0);
-    }
+#version 330
+in vec3 a_Position;
+in vec3 a_Normal;
+in vec2 a_TexCoord;
+
+uniform mat4 u_MVP;
+uniform mat4 u_;
+
+out vec3 o_Normal;
+out vec2 o_TexC;
+
+void main()
+{
+    gl_Position = u_MVP * vec4(a_Position,1.0);
+
+    o_Normal = a_Normal;
+    o_TexC   = a_TexCoord;
+}
 [/Vertex]
+
 [Fragment]
-    #version 330
-    in vec3 NormalVert;
-    out vec4 frag_colour;
-    void main () {
-        vec3 Albedo = vec3(0,0,1);
-        frag_colour = vec4(Albedo,1.0);
-    }
+#version 330
+in vec3 o_Normal;
+in vec2 o_TexC;
+
+uniform sampler2D u_Texture0;
+
+out vec4 Out0;
+
+void main()
+{
+    Out0 = texture(u_Texture0,o_TexC);
+}
 [/Fragment]

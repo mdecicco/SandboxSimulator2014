@@ -2,31 +2,17 @@
 
 namespace SandboxSimulator
 {
-    TransformComponent::TransformComponent() : Component(CT_TRANSFORM), m_Position(Vec3()), m_Transform(Mat4(1.0f)), m_NeedsUpdate(true)
-    {}
-
+    TransformComponent::TransformComponent() : Component(CT_TRANSFORM), m_IsStatic(false),
+                                                  m_DidMove(true), m_DidRotate(true), m_DidScale(true),
+                                                  m_Clickable(true), m_InheritOrientation(true),
+                                                  m_InheritPosition(true), m_InheritScale(true), m_Simulated(false), m_Updated(false)
+    {
+        Identity();
+    }
     TransformComponent::~TransformComponent()
     {}
 
-    Mat4 TransformComponent::GetMat4()
-    {
-        if(m_NeedsUpdate) {
-            m_Transform.ClearToIdentity();
-            m_Transform.Translate(m_Position);
-        }
-        return m_Transform;
-    }
-
-    Vec3 TransformComponent::GetPosition()
-    {
-        return m_Position;
-    }
-
-    void TransformComponent::Translate(Vec3 Delta)
-    {
-        m_Position += Delta;
-        m_NeedsUpdate = true;
-    }
+    
     void TransformComponent::BinarySerialize(sf::Packet* Packet)
     {
         (*Packet) << (i8)CT_TRANSFORM << m_Position.x << m_Position.y << m_Position.z;
@@ -35,5 +21,168 @@ namespace SandboxSimulator
     void TransformComponent::BinaryDeserialize(sf::Packet* Packet)
     {
         (*Packet) >> m_Position.x >> m_Position.y >> m_Position.z;
+    }
+
+    void TransformComponent::Identity()
+    {
+        if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_DidMove = true;
+        m_Transform = Mat4(1.0f);
+        m_Position = Vec3();
+        m_Orientation = Quat(0.0f,1.0f,0.0f,0.0f);
+        m_Scale = Vec3(1.0f,1.0f,1.0f);
+        m_Updated = false;
+    }
+    void TransformComponent::Translate(const Vec3& t)
+    {
+        m_Position += t;
+        m_Updated = true;
+        m_DidMove = true;
+    }
+    void TransformComponent::Translate(Scalar x,Scalar y,Scalar z)
+    {
+        m_Position += Vec3(x,y,z);
+        m_Updated = true;
+        m_DidMove = true;
+    }
+    void TransformComponent::Rotate(const Quat& q)
+    {
+        m_Orientation *= q;
+        m_Updated = true;
+        m_DidRotate = true;
+    }
+    void TransformComponent::Rotate(const Vec3& Axis,Scalar Angle)
+    {
+        m_Orientation *= Quat(Axis,Angle);
+        m_Updated = true;
+        m_DidRotate = true;
+    }
+    void TransformComponent::Rotate(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle)
+    {
+        m_Orientation *= Quat(Ax,Ay,Az,Angle);
+        m_Updated = true;
+        m_DidRotate = true;
+    }
+    void TransformComponent::Scale(Scalar s)
+    {
+        m_Scale *= s;
+        m_Updated = true;
+        m_DidScale = true;
+    }
+    void TransformComponent::Scale(Scalar x,Scalar y,Scalar z)
+    {
+        m_Scale.x *= x;
+        m_Scale.y *= y;
+        m_Scale.z *= z;
+        m_Updated = true;
+        m_DidScale = true;
+    }
+    void TransformComponent::Scale(const Vec3& s)
+    {
+        m_Scale.Multiply(s);
+        m_Updated = true;
+        m_DidScale = true;
+    }
+    Vec3 TransformComponent::GetPosition(bool Relative) const
+    {
+        //Entity* P = m_Parent->GetParent();
+        Vec3 Pos = m_Position;
+        /*if(P && !Relative && m_InheritPosition)
+        {
+            TransformComponent* t = GetTransformComponent(P);
+            if(t) Pos += t->GetPosition(Relative);
+            P->Destroy();
+        }*/
+        return Pos;
+    }
+    Vec3 TransformComponent::GetScale(bool Relative) const
+    {
+        //Entity* P = m_Entity->GetParent();
+        Vec3 Sc = m_Scale;
+        /*if(P && !Relative && m_InheritScale)
+        {
+            TransformComponent* t = GetTransformComponent(P);
+            if(t) Sc *= t->GetScale(Relative);
+            P->Destroy();
+        }*/
+        return Sc;
+    }
+    Quat TransformComponent::GetOrientation(bool Relative) const
+    {
+        //Entity* P = m_Entity->GetParent();
+        Quat Orientation = m_Orientation;
+        /*if(P && !Relative && m_InheritOrientation)
+        {
+            TransformComponent* t = GetTransformComponent(P);
+            if(t) Orientation *= t->GetOrientation(Relative);
+            P->Destroy();
+        }*/
+        return Orientation;
+    }
+
+    Mat4 TransformComponent::GetTransform(bool Relative)
+    {
+        if(m_Updated)
+        {
+            /* To do: Optimize. */
+            m_Transform = Mat4(1.0f);
+            if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_Transform .Translate(m_Position);
+            if(m_Orientation.w != 0.0f) m_Transform = m_Transform * m_Orientation.ToMatrix();
+            //m_Transform *= Scale(m_Scale);
+            m_NormalMatrix = Transpose(Inverse(m_Orientation.ToMatrix()));
+            m_Updated = false;
+        }
+        //Entity* Parent = m_Entity->GetParent();
+        /*if(Parent && !m_Simulated && !Relative && (m_InheritPosition || m_InheritOrientation || m_InheritScale))
+        {
+            TransformComponent* t = GetTransformComponent(Parent);
+            if(t)
+            {
+                if(m_InheritPosition && m_InheritOrientation && m_InheritScale) return t->GetTransform(Relative) * m_Transform;
+                Matrix4 ret = m_Transform;
+                if(m_InheritOrientation) ret = t->GetOrientation(false).ToMatrix() * ret;
+                if(m_InheritPosition   ) ret = Translation(t->GetPosition(false))  * ret;
+                if(m_InheritScale      ) ret = Reality::Scale(t->GetScale())       * ret;
+                return ret;
+            }
+        }*/
+        return m_Transform;
+    }
+    Mat4 TransformComponent::GetNormalMatrix(bool Relative)
+    {
+        //Update stuff if necessary
+        GetTransform();
+        /*Entity* Parent = m_Entity->GetParent();
+        if(Parent && !m_Simulated && !Relative && m_InheritOrientation)
+        {
+            TransformComponent* t = GetTransformComponent(Parent);
+            if(t)
+            {
+                return t->GetNormalMatrix(Relative) * m_NormalMatrix;
+            }
+        }*/
+        return m_NormalMatrix;
+    }
+    void TransformComponent::UpdateData(const Vec3 &t,const Quat &r,const Vec3 &s)
+    {
+        if(t.x != m_Position.x || t.y != m_Position.y || t.z != m_Position.z)
+        {
+            m_Position = t;
+            m_Updated = true;
+            m_DidMove = true;
+        }
+            
+        if(r.x != m_Orientation.x || r.y != m_Orientation.y || r.z != m_Orientation.z || r.w != m_Orientation.w)
+        {
+            m_Orientation = r;
+            m_Updated = true;
+            m_DidRotate = true;
+        }
+        
+        if(s.x != m_Scale.x || s.y != m_Scale.y || s.z != m_Scale.z)
+        {
+            m_Scale = s;
+            m_Updated = true;
+            m_DidScale = true;
+        }
     }
 };

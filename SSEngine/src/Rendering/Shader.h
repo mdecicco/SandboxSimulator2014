@@ -5,6 +5,8 @@
 #include <System/PlatformIncludes.h>
 #include <GLFW/glfw3.h>
 
+#define MAX_TEXTURES 8
+
 namespace SandboxSimulator
 {
     enum VERTEX_ATTRIBUTE

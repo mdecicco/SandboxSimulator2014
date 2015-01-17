@@ -7,176 +7,25 @@
 
 namespace SandboxSimulator
 {
-
-    RenderComponent::RenderComponent() : Component(CT_RENDER), m_VertBuff(0), m_NormBuff(0), m_TangBuff(0), m_TexCBuff(0), m_Vao(0), m_NeedsUpdate(true), m_Shape(RC_NONE)
-    {}
-
+    RenderComponent::RenderComponent() : Component(CT_RENDER), m_Shdr(0), m_StayVisible(false), m_Mesh(new Mesh()),
+                                         m_UseScissorRegion(false), m_UseBlending(false), m_UseDepthTest(true), m_WriteDepth(true), m_Opacity(1.0f),
+                                         m_Hide(false), m_PrimType(GL_TRIANGLES)
+    {
+    }
     RenderComponent::~RenderComponent()
-    {}
-
-    void RenderComponent::AddVertex(const Vec3 &v)
     {
-        m_Vertices.push_back(v);
-        if(m_VertBuff)
-        {
-            glDeleteBuffers(1, &m_VertBuff);
-            m_VertBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-
-    void RenderComponent::SetVertex(i32 Idx, const Vec3 &v)
-    {
-        m_Vertices[Idx] = v;
-        if(m_VertBuff)
-        {
-            glDeleteBuffers(1, &m_VertBuff);
-            m_VertBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-
-    Vec3 RenderComponent::GetVertex(i32 Idx) const
-    {
-        return m_Vertices[Idx];
-    }
-
-    void RenderComponent::AddTexCoord(const Vec2& t)
-    {
-        m_TexCoords.push_back(t);
-        if(m_TexCBuff)
-        {
-            glDeleteBuffers(1,&m_TexCBuff);
-            m_TexCBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-
-    void RenderComponent::SetTexCoord(i32 Idx,const Vec2& t)
-    {
-        m_TexCoords[Idx] = t;
-        if(m_TexCBuff)
-        {
-            glDeleteBuffers(1,&m_TexCBuff);
-            m_TexCBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-
-    Vec2 RenderComponent::GetTexCoord(i32 Idx) const
-    {
-        return m_TexCoords[Idx];
-    }
-
-    void RenderComponent::AddNormal(const Vec3& n)
-    {
-        m_Normals.push_back(n);
-        if(m_NormBuff)
-        {
-            glDeleteBuffers(1,&m_NormBuff);
-            m_NormBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-    void RenderComponent::SetNormal(i32 Idx,const Vec3& n)
-    {
-        m_Normals[Idx] = n;
-        if(m_NormBuff)
-        {
-            glDeleteBuffers(1,&m_NormBuff);
-            m_NormBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-    Vec3 RenderComponent::GetNormal(i32 Idx) const
-    {
-        return m_Normals[Idx];
-    }
-
-    void RenderComponent::AddTangent(const Vec3& t)
-    {
-        m_Tangents.push_back(t);
-        if(m_TangBuff)
-        {
-            glDeleteBuffers(1,&m_TangBuff);
-            m_TangBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-    void RenderComponent::SetTangent(i32 Idx,const Vec3& t)
-    {
-        m_Tangents.push_back(t);
-        if(m_TangBuff)
-        {
-            glDeleteBuffers(1,&m_TangBuff);
-            m_TangBuff = 0;
-        }
-        m_NeedsUpdate = true;
-    }
-
-    Vec3 RenderComponent::GetTangent(i32 Idx) const
-    {
-        return m_Tangents[Idx];
-    }
-
-    i32 RenderComponent::GetVertexCount() const
-    {
-        return (i32)m_Vertices.size();
-    }
-
-    void RenderComponent::SyncBuffers()
-    {
-        if(m_NeedsUpdate)
-        {
-			m_NeedsUpdate = false;
-            glGenVertexArrays(1,&m_Vao);
-
-            glBindVertexArray(m_Vao);
-
-            if(!m_VertBuff && m_Vertices.size() > 0)
-            {
-                glGenBuffers(1,&m_VertBuff);
-                glBindBuffer(GL_ARRAY_BUFFER,m_VertBuff);
-                glBufferData(GL_ARRAY_BUFFER,m_Vertices.size() * sizeof(Vec3),&m_Vertices[0],GL_STATIC_DRAW);
-                glEnableVertexAttribArray(VA_POSITION);
-                glVertexAttribPointer(VA_POSITION,3,GL_FLOAT,GL_FALSE,0,NULL);
-                glBindBuffer(GL_ARRAY_BUFFER,0);
-            }
-            if(!m_NormBuff && m_Normals.size() > 0)
-            {
-                glGenBuffers(1,&m_NormBuff);
-                glBindBuffer(GL_ARRAY_BUFFER,m_NormBuff);
-                glBufferData(GL_ARRAY_BUFFER,m_Normals.size() * sizeof(Vec3),&m_Normals[0],GL_STATIC_DRAW);
-                glEnableVertexAttribArray(VA_NORMAL);
-                glVertexAttribPointer(VA_NORMAL,3,GL_FLOAT,GL_FALSE,0,NULL);
-                glBindBuffer(GL_ARRAY_BUFFER,0);
-            }
-            if(!m_TangBuff && m_Tangents.size() > 0)
-            {
-                glGenBuffers(1,&m_TangBuff);
-                glBindBuffer(GL_ARRAY_BUFFER,m_TangBuff);
-                glBufferData(GL_ARRAY_BUFFER,m_Tangents.size() * sizeof(Vec3),&m_Tangents[0],GL_STATIC_DRAW);
-                glEnableVertexAttribArray(VA_TANGENT);
-                glVertexAttribPointer(VA_TANGENT,3,GL_FLOAT,GL_FALSE,0,NULL);
-                glBindBuffer(GL_ARRAY_BUFFER,0);
-            }
-            if(!m_TexCBuff && m_TexCoords.size() > 0)
-            {
-                glGenBuffers(1,&m_TexCBuff);
-                glBindBuffer(GL_ARRAY_BUFFER,m_TexCBuff);
-                glBufferData(GL_ARRAY_BUFFER,m_TexCoords.size() * sizeof(Vec2),&m_TexCoords[0],GL_STATIC_DRAW);
-                glEnableVertexAttribArray(VA_TEXCOORD);
-                glVertexAttribPointer(VA_TEXCOORD,2,GL_FLOAT,GL_FALSE,0,NULL);
-                glBindBuffer(GL_ARRAY_BUFFER,0);
-            }
-        }
+        if(m_Mesh) delete m_Mesh;
+        if(m_Shdr) delete m_Shdr;//TODO
     }
 
     void RenderComponent::SetShape(RC_SHAPES Shape)
     {
         m_Shape = Shape;
-        m_Shader = new Shader();
-        m_Shader->Load("Data/Shaders/TestShader.glsl");
+        m_Shdr = new Shader();
+        m_Shdr->Load("Data/Shaders/TestShader.glsl");
+        Texture* t = new Texture();
+        t->Load("Data/Textures/checker.png");
+        m_Mesh->m_Textures[0] = t;
 
         switch(Shape)
         {
@@ -187,12 +36,18 @@ namespace SandboxSimulator
                 break;
             case RC_SQUARE:
                 AddVertex(Vec3(0.5 , 0.5,0));
+                AddTexCoord(Vec2(0,0));
                 AddVertex(Vec3(0.5 ,-0.5,0));
+                AddTexCoord(Vec2(0,1));
                 AddVertex(Vec3(-0.5,-0.5,0));
+                AddTexCoord(Vec2(1,1));
 
                 AddVertex(Vec3(-0.5,-0.5,0));
+                AddTexCoord(Vec2(1,1));
                 AddVertex(Vec3(-0.5, 0.5,0));
+                AddTexCoord(Vec2(1,0));
                 AddVertex(Vec3( 0.5, 0.5,0));
+                AddTexCoord(Vec2(0,0));
                 break;
         }
     }
@@ -210,14 +65,13 @@ namespace SandboxSimulator
     }
 
     /* Render System */
-	RenderSystem::RenderSystem() 
+	RenderSystem::RenderSystem() : m_TriangleCount(0), m_LastTriangleCount(0), m_FrameID(0)
 	{
 		m_Resolution = Vec2(800,600);
         m_ActiveCamera = nullptr;
         m_FullScreen = false;
 		AddComponentType(CT_RENDER);
-        AddMessageType(MT_MAKE_RENDERABLE);
-        AddMessageType(MT_SET_SHADER);
+        m_RenderAlg = new ForwardRenderingAlgorithm();
 	}
 
 	RenderSystem::~RenderSystem() {}
@@ -231,6 +85,13 @@ namespace SandboxSimulator
                 break;
             }
         }
+    }
+
+    Vec3 RenderSystem::GetSunPosition() const
+    {
+        Scalar FarDist = ((CameraComponent*)m_ActiveCamera->GetComponentByType(CT_CAMERA))->m_FarPlane;
+        Scalar tm = m_Engine->GetTimeOfDay() - 0.25f;
+        return Vec3(0,sin(tm * 6.283185306f) * FarDist,cos(tm * 6.283185306f) * FarDist);
     }
 
 	void RenderSystem::Initialize(SSEngine* Eng) 
@@ -275,6 +136,10 @@ namespace SandboxSimulator
         m_Engine->Log("Resolution: %dx%d\n", (int)m_Resolution.x, (int)m_Resolution.y);
         m_Engine->Log("Display mode: %s\n", m_FullScreen ? "Fullscreen" : "Windowed");
         m_Engine->Log("-------------------------\n");
+
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
 	}
 
 	void RenderSystem::Update(Scalar dt) 
@@ -290,54 +155,51 @@ namespace SandboxSimulator
         m_Resolution.x = w;
         m_Resolution.y = h;
 
+        m_LastTriangleCount = m_TriangleCount;
+        m_TriangleCount = 0;
+
         glfwPollEvents();
-        glfwSwapBuffers(m_Window);
 
         glViewport(0,0,w,h);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Mat4 Proj;
-        if(m_ActiveCamera != nullptr) {
-            Proj = m_ActiveCamera->GetProjection();
-        } else {
-            Proj = PerspectiveProjection(90, m_Resolution.x, m_Resolution.y, 0.1f, 1000.0f);
-        }
-
-        for(i32 i = 0; i < m_Components.size(); i++)
+        i32 VisibleEntityCount = 0;
+        m_VisibleEntityList = new RenderList();
+        m_VisibleTransparentEntityList = new RenderList();
+        for(i32 i = 0;i < m_Components.size();i++)
         {
             RenderComponent* r = (RenderComponent*)m_Components[i];
-            
-            Shader* S = r->GetShader();
-            if(S) {
-                GLenum err = glGetError();
-                while (err != GL_NO_ERROR) {
-                    err = glGetError();
-                }
-
-                S->Enable();
-                GLuint shdrID = S->GetPID();
-
-                glUniformMatrix4fv(S->GetUniformLoc(SU_PROJECTION_MATRIX), 1, GL_FALSE, &Proj.m[0][0]);
-                err = glGetError();
-
-                Mat4 Trans;
-                if(r->GetParent()->HasComponentType(CT_TRANSFORM)) {
-                    TransformComponent* t = (TransformComponent*)r->GetParent()->GetComponentByType(CT_TRANSFORM);
-                    Trans = t->GetMat4();
-                } else {
-                    Trans = Mat4(1.0f);
-                }
-                glUniformMatrix4fv(S->GetUniformLoc(SU_MODEL_MATRIX), 1, GL_FALSE, &Trans.m[0][0]);
-
-                r->SyncBuffers();
-                glBindVertexArray(r->m_Vao);
-                glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
-                glBindVertexArray(0);
-
-                S->Disable();
-            }
+            if(r->IsHidden()) continue;
+            if(!r->UseBlending()) m_VisibleEntityList->AddEntity(r->GetParent());
+            else m_VisibleTransparentEntityList->AddEntity(r->GetParent());
+            VisibleEntityCount++;
         }
+        m_VisibleEntityCount = VisibleEntityCount;
+
+        m_IsRendering = true;
+        if(m_VisibleEntityList->GetShaderCount() > 0) Render(*m_VisibleEntityList);
+        if(m_VisibleTransparentEntityList->GetShaderCount() > 0) Render(*m_VisibleTransparentEntityList);
+        
+        //Post Processing
+
+        glDisable(GL_DEPTH_TEST);
+        //if(m_GUIList->GetShaderCount() > 0) Render(*m_GUIList);
+        glEnable(GL_DEPTH_TEST);
+        
+        glfwSwapBuffers(m_Window);
+        
+        m_IsRendering = false;
+        
+        delete m_VisibleEntityList; m_VisibleEntityList = 0;
+        //delete m_GUIList; m_GUIList = 0;
+        m_FrameID++;
 	}
+
+    void RenderSystem::Render(RenderList& l)
+    {
+        if(!m_RenderAlg) return;
+        m_RenderAlg->Render(this,l);
+    }
 
 	void RenderSystem::Shutdown() 
 	{

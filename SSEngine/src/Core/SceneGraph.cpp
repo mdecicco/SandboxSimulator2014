@@ -62,7 +62,7 @@ namespace SandboxSimulator
     {
         if(HasComponentType(CT_TRANSFORM)) {
             TransformComponent* Trans = (TransformComponent*)GetComponentByType(CT_TRANSFORM);
-            Vec3 Pos = Trans->GetPosition();
+            Vec3 Pos = Trans->GetPosition(false);
             (*Packet) << m_UID << Pos.x << Pos.y << Pos.z;
         }
     }

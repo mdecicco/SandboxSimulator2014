@@ -30,6 +30,7 @@ int main(i32 ArgC,Literal ArgV[])
 
     Eng->RegisterSystem(StateSystem);
     Eng->RegisterSystem(RendSystem);
+    Eng->SetRenderSystem(RendSystem);
     Eng->Initialize(ArgC,ArgV);
 
     //Input won't process unless it has an active glfw window.

@@ -19,8 +19,6 @@ namespace SandboxSimulator
     {
         MT_COMPONENT_ADDED,
         MT_COMPONENT_REMOVED,
-        MT_MAKE_RENDERABLE,
-        MT_SET_SHADER,
         MT_SHUTDOWN,
         MT_INVALID
     };

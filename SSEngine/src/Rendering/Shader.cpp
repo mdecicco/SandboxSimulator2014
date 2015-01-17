@@ -52,6 +52,7 @@ namespace SandboxSimulator
     bool Shader::LoadShader()
     {
         if(!m_Loaded) {
+            m_Loaded = true;
             m_VS = glCreateShader(GL_VERTEX_SHADER);
             m_PS = glCreateShader(GL_FRAGMENT_SHADER);
         
@@ -292,9 +293,8 @@ namespace SandboxSimulator
                 printf("Unable to load shader. Invalid file <%s>. (File doesn't begin with [SHDR])\n",m_Path.c_str());
                 return false;
             }
-        
+
             for(i32 i = 0;i < SU_COUNT;i++) m_UniformLocs[i] = glGetUniformLocation(m_PID,UniformNames[i]);
-            m_Loaded = true;
         }
         return true;
     }

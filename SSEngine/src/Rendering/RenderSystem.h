@@ -7,6 +7,8 @@
 #include <list>
 
 #include <Rendering/CameraComponent.h>
+#include <Rendering/Mesh.h>
+#include <Rendering/RenderAlgorithm.h>
 
 using namespace std;
 namespace SandboxSimulator
@@ -25,50 +27,86 @@ namespace SandboxSimulator
             RenderComponent();
             ~RenderComponent();
 
+            void LoadMesh(const string& File);
+        
+            void SetGUIFlag(bool Flag);
+            bool IsGUI() const { return false; }
+        
             /* Attribute access */
-            void AddVertex(const Vec3& v);
-            void SetVertex(i32 Idx,const Vec3& v);
-            Vec3 GetVertex(i32 Idx) const;
+            void Clear() { m_Mesh->Clear(); }
+            
+            void AddVertex(const Vec3& v) { m_Mesh->AddVertex(v); }
+            void SetVertex(i32 Idx,const Vec3& v) { m_Mesh->SetVertex(Idx,v); }
+            Vec3 GetVertex(i32 Idx) const { return m_Mesh->GetVertex(Idx); }
+        
+            void AddTexCoord(const Vec2& t) { m_Mesh->AddTexCoord(t); }
+            void SetTexCoord(i32 Idx,const Vec2& t) { m_Mesh->SetTexCoord(Idx,t); }
+            Vec2 GetTexCoord(i32 Idx) const { return m_Mesh->GetTexCoord(Idx); }
+        
+            void AddNormal(const Vec3& n) { m_Mesh->AddNormal(n); }
+            void SetNormal(i32 Idx,const Vec3& n) { m_Mesh->SetNormal(Idx,n); }
+            Vec3 GetNormal(i32 Idx) const { return m_Mesh->GetNormal(Idx); }
+        
+            void AddTangent(const Vec3& t) { m_Mesh->AddTangent(t); }
+            void SetTangent(i32 Idx,const Vec3& t) { m_Mesh->SetTangent(Idx,t); }
+            Vec3 GetTangent(i32 Idx) { return m_Mesh->GetTangent(Idx); }
 
-            void AddTexCoord(const Vec2& v);
-            void SetTexCoord(i32 Idx,const Vec2& v);
-            Vec2 GetTexCoord(i32 Idx) const;
+            void SetPrimType(i32 Type) { m_PrimType = Type; }
+            i32 GetPrimType() const { return m_PrimType; }
+        
+            i32 GetVertexCount() const { return m_Mesh->GetVertexCount(); }
+        
+            void SyncBuffers() { m_Mesh->SyncBuffers(); }
+        
+            void SetTexParam(i32 TexNum,GLenum Param,GLint Value) { m_Mesh->SetTexParam(TexNum,Param,Value); }
+        
+            void AcquireDimensions() { if(!m_Mesh) return; Vec3 min,max; m_Mesh->GetMinMaxVertices(min,max); m_Dimensions = max - min; }
+            Vec3 GetDimensions() const { return m_Dimensions; }
+        
+            void SetScissorRegion(const Vec2& Pos,const Vec2& Size) { m_ScissorPos = Pos; m_ScissorSize = Size; }
+            Vec2 GetScissorPos() const { return m_ScissorPos; }
+            Vec2 GetScissorSize() const { return m_ScissorSize; }
+            void SetScissor(bool Flag) { m_UseScissorRegion = Flag; }
+            bool UseScissor  ()       const { return m_UseScissorRegion; }
+            bool UseBlending ()       const { return m_UseBlending;      }
+            bool UseDepthTest()       const { return m_UseDepthTest;     }
+            bool DepthWritesEnabled() const { return m_WriteDepth;       }
+            void SetOpacity(Scalar Opacity) { m_Opacity = Opacity;       }
+            Scalar GetOpacity(bool Relative = false) const { return m_Opacity; };
+        
+            Mesh* GetMesh() const { return m_Mesh; }
+        
+            bool StayVisible() const { return m_StayVisible; }
+            bool IsHidden() const { return m_Hide; };
+            void ToggleHide() { m_Hide = !m_Hide; }
 
-            void AddNormal(const Vec3& v);
-            void SetNormal(i32 Idx,const Vec3& v);
-            Vec3 GetNormal(i32 Idx) const;
-
-            void AddTangent(const Vec3& v);
-            void SetTangent(i32 Idx,const Vec3& v);
-            Vec3 GetTangent(i32 Idx) const;
-
+            Shader* GetShader() { return m_Shdr; }
             void SetShape(RC_SHAPES Shape);
-
-            i32 GetVertexCount() const;
-
-            void SyncBuffers();
-
-            Shader* GetShader() { return m_Shader; }
-
             virtual void BinarySerialize(sf::Packet* Packet);
             virtual void BinaryDeserialize(sf::Packet* Packet);
 
         protected:
             friend class RenderSystem;
-            vector<Vec3> m_Vertices;
-            vector<Vec3> m_Normals;
-            vector<Vec3> m_Tangents;
-            vector<Vec2> m_TexCoords;
+            friend class RenderList;
 
-            GLuint m_VertBuff;
-            GLuint m_NormBuff;
-            GLuint m_TangBuff;
-            GLuint m_TexCBuff;
-            GLuint m_Vao;
+            bool m_StayVisible;
+            bool m_Hide;
+            UID m_IsCulled;
+            i32 m_OctreeIndex;
+            Vec3 m_Dimensions;
+            i32 m_PrimType;
+            Mesh* m_Mesh;
+            Shader* m_Shdr;
+            i32 m_ShdrListPos;
+            bool m_UseScissorRegion;
+            Vec2 m_ScissorPos;
+            Vec2 m_ScissorSize;
+            bool m_UseBlending;
+            bool m_UseDepthTest;
+            bool m_WriteDepth;
+            Scalar m_Opacity;
 
             bool m_NeedsUpdate;
-            Shader* m_Shader;
-
             RC_SHAPES m_Shape;
     };
 
@@ -87,19 +125,47 @@ namespace SandboxSimulator
 			virtual void Serialize();
 			virtual void Deserialize();
 
-            GLFWwindow* GetWindow() {return m_Window;}
+            Vec3 GetSunPosition() const;
 
-            void SetCamera(CameraComponent* CameraComp)
+            GLFWwindow* GetWindow() {return m_Window;}
+            Vec2 GetResolution() const { return m_Resolution; }
+
+            void Render(RenderList& r);
+
+            void SetCamera(Entity* CameraComp)
             {
                 m_ActiveCamera = CameraComp;
             }
 
+            Entity* GetCamera() { return m_ActiveCamera; }
+
+            void IncTriCount(i32 Num) { m_TriangleCount += Num; }
+            i32 GetTrianglesPerFrame() const { return m_LastTriangleCount; }
+
+            UID GetFrameID() const { return m_FrameID; }
+            bool IsRendering() const { return m_IsRendering; }
+            i32 GetVisibleEntityCount() const { return m_VisibleEntityCount; }
+            SSEngine* GetEngine() { return m_Engine; }
+
         protected:
+            i32 m_TriangleCount;
+            i32 m_LastTriangleCount;
+
 			SSEngine* m_Engine;
 			GLFWwindow* m_Window;
 			Vec2 m_Resolution;
             bool m_FullScreen;
-            CameraComponent* m_ActiveCamera;
+            bool m_IsRendering;
+
+            Entity* m_ActiveCamera;
+
+            RenderList* m_VisibleEntityList;
+            RenderList* m_VisibleTransparentEntityList;
+            i32 m_VisibleEntityCount;
+
+            UID m_FrameID;
+
+            RenderingAlgorithm* m_RenderAlg;
 	};
 }
 

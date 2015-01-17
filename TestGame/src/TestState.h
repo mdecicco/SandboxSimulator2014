@@ -2,6 +2,7 @@
 #define SandboxSimulator_GameState_h
 
 #include <Core/StateSystem.h>
+#include <Core/TransformComponent.h>
 
 namespace SandboxSimulator {
 class TestState : public State
@@ -16,6 +17,7 @@ class TestState : public State
         StateManagerSystem* m_StateManager;
 
     private:
+        TransformComponent* CamTrans;
 };
 }
 

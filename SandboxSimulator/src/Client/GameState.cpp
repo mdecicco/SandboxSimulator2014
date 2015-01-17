@@ -23,7 +23,7 @@ namespace SandboxSimulator
         if(m_Connection->IsConnected() && m_Engine->GetSceneGraph()->HasEntity(m_Connection->GetEntityID())) {
             Scalar pDelta = m_Engine->GetElapsedTime() - m_LastPacketTime;
             TransformComponent* trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(m_Connection->GetEntityID())->GetComponentByType(CT_TRANSFORM);
-            Vec3 Pos = trans->GetPosition();
+            Vec3 Pos = trans->GetPosition(false);
 
             if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
                 Pos += Vec3(0,0,-1*dt);

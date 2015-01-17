@@ -15,8 +15,16 @@ class CameraComponent : public Component
         //Setters
 
         //Getters
-        Mat4 GetTransform();
-        Mat4 GetProjection();
+        //Mat4 GetProjection();
+
+        Vec2 m_FieldOfView;
+        Scalar m_NearPlane;
+        Scalar m_FarPlane;
+        Scalar m_Exposure;
+        Scalar m_Speed;
+        bool m_UpdateProjection;
+        
+        const Mat4& GetProjection();
 
         virtual void BinarySerialize(sf::Packet* Packet) {}
         virtual void BinaryDeserialize(sf::Packet* Packet) {}

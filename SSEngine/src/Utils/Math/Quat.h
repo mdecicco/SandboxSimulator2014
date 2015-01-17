@@ -11,10 +11,25 @@ class Quat
 public:
     f32 x, y, z, w;
     Quat() {x = 0; y = 0; z = 0; w = 1;}
-    Quat(f32 _x, f32 _y, f32 _z, f32 _w) {x = _x;
-                                          y = _y;
-                                          z = _z;
-                                          w = _w;}
+    Quat(f32 ax, f32 ay, f32 az, f32 angle)
+    {
+        Scalar a = (angle * 0.01745329251) * 0.5f;
+        Scalar r = Scalar(sin(a));
+        w = Scalar(cos(a));
+        x = ax * r;
+        y = ay * r;
+        z = az * r;
+    }
+
+    Quat(const Vec3& Axis,Scalar Angle)
+    {
+        Scalar a = (Angle * 0.01745329251) * 0.5f;
+        Scalar r = Scalar(sin(a));
+        w = Scalar(cos(a));
+        x = Axis.x * r;
+        y = Axis.y * r;
+        z = Axis.z * r;
+    }
 
     void Normalize()
     {
@@ -47,9 +62,29 @@ public:
         float zz = w * q.z + z * q.w + x * q.y - y * q.x;
         float ww = w * q.w - x * q.x - y * q.y - z * q.z;
 
-        Quat ret = Quat(xx, yy, zz, ww);
+        Quat ret = Quat();
+        ret.x = xx;
+        ret.y = yy;
+        ret.z = zz;
+        ret.w = ww;
 
         return ret;
+    }
+
+    Quat operator *=(const Quat& q)
+    {
+        Quat r;
+        r.w = w * q.w - x * q.x - y * q.y - z * q.z;
+        r.x = w * q.x + x * q.w + y * q.z - z * q.y;
+        r.y = w * q.y + y * q.w + z * q.x - x * q.z;
+        r.z = w * q.z + z * q.w + x * q.y - y * q.x;
+        
+        x = r.x;
+        y = r.y;
+        z = r.z;
+        w = r.w;
+        
+        return *this;
     }
 
     Quat Conjugate()

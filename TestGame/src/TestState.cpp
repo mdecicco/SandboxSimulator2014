@@ -1,7 +1,6 @@
 #include <TestState.h>
 #include <Engine.h>
 
-#include <Core/TransformComponent.h>
 #include <Rendering/RenderSystem.h>
 
 namespace SandboxSimulator
@@ -22,12 +21,19 @@ namespace SandboxSimulator
         r->SetShape(RC_SQUARE);
         TransformComponent* t = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
         t->Translate(Vec3(0,0,-2));
+
+        Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
+        CamTrans = new TransformComponent();
+        m_Engine->GetSceneGraph()->AddComponent(Cam, CamTrans);
+        m_Engine->GetSceneGraph()->AddComponent(Cam, new CameraComponent());
+        m_Engine->GetRenderSystem()->SetCamera(Cam);
+
     }
 
     void TestState::Update(Scalar dt)
     {
-        TransformComponent* trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(0)->GetComponentByType(CT_TRANSFORM);
-        Vec3 Pos = trans->GetPosition();
+        //TransformComponent* trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(0)->GetComponentByType(CT_TRANSFORM);
+        Vec3 Pos = Vec3();
 
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
             Pos += Vec3(0,0,-1*dt);
@@ -39,6 +45,6 @@ namespace SandboxSimulator
             Pos += Vec3(1*dt,0,0);
         }
 
-        trans->SetPosition(Pos);
+        CamTrans->Translate(Pos);
     }
 }

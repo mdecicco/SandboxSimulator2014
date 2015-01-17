@@ -64,6 +64,22 @@ namespace SandboxSimulator
             Scalar GetElapsedTime() {return m_RunTime.ElapsedTime();}
 
             InputSystem* GetInputSystem() { return m_InputSystem; }
+
+            /* Time of day */
+            Scalar GetGameTimeRate() const { return m_GameTimeRate; }
+            void   SetGameTimeRate(Scalar Rate) { m_GameTimeRate = Rate; }
+            void   SetTimeOfDay(Scalar T) { m_TimeOfDay = T; }
+            Scalar GetTimeOfDay() const { return m_TimeOfDay; }
+            Scalar NormalizeTime(i32 Hour,i32 Minute,i32 Second,bool AM) const;
+            i32 GetHour() const;
+            i32 GetMinute() const;
+            i32 GetSecond() const;
+            bool IsAM() const;
+            string GetTimeString() const;
+
+            //Misc
+            void SetRenderSystem(RenderSystem* rSys) { m_RenderSystem = rSys; }
+            RenderSystem* GetRenderSystem() { return m_RenderSystem; }
     
         protected:
             /* Systems */
@@ -74,11 +90,17 @@ namespace SandboxSimulator
 			/* Managers */
             SceneGraph* m_SceneGraph;
             InputSystem* m_InputSystem;
+            RenderSystem* m_RenderSystem;
 
 			/* Misc */
 			Timer m_RunTime;
             Scalar m_LastTime;
             bool m_DoShutdown;
+
+            /* Time of day stuff */
+            Scalar m_GameTimeRate;
+            Scalar m_TimeOfDay;
+            Scalar m_Timestep;
 
             int m_NumFrames;
             Scalar m_FrameCounter;
