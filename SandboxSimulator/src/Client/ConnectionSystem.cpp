@@ -79,66 +79,71 @@ namespace SandboxSimulator
         }
 
         if(m_Connected || m_ConnectionAttempted) {
-            packet = m_Socket->Receive(sender, port);
-            if(packet && port == m_ServerPort) {
-                i8 PacketType;
-                u32 PacketID;
-                (*packet) >> PacketID >> PacketType;
-                m_LastMessageTime = m_Engine->GetElapsedTime();
+            bool KeepChecking = true;
+            while(KeepChecking) {
+                packet = m_Socket->Receive(sender, port);
+                if(packet && port == m_ServerPort) {
+                    i8 PacketType;
+                    u32 PacketID;
+                    (*packet) >> PacketID >> PacketType;
+                    m_LastMessageTime = m_Engine->GetElapsedTime();
                 
-                switch(PacketType)
-                {
-                    case PT_CONNECT:
-                        if(!m_Connected && m_ConnectionAttempted) {
-                            u16 ClientID;
-                            (*packet) >> ClientID;
-                            m_ClientID = ClientID;
-                            m_Connected = true;
-                            m_Engine->Log("Connected to server at %s:%d.\n", sender.toString().c_str(), port);
-                        } else {
-                            m_Engine->Log("Could not connect to server, already connected to a server or a connection was not requested!");
-                        }
-                        break;
-                    case PT_ACK:
-                        //a packet was acknowledged, get the ack packet ID and remove it from pending ack queue (TODO)
-                        u32 AckPacketID;
-                        (*packet) >> AckPacketID;
-                        //m_Engine->Log("Packet %d acknowledged by server!\n", AckPacketID);
-                        if(m_PendingPing && AckPacketID == m_PendingPingID)
+                    switch(PacketType)
+                    {
+                        case PT_CONNECT:
+                            if(!m_Connected && m_ConnectionAttempted) {
+                                u16 ClientID;
+                                (*packet) >> ClientID;
+                                m_ClientID = ClientID;
+                                m_Connected = true;
+                                m_Engine->Log("Connected to server at %s:%d.\n", sender.toString().c_str(), port);
+                            } else {
+                                m_Engine->Log("Could not connect to server, already connected to a server or a connection was not requested!");
+                            }
+                            break;
+                        case PT_ACK:
+                            //a packet was acknowledged, get the ack packet ID and remove it from pending ack queue (TODO)
+                            u32 AckPacketID;
+                            (*packet) >> AckPacketID;
+                            //m_Engine->Log("Packet %d acknowledged by server!\n", AckPacketID);
+                            if(m_PendingPing && AckPacketID == m_PendingPingID)
+                                m_PendingPing = false;
+                            break;
+                        case PT_PING:
+                            Acknowledge(PacketID);
                             m_PendingPing = false;
-                        break;
-                    case PT_PING:
-                        Acknowledge(PacketID);
-                        m_PendingPing = false;
-                        break;
-                    case PT_DISCONNECT:
-                        i8 Reason;
-                        (*packet) >> Reason;
-                        if(Reason == DR_TIMEOUT)
-                            m_Engine->Log("Disconnected, reason: timed out.\n");
-                        else if (Reason == DR_QUIT)
-                            m_Engine->Log("Disconnected, reason: quit.\n");
+                            break;
+                        case PT_DISCONNECT:
+                            i8 Reason;
+                            (*packet) >> Reason;
+                            if(Reason == DR_TIMEOUT)
+                                m_Engine->Log("Disconnected, reason: timed out.\n");
+                            else if (Reason == DR_QUIT)
+                                m_Engine->Log("Disconnected, reason: quit.\n");
 
-                        m_Connected = false;
-                        m_ConnectionAttempted = false;
-                        break;
-                    case PT_STATE_UPDATE:
-                        (*packet) >> m_EntityID;
-                        m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
-                        break;
-                    case PT_POS_UPDATE:
-                        if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                            m_Connected = false;
+                            m_ConnectionAttempted = false;
+                            break;
+                        case PT_STATE_UPDATE:
                             (*packet) >> m_EntityID;
-                            m_Engine->GetSceneGraph()->BinaryDeserializePositions(packet);
-                            m_LastStateUpdateSequence = PacketID;
-                        }
-                        break;
-                    default:
-                        //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);
-                        break;
-                }
+                            m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
+                            break;
+                        case PT_POS_UPDATE:
+                            if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                                (*packet) >> m_EntityID;
+                                m_Engine->GetSceneGraph()->BinaryDeserializePositions(packet);
+                                m_LastStateUpdateSequence = PacketID;
+                            }
+                            break;
+                        default:
+                            //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);
+                            break;
+                    }
 
-                delete packet;
+                    delete packet;
+                } else {
+                    KeepChecking = false;
+                }
             }
         }
     }

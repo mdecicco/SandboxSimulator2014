@@ -15,8 +15,12 @@
 
 namespace SandboxSimulator
 {
-    SSEngine::SSEngine(bool ShowFps) : m_FrameCounter(0), m_NumFrames(0), m_ShowFps(ShowFps)
+    SSEngine::SSEngine(u8 DesiredFps, bool ShowFps) : m_FrameCounter(0), m_NumFrames(0), m_ShowFps(ShowFps)
     {
+        if(DesiredFps > 0)
+            m_MinFrameTime = (1.0f / DesiredFps) * 1000.0f;
+        else
+            m_MinFrameTime = 0;
         m_LastTime = 0.0f;
         m_DoShutdown = false;
         m_RunTime.Start();
@@ -68,8 +72,8 @@ namespace SandboxSimulator
 		if(m_Systems.size() == 0) m_DoShutdown = true;
         while(!m_DoShutdown)
         {
-            Scalar dt = m_RunTime.ElapsedTime() - m_LastTime;
-            m_LastTime = m_RunTime.ElapsedTime();
+            Scalar dt = GetElapsedTime() - m_LastTime;
+            m_LastTime = GetElapsedTime();
 
             m_NumFrames++;
             m_FrameCounter += dt;
@@ -92,6 +96,12 @@ namespace SandboxSimulator
                     printf("%d fps \n",m_NumFrames);
                 m_FrameCounter = 0;
                 m_NumFrames = 0;
+            }
+            Scalar EndTime = GetElapsedTime();
+            Scalar FrameTime = (EndTime - m_LastTime)*1000.0f;
+            if(FrameTime < m_MinFrameTime) {
+                Scalar diff = m_MinFrameTime - FrameTime;
+                sf::sleep(sf::milliseconds(diff));
             }
         }
     }

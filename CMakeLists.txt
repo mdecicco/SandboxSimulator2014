@@ -12,6 +12,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 set(BUILD_STATIC TRUE CACHE BOOL "TRUE to build static libraries, FALSE to build shared libraries (preferred)")
 set(BUILD_GAME TRUE CACHE BOOL "TRUE to build the game, FALSE to not build it")
+set(BUILD_TEST TRUE CACHE BOOL "TRUE to build the test game, FALSE to not build it")
 
 set(GLFWDIR "" CACHE PATH "Path to glfw dir")
 set(GLEWDIR "" CACHE PATH "Path to glew dir")
@@ -49,6 +50,10 @@ ADD_DEFINITIONS(
 add_subdirectory(${PROJECT_SOURCE_DIR}/SSEngine)
 if(BUILD_GAME)
     add_subdirectory(${PROJECT_SOURCE_DIR}/SandboxSimulator)
+endif()
+
+if(BUILD_TEST)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/TestGame)
 endif()
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/SSEngine/src/" DESTINATION include/SSEngine FILES_MATCHING PATTERN "*.h")

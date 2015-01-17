@@ -19,6 +19,10 @@
 #include <Server/ServerListener.h>
 #include <Server/ServerSystem.h>
 
+#ifdef WIN32
+    #include <Windows.h>
+#endif
+
 using namespace SandboxSimulator;
 
 int main(i32 ArgC,Literal ArgV[])
@@ -57,10 +61,14 @@ int main(i32 ArgC,Literal ArgV[])
         }
     }
 
+    if(ArgC == 1) {
+        Okay = true;
+    }
+
     if(Okay)
     {
-        SSEngine* Eng = new SSEngine(ShowFPS);
         if(ServerMode) {
+            SSEngine* Eng = new SSEngine(20,ShowFPS);
             sf::Mutex* mutex = new sf::Mutex();
 
             ServerSystem* system = new ServerSystem(mutex);
@@ -71,7 +79,12 @@ int main(i32 ArgC,Literal ArgV[])
             Listener->Start();
             Eng->Run();
             Listener->Join();
+            Eng->Shutdown();
         } else {
+            #ifdef WIN32
+                FreeConsole();
+            #endif
+            SSEngine* Eng = new SSEngine(0,ShowFPS);
             //Engine Systems
             StateManagerSystem* StateSystem = new StateManagerSystem();
             ConnectionSystem* ConnSystem = new ConnectionSystem();
@@ -86,25 +99,25 @@ int main(i32 ArgC,Literal ArgV[])
             Eng->GetInputSystem()->SetWindow(RendSystem->GetWindow());
 
             StateSystem->SetState(new GameState(ConnSystem, Address, Port));
-            Eng->Run();
-        }
 
-        Eng->Shutdown();
+            Eng->Run();
+            Eng->Shutdown();
+        }
     }
     if(!Okay || ShowHelp) {
         printf("SandboxSimulator - Tuner, tuner tuner tuner, tuner.\n");
         printf("Copyright (c) 2015 -- Jordan Duty\n\n");
         printf("Usage:\n");
         printf("  SandboxSimulator [options]\n");
-        printf("  SandboxSimulator -s                   (Runs the server, listening on port 3889 UDP)\n");
-        printf("  SandboxSimulator -s 12345             (Runs the server, listening on port 12345 UDP)\n");
-        printf("  SandboxSimulator -c                   (Runs the client, connects to 127.0.0.1:3889)\n");
-        printf("  SandboxSimulator -c 192.0.0.1         (Runs the client, connects to 192.0.0.1:3889)\n");
-        printf("  SandboxSimulator -c 192.0.0.1 12345   (Runs the client, connects to 192.0.0.1:12345)\n");
-        printf("-c | --client                           !Put as the last command! Launches in client mode\n");
-        printf("-s | --server                           !Put as the last command! Launches in server mode\n");
-        printf("-f | --fps                              Print out FPS in the console.\n");
-        printf("-h | --help                             Shows this help\n");
+        printf("  SandboxSimulator -s               (Runs the server, listening on port 3889)\n");
+        printf("  SandboxSimulator -s 12345         (Runs the server, listening on port 12345)\n");
+        printf("  SandboxSimulator -c               (Runs the client, connects to localhost)\n");
+        printf("  SandboxSimulator -c [addr]        (Runs the client, connects to [addr]:3889)\n");
+        printf("  SandboxSimulator -c [addr] [port] (Runs the client, connects to [addr]:[port])\n");
+        printf("-c | --client                       !Put as the last command! Launches client\n");
+        printf("-s | --server                       !Put as the last command! Launches server\n");
+        printf("-f | --fps                          Print out FPS in the console.\n");
+        printf("-h | --help                         Shows this help\n");
     }
     return 0;
 }
