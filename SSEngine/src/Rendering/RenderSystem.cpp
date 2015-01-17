@@ -175,8 +175,9 @@ namespace SandboxSimulator
     void RenderComponent::SetShape(RC_SHAPES Shape)
     {
         m_Shape = Shape;
-        Material* Mat = new Material();
-        SetMaterial(Mat);
+        m_Shader = new Shader();
+        m_Shader->Load("Data/Shaders/TestShader.glsl");
+
         switch(Shape)
         {
             case RC_TRIANGLE:
@@ -305,38 +306,36 @@ namespace SandboxSimulator
         for(i32 i = 0; i < m_Components.size(); i++)
         {
             RenderComponent* r = (RenderComponent*)m_Components[i];
-
-            Material* Mat = r->m_Material;
             
-            GLenum err = glGetError();
-            while (err != GL_NO_ERROR) {
+            Shader* S = r->GetShader();
+            if(S) {
+                GLenum err = glGetError();
+                while (err != GL_NO_ERROR) {
+                    err = glGetError();
+                }
+
+                S->Enable();
+                GLuint shdrID = S->GetPID();
+
+                glUniformMatrix4fv(S->GetUniformLoc(SU_PROJECTION_MATRIX), 1, GL_FALSE, &Proj.m[0][0]);
                 err = glGetError();
+
+                Mat4 Trans;
+                if(r->GetParent()->HasComponentType(CT_TRANSFORM)) {
+                    TransformComponent* t = (TransformComponent*)r->GetParent()->GetComponentByType(CT_TRANSFORM);
+                    Trans = t->GetMat4();
+                } else {
+                    Trans = Mat4(1.0f);
+                }
+                glUniformMatrix4fv(S->GetUniformLoc(SU_MODEL_MATRIX), 1, GL_FALSE, &Trans.m[0][0]);
+
+                r->SyncBuffers();
+                glBindVertexArray(r->m_Vao);
+                glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
+                glBindVertexArray(0);
+
+                S->Disable();
             }
-            Mat->Bind();
-            Shader* shader = Mat->GetShader();
-
-            GLuint shdrID = shader->GetPointer();
-            GLint ProjLoc = glGetUniformLocation(shdrID, "Projection");
-            GLint TransLoc = glGetUniformLocation(shdrID, "Transform");
-
-            glUniformMatrix4fv(ProjLoc, 1, GL_FALSE, &Proj.m[0][0]);
-            err = glGetError();
-
-            Mat4 Trans;
-            if(r->GetParent()->HasComponentType(CT_TRANSFORM)) {
-                TransformComponent* t = (TransformComponent*)r->GetParent()->GetComponentByType(CT_TRANSFORM);
-                Trans = t->GetMat4();
-            } else {
-                Trans = Mat4(1.0f);
-            }
-            glUniformMatrix4fv(TransLoc, 1, GL_FALSE, &Trans.m[0][0]);
-
-            r->SyncBuffers();
-            glBindVertexArray(r->m_Vao);
-            glDrawArrays(GL_TRIANGLES, 0, r->GetVertexCount());
-            glBindVertexArray(0);
-
-            Mat->Unbind();
         }
 	}
 

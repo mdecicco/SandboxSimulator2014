@@ -6,7 +6,6 @@
 #include <Utils/Math.h>
 #include <list>
 
-#include <Rendering/Material.h>
 #include <Rendering/CameraComponent.h>
 
 using namespace std;
@@ -48,7 +47,8 @@ namespace SandboxSimulator
             i32 GetVertexCount() const;
 
             void SyncBuffers();
-            void SetMaterial(Material* Mat) {m_Material = Mat;}
+
+            Shader* GetShader() { return m_Shader; }
 
             virtual void BinarySerialize(sf::Packet* Packet);
             virtual void BinaryDeserialize(sf::Packet* Packet);
@@ -66,9 +66,8 @@ namespace SandboxSimulator
             GLuint m_TexCBuff;
             GLuint m_Vao;
 
-            Material* m_Material;
-
             bool m_NeedsUpdate;
+            Shader* m_Shader;
 
             RC_SHAPES m_Shape;
     };
@@ -100,8 +99,6 @@ namespace SandboxSimulator
 			GLFWwindow* m_Window;
 			Vec2 m_Resolution;
             bool m_FullScreen;
-
-            Material* m_DefaultMaterial;
             CameraComponent* m_ActiveCamera;
 	};
 }
