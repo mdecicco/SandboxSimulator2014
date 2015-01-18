@@ -15,8 +15,8 @@ namespace SandboxSimulator
     {
         if(m_UpdateProjection)
         {
-            //m_Projection = PerspectiveMultiFov(m_FieldOfView.x,m_FieldOfView.y,m_NearPlane,m_FarPlane);
-            m_Projection = PerspectiveProjection(m_FieldOfView.x, 800,600, m_NearPlane, m_FarPlane);
+            m_Projection = PerspectiveMultiFov(m_FieldOfView.x,m_FieldOfView.y,m_NearPlane,m_FarPlane);
+            //m_Projection = PerspectiveProjection(m_FieldOfView.x, 800,600, m_NearPlane, m_FarPlane);
             m_UpdateProjection = false;
         }
         return m_Projection;

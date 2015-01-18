@@ -42,6 +42,8 @@ class TransformComponent : public Component
         void UpdateData(const Vec3& t,const Quat& r,const Vec3& s);
         bool IsClickable() const { return m_Clickable; }
 
+        void SetFirstPerson(bool fp) { m_FirstPerson = fp;m_Updated = true; }
+
         virtual void BinarySerialize(sf::Packet* Packet);
         virtual void BinaryDeserialize(sf::Packet* Packet);
 
@@ -59,6 +61,11 @@ class TransformComponent : public Component
         bool m_InheritPosition;
         bool m_InheritScale;
         bool m_Simulated;
+
+        bool m_FirstPerson;
+        f32 m_FirstPersonYRot;
+        f32 m_FirstPersonXRot;
+
         Mat4 m_Transform;
         Mat4 m_NormalMatrix;
 };

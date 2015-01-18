@@ -25,15 +25,15 @@ public:
 
     Vec3 Cross(const Vec3 &v) const
     {
-        Vec3 Ret = Vec3();
-        const f32 x1 = y * v.z - z * v.y;
-        const f32 y1 = z * v.x - x * v.z;
-        const f32 z1 = x * v.y - y * v.x;
-        Ret.x = x1;
-        Ret.y = y1;
-        Ret.z = z1;
-
-        return Ret;
+        //Vec3 Ret = Vec3();
+        //const f32 x1 = y * v.z - z * v.y;
+        //const f32 y1 = z * v.x - x * v.z;
+        //const f32 z1 = x * v.y - y * v.x;
+        //Ret.x = x1;
+        //Ret.y = y1;
+        //Ret.z = z1;
+        return Vec3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+        //return Ret;
     }
 
 	f32 LengthSquared() {

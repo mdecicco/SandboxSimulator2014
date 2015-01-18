@@ -18,6 +18,9 @@ namespace SandboxSimulator
         RC_NONE,
         RC_TRIANGLE,
         RC_SQUARE,
+        RC_SPHERE,
+        RC_SKY_SPHERE,
+        RC_GROUND_PLANE,
         RC_COUNT
     };
 

@@ -22,19 +22,22 @@ namespace SandboxSimulator
     {
         m_Shape = Shape;
         m_Shdr = new Shader();
-        m_Shdr->Load("Data/Shaders/TestShader.glsl");
         Texture* t = new Texture();
         t->Load("Data/Textures/checker.png");
         m_Mesh->m_Textures[0] = t;
-
+        i32 NumRings = 16;
+        i32 NumSectors = 32;
+        f32 Radius = 0.5f;
         switch(Shape)
         {
             case RC_TRIANGLE:
+                m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(0   , 0.5,0));
                 AddVertex(Vec3(0.5 ,-0.5,0));
                 AddVertex(Vec3(-0.5,-0.5,0));
                 break;
             case RC_SQUARE:
+                m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(0.5 , 0.5,0));
                 AddTexCoord(Vec2(0,0));
                 AddVertex(Vec3(0.5 ,-0.5,0));
@@ -47,6 +50,102 @@ namespace SandboxSimulator
                 AddVertex(Vec3(-0.5, 0.5,0));
                 AddTexCoord(Vec2(1,0));
                 AddVertex(Vec3( 0.5, 0.5,0));
+                AddTexCoord(Vec2(0,0));
+                break;
+            case RC_SPHERE:
+                m_Shdr->Load("Data/Shaders/TestShader.glsl");
+                for(int r = 0; r <= NumRings; r++)
+                {
+                    f32 Theta = r * PI / NumRings;
+                    f32 SinTheta = sin(Theta);
+                    f32 CosTheta = cos(Theta);
+                    for(int s = 0; s <= NumSectors; s++)
+                    {
+                        f32 Phi = s * 2 * PI / NumSectors;
+                        f32 SinPhi = sin(Phi);
+                
+                        f32 x = cos(Phi) * SinTheta;
+                        f32 y = CosTheta;
+                        f32 z = -(SinPhi * SinTheta);
+                
+                        f32 u = s * (1.0/NumSectors);
+                        f32 v = r * (1.0/NumRings);
+                
+                        AddVertex(Vec3(x*Radius,y*Radius,z*Radius));
+                        AddNormal(Vec3(x,y,z));
+                        AddTexCoord(Vec2(u,v));
+                    }
+                }
+                
+                for(int r = 0; r < NumRings; r++) for(int s = 0; s < NumSectors; s++)
+                {
+                    int first = r* (NumSectors + 1) + s;
+                    int second = first + NumSectors + 1;
+                    int third = first+1;
+                    m_Mesh->AddIndex(first);
+                    m_Mesh->AddIndex(second);
+                    m_Mesh->AddIndex(third);
+                
+                    m_Mesh->AddIndex(second);
+                    m_Mesh->AddIndex(second+1);
+                    m_Mesh->AddIndex(third);
+                }
+
+                break;
+            case RC_SKY_SPHERE:
+                m_Shdr->Load("Data/Shaders/SkyGradient.glsl");
+                for(int r = 0; r <= NumRings; r++)
+                {
+                    f32 Theta = r * PI / NumRings;
+                    f32 SinTheta = sin(Theta);
+                    f32 CosTheta = cos(Theta);
+                    for(int s = 0; s <= NumSectors; s++)
+                    {
+                        f32 Phi = s * 2 * PI / NumSectors;
+                        f32 SinPhi = sin(Phi);
+                
+                        f32 x = cos(Phi) * SinTheta;
+                        f32 y = CosTheta;
+                        f32 z = -(SinPhi * SinTheta);
+                
+                        f32 u = s * (1.0/NumSectors);
+                        f32 v = r * (1.0/NumRings);
+                
+                        AddVertex(Vec3(x*Radius,y*Radius,z*Radius));
+                        AddNormal(Vec3(x,y,z));
+                        AddTexCoord(Vec2(u,v));
+                    }
+                }
+                
+                for(int r = 0; r < NumRings; r++) for(int s = 0; s < NumSectors; s++)
+                {
+                    int first = r* (NumSectors + 1) + s;
+                    int second = first + NumSectors + 1;
+                    int third = first+1;
+                    m_Mesh->AddIndex(first);
+                    m_Mesh->AddIndex(third);
+                    m_Mesh->AddIndex(second);
+                
+                    m_Mesh->AddIndex(second);
+                    m_Mesh->AddIndex(third);
+                    m_Mesh->AddIndex(second+1);
+                }
+
+                break;
+            case RC_GROUND_PLANE:
+                m_Shdr->Load("Data/Shaders/TestShader.glsl");
+                AddVertex(Vec3(100 ,0.0,100));
+                AddTexCoord(Vec2(0,0));
+                AddVertex(Vec3(100,0,-100));
+                AddTexCoord(Vec2(0,1));
+                AddVertex(Vec3(-100,0,-100));
+                AddTexCoord(Vec2(1,1));
+
+                AddVertex(Vec3(-100,0,-100));
+                AddTexCoord(Vec2(1,1));
+                AddVertex(Vec3(-100,0,100));
+                AddTexCoord(Vec2(1,0));
+                AddVertex(Vec3(100,0,100));
                 AddTexCoord(Vec2(0,0));
                 break;
         }
@@ -177,9 +276,11 @@ namespace SandboxSimulator
         m_VisibleEntityCount = VisibleEntityCount;
 
         m_IsRendering = true;
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         if(m_VisibleEntityList->GetShaderCount() > 0) Render(*m_VisibleEntityList);
         if(m_VisibleTransparentEntityList->GetShaderCount() > 0) Render(*m_VisibleTransparentEntityList);
-        
+        glDisable(GL_CULL_FACE);
         //Post Processing
 
         glDisable(GL_DEPTH_TEST);

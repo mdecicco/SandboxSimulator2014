@@ -69,8 +69,8 @@ namespace SandboxSimulator
         if(!Observer || !Camera->HasComponentType(CT_CAMERA)) return 0;
         
         const Mat4& p = Observer->GetProjection();
-        const Mat4& v = ObserverTransform ? Inverse(ObserverTransform->GetTransform(false)) : Mat4(1.0f);
-        Mat4 pv = v * p;
+        const Mat4& v = ObserverTransform ? ObserverTransform->GetTransform(false).Inverse() : Mat4::Identity;
+        Mat4 pv = p * v;
         
         for(i32 i = 0;i < l.GetShaderCount();i++)
         {
@@ -86,7 +86,7 @@ namespace SandboxSimulator
             #define Uv4(u,v) \
             { i32 loc = S->GetUniformLoc(u); if(loc != -1) glUniform4f(loc,v.x,v.y,v.z,v.w); }
             #define Um(u,mat) \
-            { i32 loc = S->GetUniformLoc(u); if(loc != -1) glUniformMatrix4fv(loc,1,GL_FALSE,&mat.m[0][0]); }
+            { i32 loc = S->GetUniformLoc(u); if(loc != -1) glUniformMatrix4fv(loc,1,GL_TRUE,&mat.x.x); }
             
             /* Upload constant uniform data */
             if(Observer)
@@ -129,7 +129,7 @@ namespace SandboxSimulator
                     }
                     else
                     {
-                        mvp = m * v * p;
+                        mvp = pv * m;
                         if(!UsingCameraViewFlag) { Um(SU_VIEW_MATRIX,v); Um(SU_PROJECTION_MATRIX,p); UsingCameraViewFlag = true; }
                     }
                     Um(SU_MODEL_MATRIX,m);
@@ -138,7 +138,7 @@ namespace SandboxSimulator
                 }
                 else
                 {
-                    Um(SU_MODEL_MATRIX,Mat4(1.0f));
+                    Um(SU_MODEL_MATRIX,Mat4::Identity);
                     if(r->IsGUI())
                     {
                         //Matrix4 gpv = rSys->GetGUIProj() * rSys->GetGUIView();

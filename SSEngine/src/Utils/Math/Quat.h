@@ -87,6 +87,14 @@ public:
         return *this;
     }
 
+    Vec3 Quat::operator *(const Vec3& rVal) const
+    {
+        Vec3 p0(x,y,z);
+        Vec3 t = p0.Cross(rVal) * 2.0f;
+        Vec3 v1 = rVal + (t * w) + p0.Cross(t);
+        return v1;
+    }
+
     Quat Conjugate()
     {
         Quat ret(-x, -y, -z, w);

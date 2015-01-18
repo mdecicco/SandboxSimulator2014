@@ -3,6 +3,7 @@
 
 #include <Core/EngineSystem.h>
 #include <GLFW/glfw3.h>
+#include <Utils/Math.h>
 
 namespace SandboxSimulator {
 class InputSystem : public EngineSystem
@@ -22,6 +23,9 @@ class InputSystem : public EngineSystem
 
         void SetWindow(GLFWwindow* window) { m_Window = window; m_WindowSet = true; }
         bool KeyDown(int key);
+
+        Vec2 GetMousePosition();
+        void SetMousePosition(Vec2 Pos);
 
     private:
         bool m_WindowSet;

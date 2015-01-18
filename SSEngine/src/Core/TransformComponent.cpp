@@ -5,7 +5,8 @@ namespace SandboxSimulator
     TransformComponent::TransformComponent() : Component(CT_TRANSFORM), m_IsStatic(false),
                                                   m_DidMove(true), m_DidRotate(true), m_DidScale(true),
                                                   m_Clickable(true), m_InheritOrientation(true),
-                                                  m_InheritPosition(true), m_InheritScale(true), m_Simulated(false), m_Updated(false)
+                                                  m_InheritPosition(true), m_InheritScale(true), m_Simulated(false), m_Updated(false),
+                                                  m_FirstPersonXRot(0), m_FirstPersonYRot(0), m_FirstPerson(false)
     {
         Identity();
     }
@@ -26,7 +27,7 @@ namespace SandboxSimulator
     void TransformComponent::Identity()
     {
         if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_DidMove = true;
-        m_Transform = Mat4(1.0f);
+        m_Transform = Mat4::Identity;
         m_Position = Vec3();
         m_Orientation = Quat(0.0f,1.0f,0.0f,0.0f);
         m_Scale = Vec3(1.0f,1.0f,1.0f);
@@ -34,13 +35,29 @@ namespace SandboxSimulator
     }
     void TransformComponent::Translate(const Vec3& t)
     {
-        m_Position += t;
+        if(m_DidRotate && m_FirstPerson) {
+            Quat pitch = Quat(Vec3(1,0,0), m_FirstPersonYRot);
+            Quat yaw = Quat(Vec3(0,1,0), m_FirstPersonXRot);
+            m_Orientation = yaw * pitch;
+        }
+        if(m_FirstPerson)
+            m_Position += (m_Orientation * t);
+        else
+            m_Position += t;
         m_Updated = true;
         m_DidMove = true;
     }
     void TransformComponent::Translate(Scalar x,Scalar y,Scalar z)
     {
-        m_Position += Vec3(x,y,z);
+        if(m_DidRotate && m_FirstPerson) {
+            Quat pitch = Quat(Vec3(1,0,0), m_FirstPersonYRot);
+            Quat yaw = Quat(Vec3(0,1,0), m_FirstPersonXRot);
+            m_Orientation = yaw * pitch;
+        }
+        if(m_FirstPerson)
+            m_Position += (m_Orientation * Vec3(x,y,z));
+        else
+            m_Position += Vec3(x,y,z);
         m_Updated = true;
         m_DidMove = true;
     }
@@ -52,13 +69,27 @@ namespace SandboxSimulator
     }
     void TransformComponent::Rotate(const Vec3& Axis,Scalar Angle)
     {
-        m_Orientation *= Quat(Axis,Angle);
+        if(m_FirstPerson) {
+            m_FirstPersonYRot += Axis.x*Angle;
+            m_FirstPersonXRot += Axis.y*Angle;
+            if(m_FirstPersonYRot > 90) m_FirstPersonYRot = 90;
+            if(m_FirstPersonYRot < -90) m_FirstPersonYRot = -90;
+        } else {
+            m_Orientation *= Quat(Axis,Angle);
+        }
         m_Updated = true;
         m_DidRotate = true;
     }
     void TransformComponent::Rotate(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle)
     {
-        m_Orientation *= Quat(Ax,Ay,Az,Angle);
+        if(m_FirstPerson) {
+            m_FirstPersonYRot += Ax*Angle;
+            m_FirstPersonXRot += Ay*Angle;
+            if(m_FirstPersonYRot > 90) m_FirstPersonYRot = 90;
+            if(m_FirstPersonYRot < -90) m_FirstPersonYRot = -90;
+        } else {
+            m_Orientation *= Quat(Ax,Ay,Az,Angle);
+        }
         m_Updated = true;
         m_DidRotate = true;
     }
@@ -78,7 +109,7 @@ namespace SandboxSimulator
     }
     void TransformComponent::Scale(const Vec3& s)
     {
-        m_Scale.Multiply(s);
+        m_Scale *= s;
         m_Updated = true;
         m_DidScale = true;
     }
@@ -124,11 +155,19 @@ namespace SandboxSimulator
         if(m_Updated)
         {
             /* To do: Optimize. */
-            m_Transform = Mat4(1.0f);
-            if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_Transform .Translate(m_Position);
-            if(m_Orientation.w != 0.0f) m_Transform = m_Transform * m_Orientation.ToMatrix();
-            //m_Transform *= Scale(m_Scale);
-            m_NormalMatrix = Transpose(Inverse(m_Orientation.ToMatrix()));
+            
+            m_Transform = Mat4::Identity;
+            if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_Transform = Translation(m_Position);
+            if(!m_FirstPerson) {
+                if(m_Orientation.w != 0.0f) m_Transform *= m_Orientation.ToMat();
+            } else {
+                Quat pitch = Quat(Vec3(1,0,0), m_FirstPersonYRot);
+                Quat yaw = Quat(Vec3(0,1,0), m_FirstPersonXRot);
+                m_Orientation = yaw * pitch;
+                if(m_Orientation.w != 0.0f) m_Transform *= m_Orientation.ToMat();
+            }
+            m_Transform *= SandboxSimulator::Scale(m_Scale);
+            m_NormalMatrix = m_Orientation.ToMat().Inverse().Transpose();
             m_Updated = false;
         }
         //Entity* Parent = m_Entity->GetParent();
