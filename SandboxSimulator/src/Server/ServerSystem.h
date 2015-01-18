@@ -3,6 +3,7 @@
 
 #include <Core/EngineSystem.h>
 #include <Server/Client.h>
+#include <Common/NetworkDefs.h>
 
 namespace SandboxSimulator
 {

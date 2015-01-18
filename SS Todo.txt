@@ -1,6 +1,4 @@
 TODO
-1) change to serialized command based network interaction.
-2) Pass view matrix to render system.
-3) Double check that uniforms exist before trying to use them.
-4) Make better shader / material system.
-5) Start physics integration with client side prediction.
+1) Remove Binary serialization in scene graph in favor of less coupled game code
+2) change to serialized command based network interaction.
+3) Start physics integration with client side prediction.

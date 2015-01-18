@@ -40,17 +40,23 @@ namespace SandboxSimulator
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(0.5 , 0.5,0));
                 AddTexCoord(Vec2(0,0));
-                AddVertex(Vec3(0.5 ,-0.5,0));
-                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,0,1));
                 AddVertex(Vec3(-0.5,-0.5,0));
                 AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3(0.5 ,-0.5,0));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,0,1));
 
                 AddVertex(Vec3(-0.5,-0.5,0));
                 AddTexCoord(Vec2(1,1));
-                AddVertex(Vec3(-0.5, 0.5,0));
-                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,0,1));
                 AddVertex(Vec3( 0.5, 0.5,0));
                 AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3(-0.5, 0.5,0));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,0,1));
                 break;
             case RC_SPHERE:
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
@@ -155,18 +161,6 @@ namespace SandboxSimulator
                 AddNormal(Vec3(0,1,0));
                 break;
         }
-    }
-
-    void RenderComponent::BinarySerialize(sf::Packet* Packet)
-    {
-        (*Packet) << (i8)CT_RENDER << (i8)m_Shape;
-    }
-
-    void RenderComponent::BinaryDeserialize(sf::Packet* Packet)
-    {
-        i8 Shape;
-        (*Packet) >> Shape;
-        SetShape((RC_SHAPES)Shape);
     }
 
     /* Render System */

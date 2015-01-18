@@ -23,6 +23,9 @@ class GameState : public State
         Scalar m_LastPacketTime;
         u16 m_Port;
         std::string m_Address;
+
+        bool MouseHeld;
+        TransformComponent* CamTrans;
 };
 }
 

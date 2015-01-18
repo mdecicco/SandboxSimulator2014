@@ -4,6 +4,9 @@
 #include <System/SSThread.h>
 #include <Network/Socket.h>
 
+#include <Common/NetworkDefs.h>
+#include <Common/GameCommands.h>
+
 #include <System/SSTypes.h>
 #include <vector>
 
@@ -37,6 +40,8 @@ class Client
         sf::Packet* CreatePacket(PACKET_TYPE Type);
         void SendWorldState(SSEngine* Eng);
         void SendPositionUpdate(SSEngine* Eng, bool IncludeClientEntity);
+        void SendCommand(NetworkCommand* Command);
+        //void ParseCommand(GAME_COMMAND_TYPE, sf::Packet);
 
     private:
         u16 m_Id;

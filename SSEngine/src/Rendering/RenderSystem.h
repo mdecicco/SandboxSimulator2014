@@ -85,8 +85,6 @@ namespace SandboxSimulator
 
             Shader* GetShader() { return m_Shdr; }
             void SetShape(RC_SHAPES Shape);
-            virtual void BinarySerialize(sf::Packet* Packet);
-            virtual void BinaryDeserialize(sf::Packet* Packet);
 
         protected:
             friend class RenderSystem;

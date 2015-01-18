@@ -3,7 +3,12 @@
 
 #include <Core/EngineSystem.h>
 #include <Network/Socket.h>
+#include <Common/NetworkDefs.h>
 #include <string>
+
+#include <Common/NetworkDefs.h>
+#include <Common/GameCommands.h>
+#include <Utils/Math.h>
 
 namespace SandboxSimulator {
 class ConnectionSystem : public EngineSystem
@@ -37,6 +42,8 @@ class ConnectionSystem : public EngineSystem
 
         bool NeedsUpdate() {return m_NeedsUpdate;}
         void NeedsUpdate(bool t) {m_NeedsUpdate = t;}
+
+        void SendPositionUpdate(Vec3 pos);
 
     private:
         Scalar m_LastMessageTime;

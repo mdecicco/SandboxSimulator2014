@@ -26,9 +26,6 @@ class CameraComponent : public Component
         
         const Mat4& GetProjection();
 
-        virtual void BinarySerialize(sf::Packet* Packet) {}
-        virtual void BinaryDeserialize(sf::Packet* Packet) {}
-
     private:
         Mat4 m_Transform;
         Mat4 m_Projection;

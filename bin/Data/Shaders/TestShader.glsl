@@ -39,12 +39,13 @@ void main()
         if(u_TimeOfDay <= 0.75 && u_TimeOfDay >= 0.25)
         {
             vec3 Dir = normalize(u_SunPosition);
-            Out0 = (Albedo * dot(o_Normal,Dir));
+            float Factor = dot(o_Normal,Dir);
+            Factor = max(Factor, 0.1);
+            Out0 = Albedo * Factor;
         }
         else
         {
-            vec3 Dir = -normalize(u_SunPosition);
-            Out0 = (Albedo * dot(o_Normal,Dir) * 0.2);
+            Out0 = Albedo * 0.1;
         }
         Out0.a = Albedo.a;
     }

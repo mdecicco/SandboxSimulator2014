@@ -4,30 +4,7 @@
 #include <SFML/Network.hpp>
 #include <System/SSTypes.h>
 
-#define TIMEOUT_LIMIT 10
-#define CLIENT_LIMIT 256
-
 namespace SandboxSimulator{
-enum PACKET_TYPE
-{
-    PT_CONNECT,
-    PT_DISCONNECT,
-    PT_EVENT,
-    PT_STATE_UPDATE,
-    PT_POS_UPDATE,
-    PT_ACK,
-    PT_PING,
-    PT_PLAYER_UPDATE,
-    PT_COUNT
-};
-
-enum DISCONNECT_REASON
-{
-    DR_TIMEOUT,
-    DR_QUIT,
-    DR_COUNT
-};
-
 class TcpSocket
 {
     public:

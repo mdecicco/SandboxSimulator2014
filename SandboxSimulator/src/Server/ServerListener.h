@@ -4,6 +4,7 @@
 #include <System/SSThread.h>
 #include <System/SSTypes.h>
 #include <Network/Socket.h>
+#include <Common/NetworkDefs.h>
 
 #include <Server/Client.h>
 #include <Server/ServerSystem.h>

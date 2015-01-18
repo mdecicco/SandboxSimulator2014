@@ -46,9 +46,6 @@ namespace SandboxSimulator
 
             COMPONENT_TYPE GetType() const {return m_Type;}
 
-            virtual void BinarySerialize(sf::Packet* Packet) = 0;
-            virtual void BinaryDeserialize(sf::Packet* Packet) = 0;
-
             void SetParent(Entity* Ent) { m_Parent = Ent; }
             Entity* GetParent() { return m_Parent; }
 
@@ -79,11 +76,6 @@ namespace SandboxSimulator
 
             Component* GetComponentByType(COMPONENT_TYPE Type);
 
-            void BinarySerialize(sf::Packet* Packet);
-            void BinarySerializePosition(sf::Packet* Packet);
-            void BinaryDeserialize(sf::Packet* Packet);
-            void BinaryDeserializePosition(sf::Packet* Packet);
-
             UID GetID() { return m_UID; }
 
             bool HasComponentType(COMPONENT_TYPE Type)
@@ -101,6 +93,8 @@ namespace SandboxSimulator
             SceneGraph* m_SceneGraph;
     };
 
+    #define EntityList std::map<UID, EntityPtr>
+
     class SceneGraph
     {
         public:
@@ -115,18 +109,13 @@ namespace SandboxSimulator
             void RemoveComponent(Entity* E,Component* Comp);
             void RemoveComponentByType(Entity* E,i32 Type);
 
-            void BinarySerialize(sf::Packet* Packet);
-            void BinarySerialize(sf::Packet* Packet, UID ExcludeID);
-            void BinarySerializePositions(sf::Packet* Packet);
-            void BinarySerializePositions(sf::Packet* Packet, UID ExcludeID);
-            void BinaryDeserialize(sf::Packet* Packet);
-            void BinaryDeserializePositions(sf::Packet* Packet);
             Entity* GetEntityById(UID ID) { return GetEntity(ID); }
 
             bool HasEntity(UID EntID);
+            EntityList* GetEntities() { return &m_Entities; };
 
         protected:
-            std::map<UID, EntityPtr> m_Entities;
+            EntityList m_Entities;
             SSEngine* m_Engine;
     };
 }

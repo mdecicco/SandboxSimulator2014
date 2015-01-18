@@ -23,6 +23,7 @@ class InputSystem : public EngineSystem
 
         void SetWindow(GLFWwindow* window) { m_Window = window; m_WindowSet = true; }
         bool KeyDown(int key);
+        bool ButtonDown(int button);
 
         Vec2 GetMousePosition();
         void SetMousePosition(Vec2 Pos);

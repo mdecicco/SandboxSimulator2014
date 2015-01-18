@@ -28,6 +28,14 @@ namespace SandboxSimulator
         TransformComponent* gt = (TransformComponent*)G->GetComponentByType(CT_TRANSFORM);
         gt->SetPosition(Vec3(0,-2,0));
 
+        Entity* P = m_Engine->GetSceneGraph()->CreateEntity();
+        m_Engine->GetSceneGraph()->AddComponent(P, new RenderComponent());
+        m_Engine->GetSceneGraph()->AddComponent(P, new TransformComponent());
+        RenderComponent* pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
+        pr->SetShape(RC_SPHERE);
+        TransformComponent* pt = (TransformComponent*)P->GetComponentByType(CT_TRANSFORM);
+        pt->SetPosition(Vec3(0,0,0));
+
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
         m_Engine->GetSceneGraph()->AddComponent(Cam, CamTrans);
@@ -35,6 +43,8 @@ namespace SandboxSimulator
         m_Engine->GetRenderSystem()->SetCamera(Cam);
         CamTrans->SetFirstPerson(true);
         m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
+        CamTrans->SetRelativeTo(P);
+        CamTrans->SetPosition(Vec3(0,0,2));
     }
 
     void TestState::Update(Scalar dt)

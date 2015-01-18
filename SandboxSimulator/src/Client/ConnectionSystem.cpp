@@ -87,12 +87,13 @@ namespace SandboxSimulator
                     u32 PacketID;
                     (*packet) >> PacketID >> PacketType;
                     m_LastMessageTime = m_Engine->GetElapsedTime();
-                
+                    i8 NumCommands = 0;
+
                     switch(PacketType)
                     {
                         case PT_CONNECT:
                             if(!m_Connected && m_ConnectionAttempted) {
-                                (*packet) >> m_ClientID;
+                                (*packet) >> m_ClientID >> m_EntityID;
                                 m_Connected = true;
                                 m_Engine->Log("Connected to server at %s:%d.\n", sender.toString().c_str(), port);
                             } else {
@@ -122,15 +123,21 @@ namespace SandboxSimulator
                             m_Connected = false;
                             m_ConnectionAttempted = false;
                             break;
-                        case PT_STATE_UPDATE:
-                            (*packet) >> m_EntityID;
-                            m_Engine->GetSceneGraph()->BinaryDeserialize(packet);
-                            break;
-                        case PT_POS_UPDATE:
-                            if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
-                                (*packet) >> m_EntityID;
-                                m_Engine->GetSceneGraph()->BinaryDeserializePositions(packet);
-                                m_LastStateUpdateSequence = PacketID;
+                        case PT_COMMAND:
+                            //Parse and execute command
+                            (*packet) >> NumCommands;
+                            for(i32 i = 0; i < NumCommands; i++) {
+                                i8 CommandType = 0;
+                                (*packet) >> CommandType;
+                                if(CommandType == GCOM_CREATE_PLAYER) {
+                                    CreatePlayerCommand* cmd = new CreatePlayerCommand(m_Engine);
+                                    cmd->Deserialize(packet);
+                                    cmd->Execute();
+                                } else if (CommandType == GCOM_PLAYER_POSITION) {
+                                    PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine);
+                                    cmd->Deserialize(packet);
+                                    cmd->Execute();
+                                }
                             }
                             break;
                         default:
@@ -186,13 +193,20 @@ namespace SandboxSimulator
         return packet;
     }
 
+    void ConnectionSystem::SendPositionUpdate(Vec3 pos)
+    {
+        if(m_NeedsUpdate) {
+            PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine, m_EntityID, pos);
+            sf::Packet* p = CreatePacket(PT_COMMAND);
+            (*p) << (u8) 1;
+            cmd->Serialize(p);
+            Send(p);
+            m_NeedsUpdate = false;
+        }
+    }
+
 	void ConnectionSystem::Serialize()
-    {
-
-    }
-
+    {}
 	void ConnectionSystem::Deserialize()
-    {
-
-    }
+    {}
 }

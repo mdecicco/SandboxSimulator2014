@@ -3,6 +3,7 @@
 #include <Engine.h>
 
 #include <Network/Serialization.h>
+#include <Common/GameCommands.h>
 
 namespace SandboxSimulator
 {
@@ -75,23 +76,21 @@ namespace SandboxSimulator
     {
         m_Mutex->lock();
         if(!HasClient(ClientID) && !HasClient(Address, Port)) {
-            Entity* E = m_Engine->GetSceneGraph()->CreateEntity();
-            m_Engine->GetSceneGraph()->AddComponent(E, new RenderComponent());
-            m_Engine->GetSceneGraph()->AddComponent(E, new TransformComponent());
-            RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-            r->SetShape(RC_SQUARE);
-            TransformComponent* t = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
-            t->Translate(Vec3(0,0,-2));
+            CreatePlayerCommand* IDCmd = new CreatePlayerCommand(m_Engine, (u32)-1, Vec3(0,0,-2));
+            u32 EntityID = IDCmd->Execute();
+            delete IDCmd;
 
-            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, E->GetID());
+            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, EntityID);
 
             //Send serialized world state
             c->SendWorldState(m_Engine);
             //
             //Resend world state to other clients, so they know about this.
+            CreatePlayerCommand* CPCmd = new CreatePlayerCommand(m_Engine, EntityID, Vec3(0,0,-2));
             for(i32 i = 0; i < m_Clients.size(); i++) {
-                m_Clients[i]->SendWorldState(m_Engine);
+                m_Clients[i]->SendCommand(CPCmd);
             }
+            delete CPCmd;
 
             m_Clients.push_back(c);
 

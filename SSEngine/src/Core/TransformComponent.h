@@ -16,7 +16,7 @@ class TransformComponent : public Component
 
         //Getters
         Mat4 GetMat4();
-        Vec3 GetPosition();
+        Vec3 GetPosition() { return m_Position; }
 
         bool IsStatic() const { return m_IsStatic; }
         bool DidMove() { bool tmp = m_DidMove; m_DidMove = false; return tmp; }
@@ -44,8 +44,7 @@ class TransformComponent : public Component
 
         void SetFirstPerson(bool fp) { m_FirstPerson = fp;m_Updated = true; }
 
-        virtual void BinarySerialize(sf::Packet* Packet);
-        virtual void BinaryDeserialize(sf::Packet* Packet);
+        void SetRelativeTo(Entity* E) { m_RelativeTo = E; m_HasParent = true; }
 
     protected:
         Vec3 m_Position;
@@ -68,6 +67,9 @@ class TransformComponent : public Component
 
         Mat4 m_Transform;
         Mat4 m_NormalMatrix;
+
+        bool m_HasParent;
+        Entity* m_RelativeTo;
 };
 }
 

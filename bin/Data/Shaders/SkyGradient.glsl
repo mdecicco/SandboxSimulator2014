@@ -4,8 +4,8 @@
 uniform mat4 u_MVP;
 uniform mat4 u_Model;
 uniform float u_FarPlane;
-float fInnerRadius = 3186.17;         // The inner (planetary) radius
-float fOuterRadius = 3278.11;         // The outer (atmosphere) radius
+float fInnerRadius = 3286.0;         // The inner (planetary) radius
+float fOuterRadius = 3398.0;         // The outer (atmosphere) radius
 
 in vec3 a_Position;
 
@@ -34,13 +34,13 @@ float fInnerRadius = 3286.00f;
 float fInnerRadius2 = fInnerRadius * fInnerRadius;
 float fkm = 0.000713832f;
 float fkr = 0.00143956f;
-float esun = 31.223f;
+float esun = 45.223f;
 float fKrESun = fkr * esun;
 float fKmESun = fkm * esun;
 float fKr4PI = fkr*4*pi;
 float fKm4PI = fkm*4*pi;
 float fScale = 1.0 / (fOuterRadius - fInnerRadius);
-float fScaleDepth = 0.832589f;
+float fScaleDepth = 0.432589f;
 float fScaleOverScaleDepth = fScale / fScaleDepth;
 float g = -0.995f;
 float g2 = g*g;

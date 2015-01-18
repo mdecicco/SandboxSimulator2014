@@ -19,7 +19,7 @@ namespace SandboxSimulator
         m_PendingPing = false;
 
         sf::Packet* packet = CreatePacket(PT_CONNECT);
-        (*packet) << m_Id;
+        (*packet) << m_Id << EntityID;
         m_Socket->Send(packet, m_IP, m_Port);
         delete packet;
     }
@@ -44,9 +44,6 @@ namespace SandboxSimulator
         m_LastMessageTime = m_Engine->GetElapsedTime();
         switch(Type)
         {
-            case PT_EVENT:
-
-                break;
             case PT_ACK:
                 u32 AckPacketID;
                 (*Packet) >> AckPacketID;
@@ -54,15 +51,26 @@ namespace SandboxSimulator
                 if(m_PendingPing && m_PendingPingID == AckPacketID)
                     m_PendingPing = false;
                 break;
-            case PT_PLAYER_UPDATE:
+            case PT_COMMAND:
                 if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0) {
-                    Vec3 Pos;
-                    (*Packet) >> Pos.x >> Pos.y >> Pos.z;
-                    TransformComponent* Trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(m_ClientEntityID)->GetComponentByType(CT_TRANSFORM);
-                    Trans->SetPosition(Pos);
+                    //Parse and execute command
+                    i8 NumCommands = 0;
+                    (*Packet) >> NumCommands;
+                    for(i32 i = 0; i < NumCommands; i++) {
+                        i8 CommandType = 0;
+                        (*Packet) >> CommandType;
+                        if(CommandType == GCOM_PLAYER_POSITION) {
+                            PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine);
+                            cmd->Deserialize(Packet);
+                            cmd->Execute();
+                            delete cmd;
+                        }
+                    }
                     m_LastUpdateSequence = PacketID;
-                    //Acknowledge(PacketID);
                 }
+                break;
+            case PT_ESSENTIAL_COMMAND:
+                Acknowledge(PacketID);
                 break;
             case PT_PING:
                 Acknowledge(PacketID);
@@ -103,20 +111,58 @@ namespace SandboxSimulator
 
     void Client::SendWorldState(SSEngine* Eng)
     {
-        sf::Packet* packet = CreatePacket(PT_STATE_UPDATE);
-        (*packet) << m_ClientEntityID;
-        Eng->GetSceneGraph()->BinarySerialize(packet);
+        sf::Packet* packet = CreatePacket(PT_COMMAND);
+        std::vector<CreatePlayerCommand> Commands;
+
+        EntityList* Entities = m_Engine->GetSceneGraph()->GetEntities();
+        for(EntityList::iterator it = Entities->begin(); it != Entities->end(); it++) {
+            Entity* E = it->second.get();
+            if(E->HasComponentType(CT_TRANSFORM)) {
+                TransformComponent* Trans = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
+                Vec3 Pos = Trans->GetPosition();
+                CreatePlayerCommand cmd = CreatePlayerCommand(m_Engine, E->GetID(), Pos);
+                Commands.push_back(cmd);
+            }
+        }
+
+        (*packet) << (u8)Commands.size();
+        for(i32 i = 0; i < Commands.size(); i++)
+            Commands[i].Serialize(packet);
+
         Send(packet);
+        delete packet;
     }
 
     void Client::SendPositionUpdate(SSEngine* Eng, bool InclClient)
     {
-        sf::Packet* packet = CreatePacket(PT_POS_UPDATE);
-        (*packet) << m_ClientEntityID;
-        if(InclClient) {
-            Eng->GetSceneGraph()->BinarySerializePositions(packet);
-        } else
-            Eng->GetSceneGraph()->BinarySerializePositions(packet, m_ClientEntityID);
+        sf::Packet* packet = CreatePacket(PT_COMMAND);
+        std::vector<PlayerPositionCommand> Commands;
+
+        EntityList* Entities = m_Engine->GetSceneGraph()->GetEntities();
+        for(EntityList::iterator it = Entities->begin(); it != Entities->end(); it++) {
+            Entity* E = it->second.get();
+            if(E->HasComponentType(CT_TRANSFORM) && E->GetID() != m_ClientEntityID) {
+                TransformComponent* Trans = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
+                Vec3 Pos = Trans->GetPosition();
+                PlayerPositionCommand cmd = PlayerPositionCommand(m_Engine, E->GetID(), Pos);
+                Commands.push_back(cmd);
+            }
+        }
+
+        (*packet) << (u8)Commands.size();
+        for(i32 i = 0; i < Commands.size(); i++)
+            Commands[i].Serialize(packet);
+
         Send(packet);
+        delete packet;
+    }
+
+    void Client::SendCommand(NetworkCommand* Cmd)
+    {
+        sf::Packet* packet = CreatePacket(PT_COMMAND);
+        (*packet) << (u8)1;
+        Cmd->Serialize(packet);
+        Send(packet);
+        delete packet;
     }
 }

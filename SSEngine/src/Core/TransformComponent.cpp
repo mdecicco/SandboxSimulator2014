@@ -6,23 +6,12 @@ namespace SandboxSimulator
                                                   m_DidMove(true), m_DidRotate(true), m_DidScale(true),
                                                   m_Clickable(true), m_InheritOrientation(true),
                                                   m_InheritPosition(true), m_InheritScale(true), m_Simulated(false), m_Updated(false),
-                                                  m_FirstPersonXRot(0), m_FirstPersonYRot(0), m_FirstPerson(false)
+                                                  m_FirstPersonXRot(0), m_FirstPersonYRot(0), m_FirstPerson(false), m_HasParent(false)
     {
         Identity();
     }
     TransformComponent::~TransformComponent()
     {}
-
-    
-    void TransformComponent::BinarySerialize(sf::Packet* Packet)
-    {
-        (*Packet) << (i8)CT_TRANSFORM << m_Position.x << m_Position.y << m_Position.z;
-    }
-
-    void TransformComponent::BinaryDeserialize(sf::Packet* Packet)
-    {
-        (*Packet) >> m_Position.x >> m_Position.y >> m_Position.z;
-    }
 
     void TransformComponent::Identity()
     {
@@ -117,6 +106,10 @@ namespace SandboxSimulator
     {
         //Entity* P = m_Parent->GetParent();
         Vec3 Pos = m_Position;
+        if(m_HasParent) {
+            TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
+            if(t) Pos += t->GetPosition(Relative);
+        }
         /*if(P && !Relative && m_InheritPosition)
         {
             TransformComponent* t = GetTransformComponent(P);
@@ -129,6 +122,10 @@ namespace SandboxSimulator
     {
         //Entity* P = m_Entity->GetParent();
         Vec3 Sc = m_Scale;
+        if(m_HasParent) {
+            TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
+            if(t) Sc *= t->GetScale(Relative);
+        }
         /*if(P && !Relative && m_InheritScale)
         {
             TransformComponent* t = GetTransformComponent(P);
@@ -141,6 +138,10 @@ namespace SandboxSimulator
     {
         //Entity* P = m_Entity->GetParent();
         Quat Orientation = m_Orientation;
+        if(m_HasParent) {
+            TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
+            if(t) Orientation *= t->GetOrientation(Relative);
+        }
         /*if(P && !Relative && m_InheritOrientation)
         {
             TransformComponent* t = GetTransformComponent(P);
@@ -171,6 +172,17 @@ namespace SandboxSimulator
             m_Updated = false;
         }
         //Entity* Parent = m_Entity->GetParent();
+        if(m_HasParent) {
+            TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
+            if(t)
+            {
+                Mat4 ret = m_Transform;
+                ret = t->GetOrientation(false).ToMat() * ret;
+                ret = SandboxSimulator::Translation(t->GetPosition(false)) * ret;
+                ret = SandboxSimulator::Scale(t->GetScale()) * ret;
+                return ret;
+            }
+        }
         /*if(Parent && !m_Simulated && !Relative && (m_InheritPosition || m_InheritOrientation || m_InheritScale))
         {
             TransformComponent* t = GetTransformComponent(Parent);
@@ -190,6 +202,13 @@ namespace SandboxSimulator
     {
         //Update stuff if necessary
         GetTransform();
+        if(m_HasParent) {
+            TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
+            if(t)
+            {
+                return t->GetNormalMatrix(Relative) * m_NormalMatrix;
+            }
+        }
         /*Entity* Parent = m_Entity->GetParent();
         if(Parent && !m_Simulated && !Relative && m_InheritOrientation)
         {

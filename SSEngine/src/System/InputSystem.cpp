@@ -50,4 +50,11 @@ namespace SandboxSimulator
             return true;
         return false;
     }
+
+    bool InputSystem::ButtonDown(int button)
+    {
+        if(m_WindowSet && glfwGetMouseButton(m_Window, button) == GLFW_PRESS) 
+            return true;
+        return false;
+    }
 };
