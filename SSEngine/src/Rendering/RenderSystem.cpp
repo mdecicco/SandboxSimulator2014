@@ -136,17 +136,23 @@ namespace SandboxSimulator
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(100 ,0.0,100));
                 AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,1,0));
                 AddVertex(Vec3(100,0,-100));
                 AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,1,0));
                 AddVertex(Vec3(-100,0,-100));
                 AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,1,0));
 
                 AddVertex(Vec3(-100,0,-100));
                 AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,1,0));
                 AddVertex(Vec3(-100,0,100));
                 AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,1,0));
                 AddVertex(Vec3(100,0,100));
                 AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,1,0));
                 break;
         }
     }
