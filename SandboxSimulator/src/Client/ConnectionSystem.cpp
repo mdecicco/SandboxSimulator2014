@@ -133,12 +133,32 @@ namespace SandboxSimulator
                                     CreatePlayerCommand* cmd = new CreatePlayerCommand(m_Engine);
                                     cmd->Deserialize(packet);
                                     cmd->Execute();
+                                    delete cmd;
                                 } else if (CommandType == GCOM_PLAYER_POSITION) {
-                                    PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine);
-                                    cmd->Deserialize(packet);
-                                    cmd->Execute();
+                                    if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                                        PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine);
+                                        cmd->Deserialize(packet);
+                                        cmd->Execute();
+                                        delete cmd;
+                                    }
+                                } else if (CommandType == GCOM_SET_TIME) {
+                                    if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                                        SetTimeCommand* cmd = new SetTimeCommand(m_Engine);
+                                        cmd->Deserialize(packet);
+                                        cmd->Execute();
+                                        delete cmd;
+                                    }
+                                } else if (CommandType == GCOM_SET_TIME_RATE) {
+                                    if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0) {
+                                        SetTimeRateCommand* cmd = new SetTimeRateCommand(m_Engine);
+                                        cmd->Deserialize(packet);
+                                        cmd->Execute();
+                                        delete cmd;
+                                    }
                                 }
                             }
+                            if(PacketID > m_LastStateUpdateSequence || m_LastStateUpdateSequence == 0)
+                                m_LastStateUpdateSequence = PacketID;
                             break;
                         default:
                             //m_Engine->Log("Packet type %d not registered in the internal enum.\n", (i32)PacketType);
@@ -203,6 +223,14 @@ namespace SandboxSimulator
             Send(p);
             m_NeedsUpdate = false;
         }
+    }
+
+    void ConnectionSystem::SendCommand(NetworkCommand* Cmd)
+    {
+        sf::Packet* Packet = CreatePacket(PT_COMMAND);
+        (*Packet) << (u8)1;
+        Cmd->Serialize(Packet);
+        Send(Packet);
     }
 
 	void ConnectionSystem::Serialize()

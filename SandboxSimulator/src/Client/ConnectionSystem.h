@@ -44,6 +44,7 @@ class ConnectionSystem : public EngineSystem
         void NeedsUpdate(bool t) {m_NeedsUpdate = t;}
 
         void SendPositionUpdate(Vec3 pos);
+        void SendCommand(NetworkCommand* Cmd);
 
     private:
         Scalar m_LastMessageTime;

@@ -80,7 +80,7 @@ namespace SandboxSimulator
             u32 EntityID = IDCmd->Execute();
             delete IDCmd;
 
-            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, EntityID);
+            Client* c = new Client(ClientID, Address, Port, Socket, m_Engine, m_Mutex, EntityID, this);
 
             //Send serialized world state
             c->SendWorldState(m_Engine);
@@ -182,5 +182,17 @@ namespace SandboxSimulator
             }
         m_Mutex->unlock();
         return false;
+    }
+
+    void ServerSystem::Broadcast(NetworkCommand* Cmd)
+    {
+        for(i32 i = 0; i < m_Clients.size(); i++)
+        {
+            Client* c = m_Clients[i];
+            sf::Packet* p = c->CreatePacket(PT_COMMAND);
+            (*p) << (u8)1;
+            Cmd->Serialize(p);
+            c->Send(p);
+        }
     }
 };

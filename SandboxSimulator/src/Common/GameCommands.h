@@ -15,6 +15,8 @@ enum GAME_COMMAND_TYPE
 {
     GCOM_CREATE_PLAYER,
     GCOM_PLAYER_POSITION,
+    GCOM_SET_TIME,
+    GCOM_SET_TIME_RATE,
     GCOM_COUNT
 };
 
@@ -103,12 +105,46 @@ class PlayerPositionCommand : public NetworkCommand
 
 class SetTimeCommand : public NetworkCommand
 {
+    public:
+        SetTimeCommand(SSEngine* Eng) : NetworkCommand(Eng, GCOM_SET_TIME) {}
+        SetTimeCommand(SSEngine* Eng, Scalar TimeOfDay) : NetworkCommand(Eng, GCOM_SET_TIME), TimeOfDay_(TimeOfDay) {}
+        ~SetTimeCommand() {}
 
+        virtual i32 Execute() { m_Engine->SetTimeOfDay(TimeOfDay_);return 0; }
+
+        virtual void Serialize(sf::Packet* p)
+        {
+            (*p) << (i8)m_Type << TimeOfDay_;
+        }
+
+        virtual void Deserialize(sf::Packet* p)
+        {
+            (*p) >> TimeOfDay_;
+        }
+
+        Scalar TimeOfDay_;
 };
 
 class SetTimeRateCommand : public NetworkCommand
 {
+    public:
+        SetTimeRateCommand(SSEngine* Eng) : NetworkCommand(Eng, GCOM_SET_TIME_RATE) {}
+        SetTimeRateCommand(SSEngine* Eng, Scalar TimeRate) : NetworkCommand(Eng, GCOM_SET_TIME_RATE), TimeRate_(TimeRate) {}
+        ~SetTimeRateCommand() {}
 
+        virtual i32 Execute() { m_Engine->SetGameTimeRate(TimeRate_);return 0; }
+
+        virtual void Serialize(sf::Packet* p)
+        {
+            (*p) << (i8)m_Type << TimeRate_;
+        }
+
+        virtual void Deserialize(sf::Packet* p)
+        {
+            (*p) >> TimeRate_;
+        }
+
+        Scalar TimeRate_;
 };
 }
 

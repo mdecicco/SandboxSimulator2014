@@ -1,0 +1,47 @@
+default settings:
+float pi = 3.14159265;
+vec3  waveLength = vec3(0.65,0.57,0.475);
+vec3  v3InvWavelength = vec3(1.0f / pow(waveLength.r,4.0f),1.0f / pow(waveLength.g,4.0f),1.0f / pow(waveLength.b,4.0f));
+float fOuterRadius = 1600.00f;
+float fOuterRadius2 = fOuterRadius * fOuterRadius;
+float fInnerRadius = 1000.00f;
+float fInnerRadius2 = fInnerRadius * fInnerRadius;
+float fkm = 0.0025;
+float fkr = 0.0015;
+float esun = 45;
+float fKrESun = fkr * esun;
+float fKmESun = fkm * esun;
+float fKr4PI = fkr*4*pi;
+float fKm4PI = fkm*4*pi;
+float fScale = 1.0 / (fOuterRadius - fInnerRadius);
+float fScaleDepth = 0.30;
+float fScaleOverScaleDepth = fScale / fScaleDepth;
+float g = -0.995f;
+float g2 = g*g;
+
+int   nSamples = 5;
+float fSamples = 5.0f;
+
+Better sunrise/sunset settings:
+float pi = 3.14159265;
+vec3  waveLength = vec3(0.65,0.57,0.475);
+vec3  v3InvWavelength = vec3(1.0f / pow(waveLength.r,4.0f),1.0f / pow(waveLength.g,4.0f),1.0f / pow(waveLength.b,4.0f));
+float fOuterRadius = 3398.00f;
+float fOuterRadius2 = fOuterRadius * fOuterRadius;
+float fInnerRadius = 3286.00f;
+float fInnerRadius2 = fInnerRadius * fInnerRadius;
+float fkm = 0.000713832f;
+float fkr = 0.00143956f;
+float esun = 31.223f;
+float fKrESun = fkr * esun;
+float fKmESun = fkm * esun;
+float fKr4PI = fkr*4*pi;
+float fKm4PI = fkm*4*pi;
+float fScale = 1.0 / (fOuterRadius - fInnerRadius);
+float fScaleDepth = 0.832589f;
+float fScaleOverScaleDepth = fScale / fScaleDepth;
+float g = -0.995f;
+float g2 = g*g;
+
+int   nSamples = 5;
+float fSamples = 5.0f;

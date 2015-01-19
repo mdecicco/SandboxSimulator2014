@@ -27,17 +27,17 @@ namespace SandboxSimulator
         RenderComponent* gr = (RenderComponent*)G->GetComponentByType(CT_RENDER);
         gr->SetShape(RC_GROUND_PLANE);
         TransformComponent* gt = (TransformComponent*)G->GetComponentByType(CT_TRANSFORM);
-        gt->SetPosition(Vec3(0,-2,0));
+        gt->SetPosition(Vec3(0,-0.5,0));
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity(997);
         CamTrans = new TransformComponent();
         m_Engine->GetSceneGraph()->AddComponent(Cam, CamTrans);
         m_Engine->GetSceneGraph()->AddComponent(Cam, new CameraComponent());
         m_Engine->GetRenderSystem()->SetCamera(Cam);
-        CamTrans->Translate(0,1.2,1.5);
+        CamTrans->Translate(0,1.2,2);
         CamTrans->Rotate(1,0,0,-20);
 
-        m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
+        //m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
     }
 
     void GameState::Update(Scalar dt)
@@ -83,6 +83,19 @@ namespace SandboxSimulator
             trans->Translate(Pos);
             trans->Rotate(Vec3(0,1,0), -MousePos.x*0.5f);
             if(pDelta > 0.05) {
+
+                if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_UP)) {
+                    SetTimeRateCommand* cmd = new SetTimeRateCommand(m_Engine,m_Engine->GetGameTimeRate()+100);
+                    cmd->Execute();
+                    m_Connection->SendCommand(cmd);
+                    delete cmd;
+                } else if (m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_DOWN)) {
+                    SetTimeRateCommand* cmd = new SetTimeRateCommand(m_Engine,m_Engine->GetGameTimeRate()-100);
+                    m_Connection->SendCommand(cmd);
+                    cmd->Execute();
+                    delete cmd;
+                }
+
                 m_Connection->SendPositionUpdate(trans->GetPosition());
                 m_LastPacketTime = m_Engine->GetElapsedTime();
             }

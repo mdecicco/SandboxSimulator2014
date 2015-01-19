@@ -12,12 +12,13 @@
 
 namespace SandboxSimulator {
 class SSEngine;
+class ServerSystem;
 
 class Client
 {
     //All functions need to be thread safe
     public:
-        Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID);
+        Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID, ServerSystem* System);
         ~Client();
 
         void Disconnect(DISCONNECT_REASON Reason);
@@ -43,6 +44,8 @@ class Client
         void SendCommand(NetworkCommand* Command);
         //void ParseCommand(GAME_COMMAND_TYPE, sf::Packet);
 
+        void Broadcast(NetworkCommand* Cmd);
+
     private:
         u16 m_Id;
         u16 m_Port;
@@ -60,6 +63,7 @@ class Client
         sf::Mutex* m_Mutex;
 
         UID m_ClientEntityID;
+        ServerSystem* m_ServerSystem;
 };
 }
 

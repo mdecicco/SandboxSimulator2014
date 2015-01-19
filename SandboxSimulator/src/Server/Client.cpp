@@ -4,10 +4,11 @@
 #include <Engine.h>
 
 #include <Core/TransformComponent.h>
+#include <Server/ServerSystem.h>
 
 namespace SandboxSimulator
 {
-    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID) : m_LastPacketID(0), m_ClientEntityID(EntityID), m_LastUpdateSequence(0), m_PendingPing(false), m_PendingPingID(0)
+    Client::Client(u16 clientID, std::string ip, u16 port, UdpSocket* Socket, SSEngine* engine, sf::Mutex* mutex, UID EntityID, ServerSystem* System) : m_ServerSystem(System), m_LastPacketID(0), m_ClientEntityID(EntityID), m_LastUpdateSequence(0), m_PendingPing(false), m_PendingPingID(0)
     {
         m_Mutex = mutex;
         m_Engine = engine;
@@ -42,6 +43,7 @@ namespace SandboxSimulator
     {
         m_Mutex->lock();
         m_LastMessageTime = m_Engine->GetElapsedTime();
+        i8 NumCommands = 0;
         switch(Type)
         {
             case PT_ACK:
@@ -52,22 +54,28 @@ namespace SandboxSimulator
                     m_PendingPing = false;
                 break;
             case PT_COMMAND:
-                if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0) {
-                    //Parse and execute command
-                    i8 NumCommands = 0;
-                    (*Packet) >> NumCommands;
-                    for(i32 i = 0; i < NumCommands; i++) {
-                        i8 CommandType = 0;
-                        (*Packet) >> CommandType;
-                        if(CommandType == GCOM_PLAYER_POSITION) {
+                //Parse and execute command
+                (*Packet) >> NumCommands;
+                for(i32 i = 0; i < NumCommands; i++) {
+                    i8 CommandType = 0;
+                    (*Packet) >> CommandType;
+                    if(CommandType == GCOM_PLAYER_POSITION) {
+                        if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0) {
                             PlayerPositionCommand* cmd = new PlayerPositionCommand(m_Engine);
                             cmd->Deserialize(Packet);
                             cmd->Execute();
                             delete cmd;
                         }
+                    } else if (CommandType == GCOM_SET_TIME_RATE) {
+                        SetTimeRateCommand* Cmd = new SetTimeRateCommand(m_Engine);
+                        Cmd->Deserialize(Packet);
+                        Cmd->Execute();
+                        Broadcast(Cmd);
+                        delete Cmd;
                     }
-                    m_LastUpdateSequence = PacketID;
                 }
+                if(PacketID > m_LastUpdateSequence || m_LastUpdateSequence == 0)
+                    m_LastUpdateSequence = PacketID;
                 break;
             case PT_ESSENTIAL_COMMAND:
                 Acknowledge(PacketID);
@@ -125,12 +133,18 @@ namespace SandboxSimulator
             }
         }
 
-        (*packet) << (u8)Commands.size();
+        (*packet) << (u8)(Commands.size()+2);
+        SetTimeCommand* TimeCmd = new SetTimeCommand(m_Engine, m_Engine->GetTimeOfDay());
+        SetTimeRateCommand* TimeRateCmd = new SetTimeRateCommand(m_Engine, m_Engine->GetGameTimeRate());
+        TimeCmd->Serialize(packet);
+        TimeRateCmd->Serialize(packet);
         for(i32 i = 0; i < Commands.size(); i++)
             Commands[i].Serialize(packet);
 
         Send(packet);
         delete packet;
+        delete TimeCmd;
+        delete TimeRateCmd;
     }
 
     void Client::SendPositionUpdate(SSEngine* Eng, bool InclClient)
@@ -149,7 +163,11 @@ namespace SandboxSimulator
             }
         }
 
-        (*packet) << (u8)Commands.size();
+        (*packet) << (u8)(Commands.size()+2);
+        SetTimeCommand* TimeCmd = new SetTimeCommand(m_Engine, m_Engine->GetTimeOfDay());
+        SetTimeRateCommand* TimeRateCmd = new SetTimeRateCommand(m_Engine, m_Engine->GetGameTimeRate());
+        TimeCmd->Serialize(packet);
+        TimeRateCmd->Serialize(packet);
         for(i32 i = 0; i < Commands.size(); i++)
             Commands[i].Serialize(packet);
 
@@ -164,5 +182,10 @@ namespace SandboxSimulator
         Cmd->Serialize(packet);
         Send(packet);
         delete packet;
+    }
+
+    void Client::Broadcast(NetworkCommand* Cmd)
+    {
+        m_ServerSystem->Broadcast(Cmd);
     }
 }

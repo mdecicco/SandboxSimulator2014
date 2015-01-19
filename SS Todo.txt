@@ -1,4 +1,2 @@
 TODO
-1) Remove Binary serialization in scene graph in favor of less coupled game code
-2) change to serialized command based network interaction.
-3) Start physics integration with client side prediction.
+1) Start physics integration with client side prediction.

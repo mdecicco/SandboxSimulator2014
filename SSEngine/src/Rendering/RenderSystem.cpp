@@ -166,7 +166,7 @@ namespace SandboxSimulator
     /* Render System */
 	RenderSystem::RenderSystem() : m_TriangleCount(0), m_LastTriangleCount(0), m_FrameID(0)
 	{
-		m_Resolution = Vec2(800,600);
+		m_Resolution = Vec2(1280,720);
         m_ActiveCamera = nullptr;
         m_FullScreen = false;
 		AddComponentType(CT_RENDER);

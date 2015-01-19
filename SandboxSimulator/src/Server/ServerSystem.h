@@ -37,6 +37,7 @@ class ServerSystem : public EngineSystem
 
         u32 NumClients() { return (u32)m_Clients.size(); }
         //
+        void Broadcast(NetworkCommand* Cmd);
 
     private:
         SSEngine* m_Engine;

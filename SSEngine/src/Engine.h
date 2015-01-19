@@ -67,8 +67,8 @@ namespace SandboxSimulator
 
             /* Time of day */
             Scalar GetGameTimeRate() const { return m_GameTimeRate; }
-            void   SetGameTimeRate(Scalar Rate) { m_GameTimeRate = Rate;if(m_GameTimeRate < 0) m_GameTimeRate = 0; }
-            void   SetTimeOfDay(Scalar T) { m_TimeOfDay = T; }
+            void   SetGameTimeRate(Scalar Rate) { m_GameTimeRate = Rate; }//if(m_GameTimeRate < 0) m_GameTimeRate = 0; }
+            void   SetTimeOfDay(Scalar T) { m_TimeOfDay = T; if(m_TimeOfDay < 0) m_TimeOfDay = 0; }
             Scalar GetTimeOfDay() const { return m_TimeOfDay; }
             Scalar NormalizeTime(i32 Hour,i32 Minute,i32 Second,bool AM) const;
             i32 GetHour() const;

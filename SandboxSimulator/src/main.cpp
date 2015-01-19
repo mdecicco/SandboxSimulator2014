@@ -82,7 +82,7 @@ int main(i32 ArgC,Literal ArgV[])
             Eng->Shutdown();
         } else {
             #ifdef WIN32
-                FreeConsole();
+                //FreeConsole();
             #endif
             SSEngine* Eng = new SSEngine(0,ShowFPS);
             //Engine Systems

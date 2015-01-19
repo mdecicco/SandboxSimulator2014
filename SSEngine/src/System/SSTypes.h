@@ -9,7 +9,7 @@
 #include <SFML/Network.hpp>
 
 #define SSENGINE_VERSION_MAJOR 0
-#define SSENGINE_VERSION_MINOR 1
+#define SSENGINE_VERSION_MINOR 2
 
 #define MakeCString(s) new char[s]
 #define FreeCString(s) delete [] s

@@ -3,7 +3,7 @@
 
 namespace SandboxSimulator
 {
-    CameraComponent::CameraComponent() : Component(CT_CAMERA), m_FieldOfView(70.0f,70.0f), m_NearPlane(0.1f),
+    CameraComponent::CameraComponent() : Component(CT_CAMERA), m_FieldOfView(90.0f,70.0f), m_NearPlane(0.1f),
                                          m_FarPlane(1000.0f), m_Speed(0.0f), m_UpdateProjection(true), m_Exposure(1.0f)
     {
     }

@@ -6,6 +6,7 @@ in vec3 a_Normal;
 in vec2 a_TexCoord;
 
 uniform mat4 u_MVP;
+uniform mat4 u_Normal;
 
 out vec3 o_Normal;
 out vec2 o_TexC;
@@ -14,7 +15,7 @@ void main()
 {
     gl_Position = u_MVP * vec4(a_Position,1.0);
 
-    o_Normal = a_Normal;
+    o_Normal = mat3(u_Normal) * a_Normal;
     o_TexC   = a_TexCoord;
 }
 [/Vertex]
