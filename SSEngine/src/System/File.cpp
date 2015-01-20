@@ -41,6 +41,18 @@ namespace SandboxSimulator
         return OnLoad();
     }
 
+    i32 Asset::Destroy()
+    {
+        m_aRefCount--;
+        if(m_aRefCount == 0)
+        {
+            //Engine::GetEngine()->GetAssetManager()->UnloadAsset(this);
+            delete this;
+        }
+        else return m_aRefCount;
+        return 0;
+    }
+
     void* Asset::Read(i32 Sz)
     {
         if(m_Pos + sizeof(Sz) > m_Size)
@@ -54,6 +66,85 @@ namespace SandboxSimulator
         m_Pos += Sz;
         return Ptr;
     }
+
+    Scalar Asset::ParseScalar()
+    {
+        string s;
+        char c = GetC();
+        while(isdigit(c) || c == '.' || c == '-') { s += c; c = GetC(); }
+        SetPosition(GetPosition() - 1);
+        return stof(s);
+    }
+
+    i32 Asset::ParseInt()
+    {
+        string s;
+        char c = GetC();
+        while(isdigit(c) || c == '-') { s += c; c = GetC(); }
+        SetPosition(GetPosition() - 1);
+        return stoi(s);
+    }
+
+    Vec2 Asset::ParseVector2()
+    {
+        char c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v0 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v1 = ParseScalar();
+        
+        return Vec2(v0,v1);
+    }
+
+    Vec3 Asset::ParseVector3()
+    {
+        char c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v0 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v1 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v2 = ParseScalar();
+        
+        return Vec3(v0,v1,v2);
+    }
+
+    Vec4 Asset::ParseVector4()
+    {
+        char c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v0 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v1 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v2 = ParseScalar();
+        
+        c = GetC();
+        while((c == ',' || isspace(c)) && GetPosition() != m_Size) c = GetC();
+        SetPosition(GetPosition() - 1);
+        Scalar v3 = ParseScalar();
+        
+        return Vec4(v0,v1,v2,v3);
+    }
+
     //File class
     File::File(FILE* fp,Literal Filename) : m_fp(fp), m_Name(Filename)
     {
@@ -92,6 +183,7 @@ namespace SandboxSimulator
         Read(c);
         return c;
     }
+
     Scalar File::ParseScalar()
     {
         std::string s;
@@ -100,6 +192,7 @@ namespace SandboxSimulator
         SetPosition(GetPosition() - 1);
         return stof(s);
     }
+
     i32 File::ParseInt()
     {
         std::string s;
@@ -108,14 +201,7 @@ namespace SandboxSimulator
         SetPosition(GetPosition() - 1);
         return stoi(s);
     }
-    bool File::ParseBool()
-    {
-        std::string s;
-        char c = GetC();
-        while(isalpha(c)) { s += c; c = GetC(); }
-        SetPosition(GetPosition() - 1);
-        return true;
-    }
+
     Vec2 File::ParseVector2()
     {
         char c = GetC();
@@ -130,6 +216,7 @@ namespace SandboxSimulator
         
         return Vec2(v0,v1);
     }
+
     Vec3 File::ParseVector3()
     {
         char c = GetC();
@@ -149,6 +236,7 @@ namespace SandboxSimulator
         
         return Vec3(v0,v1,v2);
     }
+
     Vec4 File::ParseVector4()
     {
         char c = GetC();
@@ -173,6 +261,7 @@ namespace SandboxSimulator
         
         return Vec4(v0,v1,v2,v3);
     }
+
     CString File::ReadAll() const
     {
         CString Scpt = MakeCString(m_Size + 1);
@@ -181,6 +270,7 @@ namespace SandboxSimulator
         Scpt[p++] = 0;
         return Scpt;
     }
+
     std::string File::ReadLn() const
     {
         std::string s;
@@ -193,22 +283,27 @@ namespace SandboxSimulator
         }
         return s;
     }
+
     bool File::WriteStr(const std::string& str)
     {
         return WriteBlock(const_cast<char*>(&str[0]),str.length() - 1);
     }
+
     size_t File::GetPosition() const
     {
         return ftell(m_fp);
     }
+
     void File::SetPosition(size_t Pos)
     {
         fseek(m_fp,Pos,SEEK_SET);
     }
+
     size_t File::GetSize() const
     {
         return m_Size;
     }
+
     bool File::AtEnd() const
     {
         return ftell(m_fp) == m_Size;

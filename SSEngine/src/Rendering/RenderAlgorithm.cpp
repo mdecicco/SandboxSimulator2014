@@ -124,8 +124,8 @@ namespace SandboxSimulator
                     Mat4 mvp;
                     if(r->IsGUI())
                     {
-                        //mvp = rSys->GetGUIProj() * rSys->GetGUIView() * m;
-                        //if(UsingCameraViewFlag) { Um(SU_VIEW_MATRIX,rSys->GetGUIView()); Um(SU_PROJECTION_MATRIX,rSys->GetGUIProj()); UsingCameraViewFlag = false; }
+                        mvp = rSys->GetGUIProj() * rSys->GetGUIView() * m;
+                        if(UsingCameraViewFlag) { Um(SU_VIEW_MATRIX,rSys->GetGUIView()); Um(SU_PROJECTION_MATRIX,rSys->GetGUIProj()); UsingCameraViewFlag = false; }
                     }
                     else
                     {
@@ -141,9 +141,9 @@ namespace SandboxSimulator
                     Um(SU_MODEL_MATRIX,Mat4::Identity);
                     if(r->IsGUI())
                     {
-                        //Matrix4 gpv = rSys->GetGUIProj() * rSys->GetGUIView();
-                        //Um(SU_MVP_MATRIX,gpv);
-                        //if(UsingCameraViewFlag) { Um(SU_VIEW_MATRIX,rSys->GetGUIView()); Um(SU_PROJECTION_MATRIX,rSys->GetGUIProj()); UsingCameraViewFlag = false; }
+                        Mat4 gpv = rSys->GetGUIProj() * rSys->GetGUIView();
+                        Um(SU_MVP_MATRIX,gpv);
+                        if(UsingCameraViewFlag) { Um(SU_VIEW_MATRIX,rSys->GetGUIView()); Um(SU_PROJECTION_MATRIX,rSys->GetGUIProj()); UsingCameraViewFlag = false; }
                     }
                     else
                     {

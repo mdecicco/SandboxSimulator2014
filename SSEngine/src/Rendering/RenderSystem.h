@@ -10,6 +10,9 @@
 #include <Rendering/Mesh.h>
 #include <Rendering/RenderAlgorithm.h>
 
+#include <Rendering/Gui/Font.h>
+#include <Rendering/Gui/Gui.h>
+
 using namespace std;
 namespace SandboxSimulator
 {
@@ -86,6 +89,13 @@ namespace SandboxSimulator
             Shader* GetShader() { return m_Shdr; }
             void SetShape(RC_SHAPES Shape);
 
+            void SetFont(Font* Fnt) { m_Font = Fnt; }
+            Font* GetFont() const { return m_Font; }
+            void SetGUIFlag(bool Flag);
+            bool IsGUI() const { return m_GUIData != 0; }
+            GUIElementData* GetGuiData() { return m_GUIData; }
+            void SetGuiData(GUIElementData* Data) { m_GUIData = Data; }
+
         protected:
             friend class RenderSystem;
             friend class RenderList;
@@ -109,6 +119,9 @@ namespace SandboxSimulator
 
             bool m_NeedsUpdate;
             RC_SHAPES m_Shape;
+
+            GUIElementData* m_GUIData;
+            Font* m_Font;
     };
 
 	class RenderSystem : public EngineSystem
@@ -148,6 +161,12 @@ namespace SandboxSimulator
             i32 GetVisibleEntityCount() const { return m_VisibleEntityCount; }
             SSEngine* GetEngine() { return m_Engine; }
 
+            void AddGUI(Entity* E);
+            void RemoveGUI(Entity* E);
+            const Mat4& GetGUIProj() const { return m_GUIProj; }
+            const Mat4& GetGUIView() const { return m_GUIView; }
+            GUIManager* GetGUIManager() const { return m_GUIManager; }
+
         protected:
             i32 m_TriangleCount;
             i32 m_LastTriangleCount;
@@ -163,6 +182,11 @@ namespace SandboxSimulator
             RenderList* m_VisibleEntityList;
             RenderList* m_VisibleTransparentEntityList;
             i32 m_VisibleEntityCount;
+
+            GUIManager* m_GUIManager;
+            Mat4 m_GUIProj;
+            Mat4 m_GUIView;
+            Mat4 m_PhysMVP;
 
             UID m_FrameID;
 

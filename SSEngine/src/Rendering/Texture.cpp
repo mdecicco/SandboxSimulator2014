@@ -42,9 +42,10 @@ namespace SandboxSimulator
             m_DepthBuffer = m_FBO = m_TexID = -1;
         }
     }
+
     Texture::Texture() : m_TexID(-1), m_Data(0), m_FBO(-1), m_Target(0)
-    {
-    }
+    {}
+
     Texture::~Texture()
     {
         if(m_TexID != -1) glDeleteTextures(1,&m_TexID);
@@ -52,7 +53,7 @@ namespace SandboxSimulator
         if(m_DepthBuffer != -1) glDeleteRenderbuffers(1,&m_DepthBuffer);
     }
 
-    bool Texture::Load(std::string Path)
+    bool Texture::Load(Literal Path)
     {
         m_Path = Path;
         #ifdef WIN32
@@ -113,6 +114,7 @@ namespace SandboxSimulator
         #endif
         return true;
     }
+
     void Texture::BeginRTT()
     {
         glBindFramebuffer(GL_FRAMEBUFFER,m_FBO);
@@ -121,12 +123,14 @@ namespace SandboxSimulator
         GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
         glDrawBuffers(1,DrawBuffers);
     }
+
     void Texture::EndRTT()
     {
         Vec2 r = Vec2(800,600);//Engine::GetEngine()->GetResolution();
         glBindFramebuffer(GL_FRAMEBUFFER,0);
         glViewport(0,0,r.x,r.y);
     }
+
     GLuint Texture::GetTexID()
     {
         if(m_TexID == -1 && m_Data)

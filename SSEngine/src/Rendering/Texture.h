@@ -9,7 +9,7 @@
 
 namespace SandboxSimulator
 {
-class Texture
+class Texture : public Asset
 {
     public:
         Texture();
@@ -17,7 +17,8 @@ class Texture
         //Texture(const Vec2& D,bool Depth);
         ~Texture();
         
-        virtual bool Load(std::string Path);
+        virtual bool Load(Literal Path);
+        virtual bool OnLoad() {return true;}
     
         void Bind(GLenum Target = GL_TEXTURE_2D) { m_Target = Target; glBindTexture(m_Target,m_TexID); }
         void Unbind() { glBindTexture(m_Target,m_TexID); }

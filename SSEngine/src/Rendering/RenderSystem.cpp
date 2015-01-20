@@ -9,13 +9,15 @@ namespace SandboxSimulator
 {
     RenderComponent::RenderComponent() : Component(CT_RENDER), m_Shdr(0), m_StayVisible(false), m_Mesh(new Mesh()),
                                          m_UseScissorRegion(false), m_UseBlending(false), m_UseDepthTest(true), m_WriteDepth(true), m_Opacity(1.0f),
-                                         m_Hide(false), m_PrimType(GL_TRIANGLES)
+                                         m_Hide(false), m_PrimType(GL_TRIANGLES), m_Font(0), m_GUIData(0)
     {
     }
     RenderComponent::~RenderComponent()
     {
         if(m_Mesh) delete m_Mesh;
         if(m_Shdr) delete m_Shdr;//TODO
+        if(m_GUIData) delete m_GUIData;
+        if(m_Font) delete m_Font;
     }
 
     void RenderComponent::SetShape(RC_SHAPES Shape)
@@ -239,6 +241,10 @@ namespace SandboxSimulator
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
+
+        m_GUIManager = new GUIManager();
+        m_GUIProj = Orthogonal(0.0f,m_Resolution.x,0.0f,m_Resolution.y,0.1f,100.0f);
+        m_GUIView = Mat4::Identity;
 	}
 
 	void RenderSystem::Update(Scalar dt) 

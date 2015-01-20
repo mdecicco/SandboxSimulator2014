@@ -34,7 +34,6 @@ class File
         Scalar ParseScalar();
         i32 ParseInt();
         i64 ParseInt64();
-        bool ParseBool();
         Vec2 ParseVector2();
         Vec3 ParseVector3();
         Vec4 ParseVector4();
@@ -68,8 +67,17 @@ class Asset
     public:
         Asset() : m_ID(-1), m_aRefCount(1), m_Data(0), m_Updated(false) { }
 
-        bool Load(Literal Path);
+        i32 AddRef() { return m_aRefCount++; }
+        i32 Destroy();
+
+        virtual bool Load(Literal Path);
         virtual bool OnLoad() = 0;
+
+        Scalar ParseScalar();
+        i32 ParseInt();
+        Vec2 ParseVector2();
+        Vec3 ParseVector3();
+        Vec4 ParseVector4();
 
         void* GetPtr() const { return (void*)(((intptr_t)m_Data) + m_Pos); }
         template <typename T>
