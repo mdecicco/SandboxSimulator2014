@@ -1,5 +1,4 @@
 #include <Rendering/Texture.h>
-#include <src/SOIL.h>
 #include <Utils/PngLoader.h>
 
 namespace SandboxSimulator
@@ -58,7 +57,6 @@ namespace SandboxSimulator
     bool Texture::Load(Literal Path)
     {
         m_Path = Path;
-        #ifdef WIN32
 		std::vector<uByte> Image;
         unsigned Width, Height;
 		unsigned error = lodepng::decode(Image, Width, Height, m_Path);
@@ -86,8 +84,8 @@ namespace SandboxSimulator
 		glGetFloatv(GL_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
 		glGenTextures(1, &m_TexID);
 		glBindTexture(GL_TEXTURE_2D, m_TexID);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, u2, v2, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image2[0]);
 
@@ -96,24 +94,6 @@ namespace SandboxSimulator
         m_Dimensions.x = Width;
         m_Dimensions.y = Height;
 
-        #else
-        m_TexID = SOIL_load_OGL_texture
-		(
-			m_Path.c_str(),
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-		);
-
-		if( m_TexID == 0 )
-		{
-			printf("image loading error: '%s'\n", SOIL_last_result());
-		}
-
-        glBindTexture(GL_TEXTURE_2D, m_TexID);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        #endif
         return true;
     }
 
@@ -140,8 +120,8 @@ namespace SandboxSimulator
             glGenTextures(1,&m_TexID);
             glBindTexture(GL_TEXTURE_2D,m_TexID);
             glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,m_Dimensions.x,m_Dimensions.y,0,GL_RGBA,GL_UNSIGNED_BYTE,(GLvoid*)m_Data);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             delete [] m_Data;
             m_Data = 0;
         }

@@ -52,6 +52,10 @@ namespace SandboxSimulator
     bool Shader::LoadShader()
     {
         if(!m_Loaded) {
+            GLuint ugh;
+            glGenVertexArrays(1,&ugh);
+            glBindVertexArray(ugh);
+
             m_Loaded = true;
             m_VS = glCreateShader(GL_VERTEX_SHADER);
             m_PS = glCreateShader(GL_FRAGMENT_SHADER);
@@ -172,6 +176,8 @@ namespace SandboxSimulator
                     printf("Unable to load shader <%s>. Couldn't find vertex shader section header \"[Vertex]\".\n",m_Path.c_str());
                     glDeleteShader(m_VS); m_VS = 0;
                     glDeleteShader(m_PS); m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
                 if(!FoundVtx1)
@@ -179,6 +185,8 @@ namespace SandboxSimulator
                     printf("Unable to load shader <%s>. (Expected \"[/Vertex]\")\n",m_Path.c_str());
                     glDeleteShader(m_VS); m_VS = 0;
                     glDeleteShader(m_PS); m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
                 if(!FoundFrg0)
@@ -186,6 +194,8 @@ namespace SandboxSimulator
                     printf("Unable to load shader <%s>. Couldn't find fragment shader section header \"[Fragment]\".\n",m_Path.c_str());
                     glDeleteShader(m_VS); m_VS = 0;
                     glDeleteShader(m_PS); m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
                 if(!FoundFrg1)
@@ -193,6 +203,8 @@ namespace SandboxSimulator
                     printf("Unable to load shader <%s>. (Expected \"[/Fragment]\")\n",m_Path.c_str());
                     glDeleteShader(m_VS); m_VS = 0;
                     glDeleteShader(m_PS); m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
             
@@ -217,6 +229,8 @@ namespace SandboxSimulator
                     glDeleteShader(m_VS);
                     glDeleteShader(m_PS);
                     m_VS = m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
             
@@ -239,6 +253,8 @@ namespace SandboxSimulator
                     glDeleteShader(m_VS);
                     glDeleteShader(m_PS);
                     m_VS = m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
             
@@ -266,6 +282,8 @@ namespace SandboxSimulator
                     glDeleteShader(m_VS);
                     glDeleteShader(m_PS);
                     m_PID = m_VS = m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
             
@@ -283,6 +301,8 @@ namespace SandboxSimulator
                     glDeleteShader(m_VS);
                     glDeleteShader(m_PS);
                     m_PID = m_VS = m_PS = 0;
+                    glBindVertexArray(0);
+                    glDeleteVertexArrays(1,&ugh);
                     return false;
                 }
             }
@@ -290,11 +310,15 @@ namespace SandboxSimulator
             {
                 glDeleteShader(m_VS); m_VS = 0;
                 glDeleteShader(m_PS); m_PS = 0;
+                glBindVertexArray(0);
+                glDeleteVertexArrays(1,&ugh);
                 printf("Unable to load shader. Invalid file <%s>. (File doesn't begin with [SHDR])\n",m_Path.c_str());
                 return false;
             }
 
             for(i32 i = 0;i < SU_COUNT;i++) m_UniformLocs[i] = glGetUniformLocation(m_PID,UniformNames[i]);
+            glBindVertexArray(0);
+            glDeleteVertexArrays(1,&ugh);
         }
         return true;
     }

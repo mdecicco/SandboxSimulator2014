@@ -17,7 +17,7 @@ namespace SandboxSimulator
         for(i32 i = 0;i < 256;i++) m_Glyphs[i].IsValid = false;
         i32 CharID = 0;
         i32 Size = 0;
-        i32 DesiredSize = 48;
+        i32 DesiredSize = 128;
         Scalar Scale = 1.0;
 
         while(!AtEnd())
@@ -48,11 +48,11 @@ namespace SandboxSimulator
             {
                 i32 iPos = GetPosition() + 11;
                 SetPosition(iPos);
-                m_LineHeight = ParseInt();
+                m_LineHeight = (f32)ParseInt() * Scale;
             }
-            else if(string((CString)GetPtr(),5) == "scaleW")
+            else if(string((CString)GetPtr(),6) == "scaleW")
             {
-                SetPosition(GetPosition() + 6);
+                SetPosition(GetPosition() + 7);
                 Size = ParseInt();
             }
             else if(string((CString)GetPtr(),2) == "id")
@@ -87,6 +87,7 @@ namespace SandboxSimulator
             {
                 SetPosition(GetPosition() + 7);
                 i32 Height = ParseInt();
+                m_Glyphs[CharID].Size.y = Height;
                 //if(Height > m_LineHeight) m_LineHeight = Height;
                 m_Glyphs[CharID].uv1.y = m_Glyphs[CharID].uv0.y + Height;
 
@@ -97,7 +98,6 @@ namespace SandboxSimulator
 
                 m_Glyphs[CharID].Size.x *= Scale;
                 m_Glyphs[CharID].Size.y = Height * Scale;
-                m_LineHeight = m_LineHeight * Scale;
             }
             else if(string((CString)GetPtr(),7) == "xoffset")
             {
@@ -107,7 +107,7 @@ namespace SandboxSimulator
             else if(string((CString)GetPtr(),7) == "yoffset")
             {
                 SetPosition(GetPosition() + 8);
-                m_Glyphs[CharID].Offset.y = -(ParseScalar() * Scale);
+                m_Glyphs[CharID].Offset.y = (ParseScalar() * Scale);
             }
             else if(string((CString)GetPtr(),8) == "xadvance")
             {

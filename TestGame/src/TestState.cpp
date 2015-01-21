@@ -31,15 +31,15 @@ namespace SandboxSimulator
         Entity* P = m_Engine->GetSceneGraph()->CreateEntity();
         m_Engine->GetSceneGraph()->AddComponent(P, new RenderComponent());
         m_Engine->GetSceneGraph()->AddComponent(P, new TransformComponent());
-        RenderComponent* pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
+        pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
         pr->SetShape(RC_UI);
         TransformComponent* pt = (TransformComponent*)P->GetComponentByType(CT_TRANSFORM);
         pt->SetPosition(Vec3(0,100,0));
         //pt->Rotate(Quat(0,0,1,10));
 
         Font* f = new Font();
-        f->Load("Data/Font/Arial.fnt");
-        f->AddTextToEntity(P, "Hello world, this is a super long line, omg I feel like jeezuhs\nThis is the next line!\nAnd this is the next-next line!", Vec3(0,0,0), 0);
+        f->Load("Data/Font/Ubuntu-better.dst");
+        f->AddTextToEntity(P, "Hello world!", Vec3(0,0,0), 1);
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
@@ -69,6 +69,8 @@ namespace SandboxSimulator
             m_Engine->SetGameTimeRate(m_Engine->GetGameTimeRate()+1);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_DOWN)) {
             m_Engine->SetGameTimeRate(m_Engine->GetGameTimeRate()-1);
+        } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
+            pr->SetShape(RC_UI);
         }
 
         Vec2 MousePos = m_Engine->GetInputSystem()->GetMousePosition();
@@ -78,11 +80,11 @@ namespace SandboxSimulator
             Vec3 yAxis = Vec3(1,0,0);
             Vec3 xAxis = Vec3(0,1,0);
 
-            CamTrans->Rotate(xAxis,-MousePos.x*0.5f);
-            CamTrans->Rotate(yAxis,-MousePos.y*0.5f);
+            //CamTrans->Rotate(xAxis,-MousePos.x*0.5f);
+            //CamTrans->Rotate(yAxis,-MousePos.y*0.5f);
         }
 
-        m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
+        //m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
         CamTrans->Translate(Pos);
     }
 }

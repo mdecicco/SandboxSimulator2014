@@ -163,6 +163,7 @@ namespace SandboxSimulator
                 AddNormal(Vec3(0,1,0));
                 break;
             case RC_UI:
+                m_Shdr = new Shader();
                 m_Shdr->Load("Data/Shaders/UI.glsl");
                 m_IsGui = true;
                 m_Opacity = 1.0;

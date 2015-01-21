@@ -5,6 +5,8 @@
 #include <Core/TransformComponent.h>
 
 namespace SandboxSimulator {
+class RenderComponent;
+
 class TestState : public State
 {
     public:
@@ -18,6 +20,7 @@ class TestState : public State
 
     private:
         TransformComponent* CamTrans;
+        RenderComponent* pr;
 };
 }
 
