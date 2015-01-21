@@ -32,9 +32,14 @@ namespace SandboxSimulator
         m_Engine->GetSceneGraph()->AddComponent(P, new RenderComponent());
         m_Engine->GetSceneGraph()->AddComponent(P, new TransformComponent());
         RenderComponent* pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
-        pr->SetShape(RC_SPHERE);
+        pr->SetShape(RC_UI);
         TransformComponent* pt = (TransformComponent*)P->GetComponentByType(CT_TRANSFORM);
-        pt->SetPosition(Vec3(0,0,0));
+        pt->SetPosition(Vec3(0,100,0));
+        //pt->Rotate(Quat(0,0,1,10));
+
+        Font* f = new Font();
+        f->Load("Data/Font/Arial.fnt");
+        f->AddTextToEntity(P, "Hello world, this is a super long line, omg I feel like jeezuhs\nThis is the next line!\nAnd this is the next-next line!", Vec3(0,0,0), 0);
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
@@ -42,8 +47,8 @@ namespace SandboxSimulator
         m_Engine->GetSceneGraph()->AddComponent(Cam, new CameraComponent());
         m_Engine->GetRenderSystem()->SetCamera(Cam);
         CamTrans->SetFirstPerson(true);
-        m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
-        CamTrans->SetRelativeTo(P);
+        //m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
+        //CamTrans->SetRelativeTo(P);
         CamTrans->SetPosition(Vec3(0,0,2));
     }
 
@@ -53,13 +58,13 @@ namespace SandboxSimulator
         Vec3 Pos = Vec3();
 
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
-            Pos += Vec3(0,0,-1*dt);
+            Pos += Vec3(0,0,-3*dt);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
-            Pos += Vec3(0,0,1*dt);
+            Pos += Vec3(0,0,3*dt);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_A)) {
-            Pos += Vec3(-1*dt,0,0);
+            Pos += Vec3(-3*dt,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_D)) {
-            Pos += Vec3(1*dt,0,0);
+            Pos += Vec3(3*dt,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_UP)) {
             m_Engine->SetGameTimeRate(m_Engine->GetGameTimeRate()+1);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_DOWN)) {

@@ -24,6 +24,7 @@ namespace SandboxSimulator
         RC_SPHERE,
         RC_SKY_SPHERE,
         RC_GROUND_PLANE,
+        RC_UI,
         RC_COUNT
     };
 
@@ -36,7 +37,6 @@ namespace SandboxSimulator
             void LoadMesh(const string& File);
         
             void SetGUIFlag(bool Flag);
-            bool IsGUI() const { return false; }
         
             /* Attribute access */
             void Clear() { m_Mesh->Clear(); }
@@ -91,8 +91,8 @@ namespace SandboxSimulator
 
             void SetFont(Font* Fnt) { m_Font = Fnt; }
             Font* GetFont() const { return m_Font; }
-            void SetGUIFlag(bool Flag);
-            bool IsGUI() const { return m_GUIData != 0; }
+            void SetIsGui(bool isg) { m_IsGui = isg; }
+            bool IsGUI() const { return m_IsGui; }
             GUIElementData* GetGuiData() { return m_GUIData; }
             void SetGuiData(GUIElementData* Data) { m_GUIData = Data; }
 
@@ -120,6 +120,7 @@ namespace SandboxSimulator
             bool m_NeedsUpdate;
             RC_SHAPES m_Shape;
 
+            bool m_IsGui;
             GUIElementData* m_GUIData;
             Font* m_Font;
     };
@@ -164,7 +165,6 @@ namespace SandboxSimulator
             void AddGUI(Entity* E);
             void RemoveGUI(Entity* E);
             const Mat4& GetGUIProj() const { return m_GUIProj; }
-            const Mat4& GetGUIView() const { return m_GUIView; }
             GUIManager* GetGUIManager() const { return m_GUIManager; }
 
         protected:
@@ -185,7 +185,6 @@ namespace SandboxSimulator
 
             GUIManager* m_GUIManager;
             Mat4 m_GUIProj;
-            Mat4 m_GUIView;
             Mat4 m_PhysMVP;
 
             UID m_FrameID;

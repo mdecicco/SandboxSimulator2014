@@ -9,7 +9,7 @@ namespace SandboxSimulator
 {
     RenderComponent::RenderComponent() : Component(CT_RENDER), m_Shdr(0), m_StayVisible(false), m_Mesh(new Mesh()),
                                          m_UseScissorRegion(false), m_UseBlending(false), m_UseDepthTest(true), m_WriteDepth(true), m_Opacity(1.0f),
-                                         m_Hide(false), m_PrimType(GL_TRIANGLES), m_Font(0), m_GUIData(0)
+                                         m_Hide(false), m_PrimType(GL_TRIANGLES), m_Font(0), m_GUIData(0), m_IsGui(false)
     {
     }
     RenderComponent::~RenderComponent()
@@ -162,6 +162,12 @@ namespace SandboxSimulator
                 AddTexCoord(Vec2(0,0));
                 AddNormal(Vec3(0,1,0));
                 break;
+            case RC_UI:
+                m_Shdr->Load("Data/Shaders/UI.glsl");
+                m_IsGui = true;
+                m_Opacity = 1.0;
+                m_UseBlending = true;
+                break;
         }
     }
 
@@ -244,7 +250,6 @@ namespace SandboxSimulator
 
         m_GUIManager = new GUIManager();
         m_GUIProj = Orthogonal(0.0f,m_Resolution.x,0.0f,m_Resolution.y,0.1f,100.0f);
-        m_GUIView = Mat4::Identity;
 	}
 
 	void RenderSystem::Update(Scalar dt) 

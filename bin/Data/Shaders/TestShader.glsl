@@ -34,7 +34,7 @@ out vec4 Out0;
 void main()
 {
     vec4 Albedo = texture(u_Texture0,o_TexC);
-    if(Albedo.a == 0.0) discard;
+    if(Albedo.a < 0.5) discard;
     if(Albedo.a >= 0.95)
     {
         if(u_TimeOfDay <= 0.75 && u_TimeOfDay >= 0.25)
