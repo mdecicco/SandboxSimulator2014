@@ -21,6 +21,7 @@ class TestState : public State
     private:
         TransformComponent* CamTrans;
         RenderComponent* pr;
+        RenderComponent* er;
 };
 }
 

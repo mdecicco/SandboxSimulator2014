@@ -1,8 +1,9 @@
 info face="Ubuntu"
-textureFile="Data/Font/UbuntuDist/UbuntuDist.png"
-textureSize=512
+file="Data/Font/UbuntuDist/UbuntuDist.png"
+scaleW=512
 chars count=196
-fontSize=54
+size=54
+lineHeight=54
 char id=0     x=428   y=488   width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=0.000       page=0  chnl=0
 char id=8     x=428   y=484   width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=0.000       page=0  chnl=0
 char id=9     x=428   y=480   width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=12.500      page=0  chnl=0

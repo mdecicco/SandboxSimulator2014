@@ -7,6 +7,8 @@
 
 namespace SandboxSimulator {
 class Entity;
+class Mesh;
+
 typedef struct _Glyph
 {
     char c;
@@ -25,8 +27,10 @@ class Font : public Asset
         ~Font();
     
         virtual bool OnLoad();
-        void AddTextToEntity(Entity* E,const string& Text,const Vec3& Offset,i32 TextureID);
+        void AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, Scalar WrapLength, i32 TextSize);
     
+        i32 m_TextSize;
+        i32 m_TextureSize;
         Texture* m_Texture;
         Glyph m_Glyphs[256];
         i32 m_LineHeight;

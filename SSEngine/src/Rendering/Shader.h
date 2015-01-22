@@ -66,6 +66,7 @@ namespace SandboxSimulator
         
         protected:
             friend class RenderList;
+            friend class RenderComponent;
             GLuint m_VS;
             GLuint m_PS;
             GLuint m_PID;

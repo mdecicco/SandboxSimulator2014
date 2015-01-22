@@ -1,108 +1,121 @@
 #include <Rendering/Gui/Gui.h>
 #include <Rendering/RenderSystem.h>
+#include <Core/SceneGraph.h>
 
 namespace SandboxSimulator
 {
-    GUIManager::GUIManager()
+    Entity* GuiElement::GetOwner()
     {
-    }
-    GUIManager::~GUIManager()
-    {
+        return m_Component->GetParent();
     }
 
-    void GUIManager::OnMouseLeftDown(const Vec2& cPos)
+    Vec2 GuiElement::GetPosition()
     {
-        //ScriptSystem* Sys = Engine::GetEngine()->GetScriptSystem();
-        for(i32 i = (i32)m_Entities.size() - 1;i >= 0;i--)
+        if(m_Component->GetParent()->HasComponentType(CT_TRANSFORM))
+            return ((TransformComponent*)m_Component->GetParent()->GetComponentByType(CT_TRANSFORM))->GetPosition().xy();
+        return Vec2(0,0);
+    }
+
+    void GuiElement::GenerateMesh()
+    {
+        if(m_NeedsUpdate) {
+            Mesh* mesh = new Mesh();
+            Vec2 Pos = Vec2(0,0);
+            mesh->AddVertex(Vec3(Pos.x,Pos.y, 0));
+            mesh->AddTexCoord(Vec2(0,0));
+
+            mesh->AddVertex(Vec3(Pos.x,Pos.y + m_Size.y,0));
+            mesh->AddTexCoord(Vec2(0,1));
+
+            mesh->AddVertex(Vec3(Pos.x + m_Size.x,Pos.y,0));
+            mesh->AddTexCoord(Vec2(1,0));
+
+
+            mesh->AddVertex(Vec3(Pos.x + m_Size.x,Pos.y,0));
+            mesh->AddTexCoord(Vec2(1,0));
+
+            mesh->AddVertex(Vec3(Pos.x,Pos.y + m_Size.y,0));
+            mesh->AddTexCoord(Vec2(0,1));
+
+            mesh->AddVertex(Vec3(Pos + m_Size,0));
+            mesh->AddTexCoord(Vec2(1,1));
+
+            //if(m_Font)
+                //m_Font->AddToMesh(mesh, InnerText_,Vec3(0,0,0),(i32)m_Size.x, FontSize_);
+
+            m_Component->SetMesh(mesh);
+            m_NeedsUpdate = false;
+        }
+    }
+
+    GUIManager::GUIManager(Font* F) : m_Font(F)
+    {}
+
+    GUIManager::~GUIManager()
+    {}
+
+    GuiElement* GUIManager::MakeElement(RenderComponent* r)
+    {
+        GuiElement* Ele = new GuiElement(r);
+        m_Elements.push_back(std::move(ElementPtr(Ele)));
+        return Ele;
+    }
+
+    void GUIManager::AddElement(GuiElement* Ele)
+    {
+        m_Elements.push_back(std::move(ElementPtr(Ele)));
+    }
+
+    void GUIManager::RemoveElement(GuiElement* E)
+    {
+
+    }
+
+    void GUIManager::OnMouseDown(i32 Button, Vec2 cPos)
+    {
+        for(i32 i = (i32)m_Elements.size() - 1;i >= 0;i--)
         {
-            //if(!m_Entities[i]->ReceivesInput()) continue;
-            //ScriptComponent* Scpt = GetScriptComponent(m_Entities[i]);
-            TransformComponent* t = (TransformComponent*)m_Entities[i]->GetComponentByType(CT_TRANSFORM);
-            if(!m_Entities[i]->HasComponentType(CT_TRANSFORM)) continue;
-            RenderComponent* r = (RenderComponent*)m_Entities[i]->GetComponentByType(CT_RENDER);
-            if(!m_Entities[i]->HasComponentType(CT_RENDER)) continue;
+            RenderComponent* r = (RenderComponent*)m_Elements[i].get()->GetOwner()->GetComponentByType(CT_RENDER);
             if(r->IsHidden()) continue;
-            Vec2 Pos = t->GetPosition(false).xy();
-            Vec2 Sz  = r->GetGuiData()->Dimensions;
+            Vec2 Pos = m_Elements[i].get()->GetPosition();
+            Vec2 Sz  = m_Elements[i].get()->GetSize();
             if(cPos.x > Pos.x && cPos.x < Pos.x + Sz.x
             && cPos.y > Pos.y && cPos.y < Pos.y + Sz.y)
             {
-                //Onclick
-                //Sys->OnClickDown(Scpt,m_Entities[i],cPos - Pos);
+                m_Elements[i].get()->OnMouseDown(Button, cPos);
                 break;
             }
         }
     }
-    void GUIManager::OnMouseLeftUp(const Vec2& cPos)
+
+    void GUIManager::OnMouseUp(i32 Button, Vec2 cPos)
     {
-        //ScriptSystem* Sys = Engine::GetEngine()->GetScriptSystem();
-        for(i32 i = (i32)m_Entities.size() - 1;i >= 0;i--)
+        for(i32 i = (i32)m_Elements.size() - 1;i >= 0;i--)
         {
-            //if(!m_Entities[i]->ReceivesInput()) continue;
-            //ScriptComponent* Scpt = GetScriptComponent(m_Entities[i]);
-            //if(!Scpt) continue;
-            TransformComponent* t = (TransformComponent*)m_Entities[i]->GetComponentByType(CT_TRANSFORM);
-            if(!m_Entities[i]->HasComponentType(CT_TRANSFORM)) continue;
-            RenderComponent* r = (RenderComponent*)m_Entities[i]->GetComponentByType(CT_RENDER);
-            if(!m_Entities[i]->HasComponentType(CT_RENDER)) continue;
+            RenderComponent* r = (RenderComponent*)m_Elements[i].get()->GetOwner()->GetComponentByType(CT_RENDER);
             if(r->IsHidden()) continue;
-            Vec2 Pos = t->GetPosition(false).xy();
-            Vec2 Sz  = r->GetGuiData()->Dimensions;
+            Vec2 Pos = m_Elements[i].get()->GetPosition();
+            Vec2 Sz  = m_Elements[i].get()->GetSize();
             if(cPos.x > Pos.x && cPos.x < Pos.x + Sz.x
             && cPos.y > Pos.y && cPos.y < Pos.y + Sz.y)
             {
-                //On...unclick?
-                //Sys->OnClickUp(Scpt,m_Entities[i],cPos - Pos);
+                m_Elements[i].get()->OnMouseUp(Button, cPos);
                 break;
             }
         }
     }
-    void GUIManager::OnMouseRightDown(const Vec2& Pos)
-    {
-    }
-    void GUIManager::OnMouseRightUp(const Vec2& Pos)
-    {
-    }
-    void GUIManager::AddEntity(Entity* E)
-    {
-        RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-        if(!r) return;
-        if(r->GetGuiData()) return;
-        r->SetGuiData(new GUIElementData());
-        r->GetGuiData()->ListPos = (i32)m_Entities.size();
-        r->GetGuiData()->IsVisible = true;
-        Vec3 min,max;
-        r->GetMesh()->GetMinMaxVertices(min,max);
-        r->GetGuiData()->Dimensions = (max - min).xy();
-        m_Entities.push_back(E);
-    }
-    void GUIManager::RemoveEntity(Entity* E)
-    {
-        RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-        if(!r) return;
-        if(!r->GetGuiData()) return;
-        m_Entities.erase(m_Entities.begin() + r->GetGuiData()->ListPos);
-        for(i32 i = r->GetGuiData()->ListPos;i < m_Entities.size();i++)
-        {
-            ((RenderComponent*)m_Entities[i]->GetComponentByType(CT_RENDER))->GetGuiData()->ListPos--;
-        }
-    }
+
     void GUIManager::GetVisibleEntities(RenderList* List)
     {
-        for(i32 i = 0;i < m_Entities.size();i++)
+        for(i32 i = 0;i < m_Elements.size();i++)
         {
-            RenderComponent* r = (RenderComponent*)m_Entities[i]->GetComponentByType(CT_RENDER);
-            if(!m_Entities[i]->HasComponentType(CT_RENDER)) continue;
+            RenderComponent* r = (RenderComponent*)m_Elements[i].get()->GetOwner()->GetComponentByType(CT_RENDER);
+            if(!m_Elements[i]->GetOwner()->HasComponentType(CT_RENDER)) continue;
             if(!r->GetMesh()) continue;
             if(r->IsHidden()) continue;
             if(r->GetMesh()->NeedsSync())
-            {
-                //Vertices adjusted?
-                r->AcquireDimensions();
-                r->GetGuiData()->Dimensions = r->GetDimensions().xy();
-            }
             if(r->GetVertexCount() == 0) continue;
-            List->AddEntity(m_Entities[i]);
+            List->AddEntity(m_Elements[i].get()->GetOwner());
         }
     }
 }

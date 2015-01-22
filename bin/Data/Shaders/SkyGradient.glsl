@@ -23,6 +23,7 @@ void main(void)
 #version 330
 uniform vec3  u_SunPosition;
 uniform vec3  u_CameraPosition;
+uniform float u_TimeOfDay;
 uniform float u_FarPlane;
 
 float pi = 3.14159265;
@@ -40,7 +41,7 @@ float fKmESun = fkm * esun;
 float fKr4PI = fkr*4*pi;
 float fKm4PI = fkm*4*pi;
 float fScale = 1.0 / (fOuterRadius - fInnerRadius);
-float fScaleDepth = 0.432589f;
+float fScaleDepth = 0.9f;
 float fScaleOverScaleDepth = fScale / fScaleDepth;
 float g = -0.995f;
 float g2 = g*g;
@@ -64,6 +65,18 @@ float czm_luminance(vec3 rgb)
 }
 void main (void)
 {
+    float suny = normalize(u_SunPosition).y;
+    float diff = suny - 0.1;
+    if(diff > 0.4) diff = 0.4;
+    if(diff > 0) {
+        fScaleDepth -= diff;
+        fScaleOverScaleDepth = fScale / fScaleDepth;
+        //g -= diff/1000;
+        //g2 = g*g;
+    } else {
+        //fScaleDepth -= 0.2;
+    }
+
     vec3 v3CameraPos = u_CameraPosition;
     vec3 v3LightPos  = normalize(u_SunPosition);
     float fCameraHeight  = (v3CameraPos.y * 0.001) + fInnerRadius;
@@ -89,7 +102,7 @@ void main (void)
     vec3 v3SamplePoint = v3Start + v3SampleRay * 0.5;
 
     // Now loop through the sample rays
-    vec3 v3FrontColor = vec3(0.2,0.1,0.1);
+    vec3 v3FrontColor = vec3(0.12,0.1,0.1);
     for(int i = 0;i < nSamples;i++)
     {
         float fHeight = length(v3SamplePoint);

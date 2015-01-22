@@ -93,8 +93,10 @@ namespace SandboxSimulator
             Font* GetFont() const { return m_Font; }
             void SetIsGui(bool isg) { m_IsGui = isg; }
             bool IsGUI() const { return m_IsGui; }
-            GUIElementData* GetGuiData() { return m_GUIData; }
-            void SetGuiData(GUIElementData* Data) { m_GUIData = Data; }
+
+            void SetMesh(Mesh* mesh) { if(m_Mesh) m_Mesh->Destroy(); m_Mesh = mesh; m_Mesh->AddRef(); }
+
+            void ReloadShader() { m_Shdr->m_Loaded = false;m_Shdr->Load(m_Shdr->GetPath()); }
 
         protected:
             friend class RenderSystem;
@@ -121,7 +123,6 @@ namespace SandboxSimulator
             RC_SHAPES m_Shape;
 
             bool m_IsGui;
-            GUIElementData* m_GUIData;
             Font* m_Font;
     };
 

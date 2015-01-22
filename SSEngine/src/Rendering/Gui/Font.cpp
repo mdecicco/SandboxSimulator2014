@@ -1,5 +1,6 @@
 #include <Rendering/Gui/Font.h>
 #include <Rendering/RenderSystem.h>
+#include <Rendering/Gui/Gui.h>
 
 namespace SandboxSimulator
 {
@@ -16,9 +17,9 @@ namespace SandboxSimulator
     {
         for(i32 i = 0;i < 256;i++) m_Glyphs[i].IsValid = false;
         i32 CharID = 0;
-        i32 Size = 0;
-        i32 DesiredSize = 128;
-        Scalar Scale = 1.0;
+        //i32 Size = 0;
+        //i32 DesiredSize = 128;
+        //Scalar Scale = 1.0;
 
         while(!AtEnd())
         {
@@ -41,19 +42,19 @@ namespace SandboxSimulator
             {
                 i32 iPos = GetPosition() + 5;
                 SetPosition(iPos);
-                i32 Size = ParseInt();
-                Scale = ((f32)DesiredSize / (f32)Size);
+                m_TextSize = ParseInt();
+                //Scale = ((f32)DesiredSize / (f32)Size);
             }
             else if(string((CString)GetPtr(),10) == "lineHeight")
             {
                 i32 iPos = GetPosition() + 11;
                 SetPosition(iPos);
-                m_LineHeight = (f32)ParseInt() * Scale;
+                m_LineHeight = ParseInt();
             }
             else if(string((CString)GetPtr(),6) == "scaleW")
             {
                 SetPosition(GetPosition() + 7);
-                Size = ParseInt();
+                m_TextureSize = ParseInt();
             }
             else if(string((CString)GetPtr(),2) == "id")
             {
@@ -91,89 +92,77 @@ namespace SandboxSimulator
                 //if(Height > m_LineHeight) m_LineHeight = Height;
                 m_Glyphs[CharID].uv1.y = m_Glyphs[CharID].uv0.y + Height;
 
-                m_Glyphs[CharID].uv0.x = m_Glyphs[CharID].uv0.x / Size;
-                m_Glyphs[CharID].uv0.y = m_Glyphs[CharID].uv0.y / Size;
-                m_Glyphs[CharID].uv1.x = m_Glyphs[CharID].uv1.x / Size;
-                m_Glyphs[CharID].uv1.y = m_Glyphs[CharID].uv1.y / Size;
+                m_Glyphs[CharID].uv0.x = m_Glyphs[CharID].uv0.x / m_TextureSize;
+                m_Glyphs[CharID].uv0.y = m_Glyphs[CharID].uv0.y / m_TextureSize;
+                m_Glyphs[CharID].uv1.x = m_Glyphs[CharID].uv1.x / m_TextureSize;
+                m_Glyphs[CharID].uv1.y = m_Glyphs[CharID].uv1.y / m_TextureSize;
 
-                m_Glyphs[CharID].Size.x *= Scale;
-                m_Glyphs[CharID].Size.y = Height * Scale;
+                //m_Glyphs[CharID].Size.x *= Scale;
+                m_Glyphs[CharID].Size.y = Height;
             }
             else if(string((CString)GetPtr(),7) == "xoffset")
             {
                 SetPosition(GetPosition() + 8);
-                m_Glyphs[CharID].Offset.x = ParseScalar() * Scale;
+                m_Glyphs[CharID].Offset.x = ParseScalar();
             }
             else if(string((CString)GetPtr(),7) == "yoffset")
             {
                 SetPosition(GetPosition() + 8);
-                m_Glyphs[CharID].Offset.y = (ParseScalar() * Scale);
+                m_Glyphs[CharID].Offset.y = (ParseScalar());
             }
             else if(string((CString)GetPtr(),8) == "xadvance")
             {
                 SetPosition(GetPosition() + 9);
-                m_Glyphs[CharID].xAdvance = ParseScalar() * Scale;
+                m_Glyphs[CharID].xAdvance = ParseScalar();
             }
         }
         return true;
     }
-    void Font::AddTextToEntity(Entity* E,const string& Text,const Vec3& Offset,i32 TextureID)
-    {
-        //if(!m_Texture) return;
-        RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
-        if(!E->HasComponentType(CT_RENDER))
-        {
-            printf("Cannot add text to entity <%d>. Entity has no render component.\n",E->GetID());
-            return;
-        }
-        
+    void Font::AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, Scalar WrapLength, i32 TextSize)
+    {   
         f32 xPos = 0;
         f32 yPos = 0;
+        f32 Scale = (f32)TextSize / (f32)m_TextSize;
         for(i32 i = 0;i < Text.size();i++)
         {
             char c = Text[i];
-            if(c == '\n' || c == '\r')
+            if(c == '\n' || c == '\r' || xPos + (m_Glyphs[c].Size.x * Scale) > WrapLength)
             {
                 xPos = 0;
-                yPos += m_LineHeight;
+                yPos += m_LineHeight * Scale;
                 continue;
             }
             
             if(m_Glyphs[c].IsValid)
             {
-                if(r->GetPrimType() == GL_TRIANGLES)
-                {
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x,Offset.y + yPos + m_Glyphs[c].Offset.y,Offset.z));
-                    r->AddTexCoord(m_Glyphs[c].uv0);
-                    
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x,Offset.y + yPos + m_Glyphs[c].Offset.y + m_Glyphs[c].Size.y,Offset.z));
-                    r->AddTexCoord(Vec2(m_Glyphs[c].uv0.x,m_Glyphs[c].uv1.y));
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale),Offset.z));
+                m->AddTexCoord(m_Glyphs[c].uv0);
 
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x + m_Glyphs[c].Size.x,Offset.y + yPos + m_Glyphs[c].Offset.y,Offset.z));
-                    r->AddTexCoord(Vec2(m_Glyphs[c].uv1.x,m_Glyphs[c].uv0.y));
-                    
-                    
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x + m_Glyphs[c].Size.x,Offset.y + yPos + m_Glyphs[c].Offset.y,Offset.z));
-                    r->AddTexCoord(Vec2(m_Glyphs[c].uv1.x,m_Glyphs[c].uv0.y));
-                    
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x,Offset.y + yPos + m_Glyphs[c].Offset.y + m_Glyphs[c].Size.y,Offset.z));
-                    r->AddTexCoord(Vec2(m_Glyphs[c].uv0.x,m_Glyphs[c].uv1.y));
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale) + (m_Glyphs[c].Size.y * Scale),Offset.z));
+                m->AddTexCoord(Vec2(m_Glyphs[c].uv0.x,m_Glyphs[c].uv1.y));
 
-                    r->AddVertex(Vec3(Offset.x + xPos + m_Glyphs[c].Offset.x + m_Glyphs[c].Size.x,Offset.y + yPos + m_Glyphs[c].Offset.y + m_Glyphs[c].Size.y,Offset.z));
-                    r->AddTexCoord(m_Glyphs[c].uv1);
-                    if(c != '\n' && c != '\r')
-                        xPos += m_Glyphs[c].xAdvance;
-                }
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale) + (m_Glyphs[c].Size.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale),Offset.z));
+                m->AddTexCoord(Vec2(m_Glyphs[c].uv1.x,m_Glyphs[c].uv0.y));
+
+
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale) + (m_Glyphs[c].Size.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale),Offset.z));
+                m->AddTexCoord(Vec2(m_Glyphs[c].uv1.x,m_Glyphs[c].uv0.y));
+
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale) + (m_Glyphs[c].Size.y * Scale),Offset.z));
+                m->AddTexCoord(Vec2(m_Glyphs[c].uv0.x,m_Glyphs[c].uv1.y));
+
+                m->AddVertex(Vec3(Offset.x + xPos + (m_Glyphs[c].Offset.x * Scale) + (m_Glyphs[c].Size.x * Scale),Offset.y + yPos + (m_Glyphs[c].Offset.y * Scale) + (m_Glyphs[c].Size.y * Scale),Offset.z));
+                m->AddTexCoord(m_Glyphs[c].uv1);
+                if(c != '\n' && c != '\r')
+                    xPos += m_Glyphs[c].xAdvance * Scale;
             }
             else
             {
                 printf("Warning: Text contains invalid character <%d:%c>.\n",c,c);
             }
         }
-        if(r->GetFont()) r->GetFont()->Destroy();
-        r->SetFont(this);
         
-        if(r->GetMesh()->m_Textures[TextureID]) r->GetMesh()->m_Textures[TextureID]->Destroy();
-        r->GetMesh()->m_Textures[TextureID] = m_Texture;
+        if(m->m_Textures[GUI_FONT_TEXTURE]) m->m_Textures[GUI_FONT_TEXTURE]->Destroy();
+        m->m_Textures[GUI_FONT_TEXTURE] = m_Texture;
     }
 }

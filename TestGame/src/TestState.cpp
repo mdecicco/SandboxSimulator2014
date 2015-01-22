@@ -2,6 +2,7 @@
 #include <Engine.h>
 
 #include <Rendering/RenderSystem.h>
+#include <Rendering/Gui/Gui.h>
 
 namespace SandboxSimulator
 {
@@ -15,8 +16,10 @@ namespace SandboxSimulator
     {
         m_StateManager = StateManager;
         Entity* E = m_Engine->GetSceneGraph()->CreateEntity();
-        m_Engine->GetSceneGraph()->AddComponent(E, new RenderComponent());
-        m_Engine->GetSceneGraph()->AddComponent(E, new TransformComponent());
+        TransformComponent* ET = new TransformComponent();
+        er = new RenderComponent();
+        m_Engine->GetSceneGraph()->AddComponent(E, er);
+        m_Engine->GetSceneGraph()->AddComponent(E, ET);
         RenderComponent* r = (RenderComponent*)E->GetComponentByType(CT_RENDER);
         r->SetShape(RC_SKY_SPHERE);
 
@@ -33,13 +36,20 @@ namespace SandboxSimulator
         m_Engine->GetSceneGraph()->AddComponent(P, new TransformComponent());
         pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
         pr->SetShape(RC_UI);
+        //pr->SetPrimType(GL_LINES);
         TransformComponent* pt = (TransformComponent*)P->GetComponentByType(CT_TRANSFORM);
-        pt->SetPosition(Vec3(0,100,0));
         //pt->Rotate(Quat(0,0,1,10));
 
         Font* f = new Font();
         f->Load("Data/Font/Ubuntu-better.dst");
-        f->AddTextToEntity(P, "Hello world!", Vec3(0,0,0), 1);
+        //f->AddTextToEntity(P, "Hello world!", Vec3(0,0,0), 1);
+        GUIManager* Manager = new GUIManager(f);
+        GuiElement* TestPanel = Manager->MakeElement(pr);
+        TestPanel->SetSize(Vec2(200,200));
+        pt->SetPosition(Vec3(100,100,0));
+        TestPanel->GenerateMesh();
+
+
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
@@ -50,6 +60,7 @@ namespace SandboxSimulator
         //m_Engine->GetInputSystem()->SetMousePosition(Vec2(400,300));
         //CamTrans->SetRelativeTo(P);
         CamTrans->SetPosition(Vec3(0,0,2));
+        ET->SetRelativeTo(Cam);
     }
 
     void TestState::Update(Scalar dt)
@@ -58,19 +69,20 @@ namespace SandboxSimulator
         Vec3 Pos = Vec3();
 
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
-            Pos += Vec3(0,0,-3*dt);
+            Pos += Vec3(0,0,-30*dt);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
-            Pos += Vec3(0,0,3*dt);
+            Pos += Vec3(0,0,30*dt);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_A)) {
-            Pos += Vec3(-3*dt,0,0);
+            Pos += Vec3(-30*dt,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_D)) {
-            Pos += Vec3(3*dt,0,0);
+            Pos += Vec3(30*dt,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_UP)) {
-            m_Engine->SetGameTimeRate(m_Engine->GetGameTimeRate()+1);
+            m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() + ((1800*dt) * 0.00001157407f));
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_DOWN)) {
-            m_Engine->SetGameTimeRate(m_Engine->GetGameTimeRate()-1);
-        } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
-            pr->SetShape(RC_UI);
+            m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() - ((1800*dt) * 0.00001157407f));
+        } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_Q)) {
+            pr->ReloadShader();
+            er->ReloadShader();
         }
 
         Vec2 MousePos = m_Engine->GetInputSystem()->GetMousePosition();

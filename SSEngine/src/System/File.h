@@ -99,6 +99,7 @@ class Asset
         i32 GetSize() const { return m_Size; }
 
         bool AtEnd() const { return m_Pos == m_Size; }
+        Literal GetPath() { return m_LoadPath; }
 
     protected: 
         virtual ~Asset() { if(m_Data) delete (Byte*)m_Data; }
@@ -113,6 +114,7 @@ class Asset
         
         bool m_Updated;
         std::string m_Path;
+        Literal m_LoadPath;
 };
 }
 

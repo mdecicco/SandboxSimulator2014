@@ -9,14 +9,13 @@ namespace SandboxSimulator
 {
     RenderComponent::RenderComponent() : Component(CT_RENDER), m_Shdr(0), m_StayVisible(false), m_Mesh(new Mesh()),
                                          m_UseScissorRegion(false), m_UseBlending(false), m_UseDepthTest(true), m_WriteDepth(true), m_Opacity(1.0f),
-                                         m_Hide(false), m_PrimType(GL_TRIANGLES), m_Font(0), m_GUIData(0), m_IsGui(false)
+                                         m_Hide(false), m_PrimType(GL_TRIANGLES), m_Font(0), m_IsGui(false)
     {
     }
     RenderComponent::~RenderComponent()
     {
         if(m_Mesh) delete m_Mesh;
         if(m_Shdr) delete m_Shdr;//TODO
-        if(m_GUIData) delete m_GUIData;
         if(m_Font) delete m_Font;
     }
 
@@ -142,29 +141,29 @@ namespace SandboxSimulator
                 break;
             case RC_GROUND_PLANE:
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
-                AddVertex(Vec3(100 ,0.0,100));
+                AddVertex(Vec3(900 ,0.0,900));
                 AddTexCoord(Vec2(0,0));
                 AddNormal(Vec3(0,1,0));
-                AddVertex(Vec3(100,0,-100));
-                AddTexCoord(Vec2(0,1));
+                AddVertex(Vec3(900,0,-900));
+                AddTexCoord(Vec2(0,20));
                 AddNormal(Vec3(0,1,0));
-                AddVertex(Vec3(-100,0,-100));
-                AddTexCoord(Vec2(1,1));
+                AddVertex(Vec3(-900,0,-900));
+                AddTexCoord(Vec2(20,20));
                 AddNormal(Vec3(0,1,0));
 
-                AddVertex(Vec3(-100,0,-100));
-                AddTexCoord(Vec2(1,1));
+                AddVertex(Vec3(-900,0,-900));
+                AddTexCoord(Vec2(20,20));
                 AddNormal(Vec3(0,1,0));
-                AddVertex(Vec3(-100,0,100));
-                AddTexCoord(Vec2(1,0));
+                AddVertex(Vec3(-900,0,900));
+                AddTexCoord(Vec2(20,0));
                 AddNormal(Vec3(0,1,0));
-                AddVertex(Vec3(100,0,100));
+                AddVertex(Vec3(900,0,900));
                 AddTexCoord(Vec2(0,0));
                 AddNormal(Vec3(0,1,0));
                 break;
             case RC_UI:
                 m_Shdr = new Shader();
-                m_Shdr->Load("Data/Shaders/UI.glsl");
+                m_Shdr->Load("Data/Shaders/Gui.glsl");
                 m_IsGui = true;
                 m_Opacity = 1.0;
                 m_UseBlending = true;
@@ -249,7 +248,7 @@ namespace SandboxSimulator
         glEnable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
 
-        m_GUIManager = new GUIManager();
+        //m_GUIManager = new GUIManager();
         m_GUIProj = Orthogonal(0.0f,m_Resolution.x,0.0f,m_Resolution.y,0.1f,100.0f);
 	}
 

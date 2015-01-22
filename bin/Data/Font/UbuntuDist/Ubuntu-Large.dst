@@ -1,8 +1,9 @@
 info face="Ubuntu"
-textureFile="Data/Font/UbuntuDist/Ubuntu-Large.png"
-textureSize=1024
+file="Data/Font/UbuntuDist/Ubuntu-Large.png"
+scaleW=1024
 chars count=196
-fontSize=115
+size=115
+lineHeight=115
 char id=0     x=990   y=1017  width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=0.000       page=0  chnl=0
 char id=8     x=986   y=1017  width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=0.000       page=0  chnl=0
 char id=9     x=982   y=1017  width=4     height=4     xoffset=-1.500    yoffset=1.500     xadvance=26.563      page=0  chnl=0

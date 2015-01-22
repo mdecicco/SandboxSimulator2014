@@ -29,8 +29,8 @@ namespace SandboxSimulator
         RegisterSystem(m_InputSystem);
 
         m_TimeOfDay = 0.0f;
-        m_GameTimeRate = 1800;
-        m_TimeOfDay = NormalizeTime(8,0,0,true);
+        m_GameTimeRate = 0;
+        m_TimeOfDay = NormalizeTime(6,0,0,false);
     }
     
     SSEngine::~SSEngine()

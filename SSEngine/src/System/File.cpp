@@ -37,6 +37,7 @@ namespace SandboxSimulator
         m_MemSize = m_Size;
         
         CloseFile(fp);
+        m_LoadPath = Path;
         
         return OnLoad();
     }
