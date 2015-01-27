@@ -225,7 +225,7 @@ namespace SandboxSimulator
 
 		// save to log file i32 Ret = fprintf(m_Log, "%s", Formatted);
         printf("%f: %s",m_RunTime.ElapsedTime(),Formatted);
-        free(Formatted);
+        //free(Formatted);
     }
 
     Scalar SSEngine::NormalizeTime(i32 Hour,i32 Minute,i32 Second,bool AM) const

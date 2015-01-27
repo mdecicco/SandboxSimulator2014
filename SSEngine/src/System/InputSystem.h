@@ -28,9 +28,13 @@ class InputSystem : public EngineSystem
         Vec2 GetMousePosition();
         void SetMousePosition(Vec2 Pos);
 
+        void DisableCursor(bool disabled);
+        Vec2 GetMouseDelta();
+
     private:
         bool m_WindowSet;
         GLFWwindow* m_Window;
+        Vec2 m_OldMousePosition;
 };
 }
 

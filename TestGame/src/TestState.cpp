@@ -59,7 +59,7 @@ namespace SandboxSimulator
         //f->Load("Data/Font/Ubuntu-better.dst");
         //delete f;
         //f->AddToMesh(pr->GetMesh(), "Hello world!", Vec3(0,0,0), 56);
-
+        m_Engine->GetInputSystem()->DisableCursor(true);
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
@@ -67,7 +67,6 @@ namespace SandboxSimulator
         m_Engine->GetSceneGraph()->AddComponent(Cam, new CameraComponent());
         m_Engine->GetRenderSystem()->SetCamera(Cam);
         CamTrans->SetFirstPerson(true);
-        m_Engine->GetInputSystem()->SetMousePosition(Vec2(1280/2,720/2));
         CamTrans->SetPosition(Vec3(0,1,3));
         CamTrans->Rotate(1,0,0,-20);
         CamTrans->SetRelativeTo(P);
@@ -78,17 +77,18 @@ namespace SandboxSimulator
     {
         //TransformComponent* trans = (TransformComponent*)m_Engine->GetSceneGraph()->GetEntityById(0)->GetComponentByType(CT_TRANSFORM);
         Vec3 Delta = Vec3();
+        Scalar speed = 50 * dt;
 
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_W)) {
-            Delta += Vec3(0,0,-0.025);
+            Delta += Vec3(0,0,-speed);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_S)) {
-            Delta += Vec3(0,0,0.025);
+            Delta += Vec3(0,0,speed);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_A)) {
-            Delta += Vec3(-0.025,0,0);
+            Delta += Vec3(-speed,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_D)) {
-            Delta += Vec3(0.025,0,0);
+            Delta += Vec3(speed,0,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_SPACE)) {
-            Delta += Vec3(0,0.025,0);
+            Delta += Vec3(0,speed,0);
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_Q)) {
             m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() + ((3000*dt) * 0.00001157407f));
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_E)) {
@@ -98,18 +98,9 @@ namespace SandboxSimulator
             er->ReloadShader();
         }
 
-        Vec2 MousePos = m_Engine->GetInputSystem()->GetMousePosition();
-        MousePos.x -= 1280/2;
-        MousePos.y -= 720/2;
-        if(MousePos.x + MousePos.y != 0) {
-            Vec3 yAxis = Vec3(1,0,0);
-            Vec3 xAxis = Vec3(0,1,0);
-
-            SphereTrans->Rotate(xAxis,-MousePos.x*0.5f);
-            //CamTrans->Rotate(yAxis,-MousePos.y*0.5f);
-        }
-
-        m_Engine->GetInputSystem()->SetMousePosition(Vec2(1280/2,720/2));
+        Vec2 MousePos = m_Engine->GetInputSystem()->GetMouseDelta();
+        SphereTrans->Rotate(Vec3(0,1,0),-MousePos.x*0.5f);
+        
         SphereTrans->AddImpulse(Delta, true);
 
          if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_ESCAPE)) {
