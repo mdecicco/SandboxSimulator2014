@@ -59,6 +59,134 @@ namespace SandboxSimulator
                 AddTexCoord(Vec2(1,0));
                 AddNormal(Vec3(0,0,1));
                 break;
+            case RC_BOX:
+                m_Shdr->Load("Data/Shaders/TestShader.glsl");
+                //front
+                AddVertex(Vec3(0.5 , 0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3(-0.5,-0.5,0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3(0.5 ,-0.5,0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,0,1));
+
+                AddVertex(Vec3(-0.5,-0.5,0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3( 0.5, 0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,0,1));
+                AddVertex(Vec3(-0.5, 0.5,0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,0,1));
+
+                //back
+                AddVertex(Vec3(0.5 , 0.5,-0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,0,-1));
+                AddVertex(Vec3(0.5 ,-0.5,-0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,0,-1));
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,0,-1));
+
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,0,-1));
+                AddVertex(Vec3(-0.5, 0.5,-0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,0,-1));
+                AddVertex(Vec3( 0.5, 0.5,-0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,0,-1));
+
+                //right
+                AddVertex(Vec3(0.5,0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(1,0,0));
+                AddVertex(Vec3(0.5 ,-0.5,0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(1,0,0));
+                AddVertex(Vec3(0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(1,0,0));
+
+                AddVertex(Vec3(0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(1,0,0));
+                AddVertex(Vec3(0.5, 0.5,-0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(1,0,0));
+                AddVertex(Vec3(0.5, 0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(1,0,0));
+
+                //left
+                AddVertex(Vec3(-0.5,0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(-1,0,0));
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(-1,0,0));
+                AddVertex(Vec3(-0.5 ,-0.5,0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(-1,0,0));
+
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(-1,0,0));
+                AddVertex(Vec3(-0.5, 0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(-1,0,0));
+                AddVertex(Vec3(-0.5, 0.5,-0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(-1,0,0));
+
+                //top
+                AddVertex(Vec3(0.5 , 0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,1,0));
+                AddVertex(Vec3(0.5 ,0.5,-0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,1,0));
+                AddVertex(Vec3(-0.5,0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,1,0));
+
+                AddVertex(Vec3(-0.5,0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,1,0));
+                AddVertex(Vec3(-0.5,0.5,0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,1,0));
+                AddVertex(Vec3( 0.5,0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,1,0));
+
+                //bottom
+                AddVertex(Vec3(0.5 ,-0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,-1,0));
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,-1,0));
+                AddVertex(Vec3(0.5 ,-0.5,-0.5));
+                AddTexCoord(Vec2(0,1));
+                AddNormal(Vec3(0,-1,0));
+
+                AddVertex(Vec3(-0.5,-0.5,-0.5));
+                AddTexCoord(Vec2(1,1));
+                AddNormal(Vec3(0,-1,0));
+                AddVertex(Vec3( 0.5,-0.5,0.5));
+                AddTexCoord(Vec2(0,0));
+                AddNormal(Vec3(0,-1,0));
+                AddVertex(Vec3(-0.5,-0.5,0.5));
+                AddTexCoord(Vec2(1,0));
+                AddNormal(Vec3(0,-1,0));
+                break;
             case RC_SPHERE:
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 for(int r = 0; r <= NumRings; r++)
@@ -163,7 +291,7 @@ namespace SandboxSimulator
                 break;
             case RC_UI:
                 m_Shdr = new Shader();
-                m_Shdr->Load("Data/Shaders/Gui.glsl");
+                m_Shdr->Load("Data/Shaders/Font.glsl");
                 m_IsGui = true;
                 m_Opacity = 1.0;
                 m_UseBlending = true;

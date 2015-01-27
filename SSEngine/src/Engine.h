@@ -31,6 +31,7 @@
 namespace SandboxSimulator
 {
 	class RenderSystem;
+    class PhysicsSystem;
     class SSEngine
     {
         public:
@@ -81,6 +82,9 @@ namespace SandboxSimulator
             void SetRenderSystem(RenderSystem* rSys) { m_RenderSystem = rSys; }
             RenderSystem* GetRenderSystem() { return m_RenderSystem; }
     
+            void SetPhysicsSystem(PhysicsSystem* rSys) { m_PhysicsSystem = rSys; }
+            PhysicsSystem* GetPhysicsSystem() { return m_PhysicsSystem; }
+
         protected:
             /* Systems */
 			std::vector<EngineSystem*> m_Systems;
@@ -91,6 +95,7 @@ namespace SandboxSimulator
             SceneGraph* m_SceneGraph;
             InputSystem* m_InputSystem;
             RenderSystem* m_RenderSystem;
+            PhysicsSystem* m_PhysicsSystem;
 
 			/* Misc */
 			Timer m_RunTime;

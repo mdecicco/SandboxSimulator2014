@@ -25,9 +25,8 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-extras/")
 
 set(GLFWDIR "${PROJECT_SOURCE_DIR}/dependencies/glfw")
 set(GLEWDIR "${PROJECT_SOURCE_DIR}/dependencies/glew")
-set(SOILDIR "${PROJECT_SOURCE_DIR}/dependencies/soil")
 set(SFMLDIR "${PROJECT_SOURCE_DIR}/dependencies/sfml")
-set(ASSIMPDIR "${PROJECT_SOURCE_DIR}/dependencies/Assimp")
+set(BULLETDIR "${PROJECT_SOURCE_DIR}/dependencies/bullet")
 set(ZDIR "${ASSIMPDIR}/contrib/zlib")
 
 INCLUDE_DIRECTORIES( ${ASSIMPDIR}/code/BoostWorkaround )
@@ -37,7 +36,7 @@ MESSAGE( STATUS "Building a non-boost version of Assimp." )
 find_package(OpenGL REQUIRED)
 find_package(SFML 2 COMPONENTS network system REQUIRED)
 
-include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${OPENGL_INCLUDE_DIR} ${GLEWDIR}/include ${ZDIR} ${SOILDIR} ${SFMLDIR}/include )
+include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${OPENGL_INCLUDE_DIR} ${GLEWDIR}/include ${ZDIR} ${BULLETDIR} ${SFMLDIR}/include )
 
 ADD_SUBDIRECTORY(dependencies)
 find_package(X11)

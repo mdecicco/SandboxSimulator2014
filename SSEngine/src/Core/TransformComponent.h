@@ -12,7 +12,12 @@ class TransformComponent : public Component
         ~TransformComponent();
 
         //Setters
-        void SetPosition(Vec3 Pos) {m_Position = Pos; m_Updated = true;}
+        void SetPosition(Vec3 Pos, bool UpdatePhysics = true);
+        void SetVelocity(Vec3 Vel, bool RelativeToOrientation = false);
+        void AddForce(Vec3 Force, bool RelativeToOrientation = false);
+        void AddImpulse(Vec3 Force, bool RelativeToOrientation = false);
+        void SetOrientation(Quat O, bool UpdatePhysics = true);
+        void SetScale(Vec3 Scale);
 
         //Getters
         Mat4 GetMat4();
@@ -45,6 +50,7 @@ class TransformComponent : public Component
         void SetFirstPerson(bool fp) { m_FirstPerson = fp;m_Updated = true; }
 
         void SetRelativeTo(Entity* E) { m_RelativeTo = E; m_HasParent = true; }
+        void SetStatic(bool Static) { m_IsStatic = Static; }
 
     protected:
         Vec3 m_Position;

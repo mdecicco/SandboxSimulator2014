@@ -5,6 +5,7 @@
 #include <Engine.h>
 #include <Core/SceneGraph.h>
 #include <Rendering/RenderSystem.h>
+#include <Core/PhysicsSystem.h>
 #include <Core/Message.h>
 
 #include <Network/Socket.h>
@@ -27,10 +28,13 @@ int main(i32 ArgC,Literal ArgV[])
     //Engine Systems
     StateManagerSystem* StateSystem = new StateManagerSystem();
     RenderSystem* RendSystem = new RenderSystem();
+    PhysicsSystem* PhysSystem = new PhysicsSystem();
 
     Eng->RegisterSystem(StateSystem);
     Eng->RegisterSystem(RendSystem);
     Eng->SetRenderSystem(RendSystem);
+    Eng->RegisterSystem(PhysSystem);
+    Eng->SetPhysicsSystem(PhysSystem);
     Eng->Initialize(ArgC,ArgV);
 
     //Input won't process unless it has an active glfw window.

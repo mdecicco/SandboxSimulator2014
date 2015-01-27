@@ -6,6 +6,8 @@
 #define PI_UNDER_180 57.2957795131
 #define PI 3.14159265
 
+
+#include <btBulletDynamicsCommon.h>
 #include <string>
 using namespace std;
 
@@ -59,6 +61,7 @@ namespace SandboxSimulator
             Vec3(const Vec2& xy,Scalar z);
             Vec3(Scalar x,const Vec2& yz);
             Vec3(const Vec3& xyz);
+            Vec3(const btVector3& xyz);
             ~Vec3() { }
         
             Vec3& operator=(const Vec3& rval);
@@ -81,6 +84,8 @@ namespace SandboxSimulator
             Vec3& operator-=(const Vec3& rval);
             Vec3& operator*=(const Vec3& rval);
             Vec3& operator/=(const Vec3& rval);
+
+            operator btVector3() const { return btVector3(x,y,z); }
         
             Scalar Magnitude() const;
             Scalar MagnitudeSq() const;
@@ -134,6 +139,8 @@ namespace SandboxSimulator
             Vec4 operator-=(const Vec4& rval);
             Vec4 operator*=(const Vec4& rval);
             Vec4 operator/=(const Vec4& rval);
+
+            operator btQuaternion() const { return btQuaternion(x,y,z,w); }
         
             Scalar Magnitude() const;
             Scalar MagnitudeSq() const;
@@ -285,7 +292,10 @@ namespace SandboxSimulator
             Quat(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle);
             Quat(const Vec3& Axis,Scalar Angle);
             Quat(const Quat& q);
+            Quat(const btQuaternion& q);
             ~Quat();
+
+            operator btQuaternion() const { return btQuaternion(x,y,z,w); }
             
             void FromAxisAngle(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle);
             void FromAxisAngle(const Vec3& Axis,Scalar Angle);

@@ -1,2 +1,5 @@
 TODO
 1) Start physics integration with client side prediction.
+2) Placeholder player model
+3) Basic enemies and ai
+4) Items and spells

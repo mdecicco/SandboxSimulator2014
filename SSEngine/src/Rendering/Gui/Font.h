@@ -27,7 +27,7 @@ class Font : public Asset
         ~Font();
     
         virtual bool OnLoad();
-        void AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, Scalar WrapLength, i32 TextSize);
+        void AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, i32 TextSize);
     
         i32 m_TextSize;
         i32 m_TextureSize;

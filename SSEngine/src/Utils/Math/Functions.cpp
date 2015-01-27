@@ -151,6 +151,9 @@ namespace SandboxSimulator
     Vec3::Vec3(const Vec3& xyz) : x(xyz.x), y(xyz.y), z(xyz.z)
     {
     }
+    Vec3::Vec3(const btVector3& xyz) : x(xyz.x()), y(xyz.y()), z(xyz.z())
+    {
+    }
     Vec3& Vec3::operator=(const Vec3& rval)
     {
         x = rval.x;
@@ -1113,6 +1116,13 @@ namespace SandboxSimulator
         y = q.y;
         z = q.z;
         w = q.w;
+    }
+    Quat::Quat(const btQuaternion& q)
+    {
+        x = q.x();
+        y = q.y();
+        z = q.z();
+        w = q.w();
     }
     Quat::~Quat()
     {

@@ -118,7 +118,7 @@ namespace SandboxSimulator
         }
         return true;
     }
-    void Font::AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, Scalar WrapLength, i32 TextSize)
+    void Font::AddToMesh(Mesh* m,const string& Text,const Vec3& Offset, i32 TextSize)
     {   
         f32 xPos = 0;
         f32 yPos = 0;
@@ -126,7 +126,7 @@ namespace SandboxSimulator
         for(i32 i = 0;i < Text.size();i++)
         {
             char c = Text[i];
-            if(c == '\n' || c == '\r' || xPos + (m_Glyphs[c].Size.x * Scale) > WrapLength)
+            if(c == '\n' || c == '\r')
             {
                 xPos = 0;
                 yPos += m_LineHeight * Scale;
@@ -162,7 +162,7 @@ namespace SandboxSimulator
             }
         }
         
-        if(m->m_Textures[GUI_FONT_TEXTURE]) m->m_Textures[GUI_FONT_TEXTURE]->Destroy();
-        m->m_Textures[GUI_FONT_TEXTURE] = m_Texture;
+        if(m->m_Textures[1]) m->m_Textures[1]->Destroy();
+        m->m_Textures[1] = m_Texture;
     }
 }

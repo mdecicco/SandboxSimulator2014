@@ -21,6 +21,7 @@ namespace SandboxSimulator
         RC_NONE,
         RC_TRIANGLE,
         RC_SQUARE,
+        RC_BOX,
         RC_SPHERE,
         RC_SKY_SPHERE,
         RC_GROUND_PLANE,

@@ -29,7 +29,7 @@ namespace SandboxSimulator
         RegisterSystem(m_InputSystem);
 
         m_TimeOfDay = 0.0f;
-        m_GameTimeRate = 0;
+        m_GameTimeRate = 30;
         m_TimeOfDay = NormalizeTime(6,0,0,false);
     }
     

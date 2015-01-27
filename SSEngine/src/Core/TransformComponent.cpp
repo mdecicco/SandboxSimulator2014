@@ -1,4 +1,5 @@
 #include <Core/TransformComponent.h>
+#include <Core/PhysicsSystem.h>
 
 namespace SandboxSimulator
 {
@@ -8,10 +9,80 @@ namespace SandboxSimulator
                                                   m_InheritPosition(true), m_InheritScale(true), m_Simulated(false), m_Updated(false),
                                                   m_FirstPersonXRot(0), m_FirstPersonYRot(0), m_FirstPerson(false), m_HasParent(false)
     {
-        Identity();
+        if(m_Position.x + m_Position.y + m_Position.z != 0.0f) m_DidMove = true;
+        m_Transform = Mat4::Identity;
+        m_Position = Vec3();
+        m_Orientation = Quat(0.0f,1.0f,0.0f,0.0f);
+        m_Scale = Vec3(1.0f,1.0f,1.0f);
+        m_Updated = false;
     }
     TransformComponent::~TransformComponent()
     {}
+
+    void TransformComponent::SetPosition(Vec3 Pos, bool UpdatePhysics) 
+    {
+        m_Position = Pos; m_Updated = true;
+        if(UpdatePhysics && m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setOrigin(m_Position);
+            body->setWorldTransform(tr);
+        }
+    }
+
+    void TransformComponent::SetVelocity(Vec3 Vel, bool Rel)
+    {
+        Vec3 velocity = Vel;
+        if(Rel)
+            velocity = m_Orientation * Vel;
+
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            body->setLinearVelocity(velocity);
+            body->setAngularVelocity(Vec3(0,0,0));
+        }
+    }
+
+    void TransformComponent::AddForce(Vec3 Vel, bool Rel)
+    {
+        Vec3 velocity = Vel;
+        if(Rel)
+            velocity = m_Orientation * Vel;
+
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            body->applyCentralForce(velocity);
+        }
+    }
+
+    void TransformComponent::AddImpulse(Vec3 Vel, bool Rel)
+    {
+        Vec3 velocity = Vel;
+        if(Rel)
+            velocity = m_Orientation * Vel;
+
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            body->applyImpulse(velocity, Vec3(0,0,0));
+        }
+    }
+
+    void TransformComponent::SetOrientation(Quat O, bool UpdatePhysics) 
+    {
+        m_Orientation = O; m_Updated = true;
+        if(UpdatePhysics && m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            body->setAngularVelocity(Vec3(0,0,0));
+            tr.setRotation(m_Orientation);
+            body->setWorldTransform(tr);
+        }
+    }
+
+    void TransformComponent::SetScale(Vec3 Scale) 
+    {
+        m_Scale = Scale; m_Updated = true;
+    }
 
     void TransformComponent::Identity()
     {
@@ -21,6 +92,14 @@ namespace SandboxSimulator
         m_Orientation = Quat(0.0f,1.0f,0.0f,0.0f);
         m_Scale = Vec3(1.0f,1.0f,1.0f);
         m_Updated = false;
+
+        if(m_Parent && m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setIdentity();
+            body->setWorldTransform(tr);
+            body->setLinearVelocity(Vec3(0,0,0));
+        }
     }
     void TransformComponent::Translate(const Vec3& t)
     {
@@ -35,6 +114,13 @@ namespace SandboxSimulator
             m_Position += t;
         m_Updated = true;
         m_DidMove = true;
+
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setOrigin(m_Position);
+            body->setWorldTransform(tr);
+        }
     }
     void TransformComponent::Translate(Scalar x,Scalar y,Scalar z)
     {
@@ -49,12 +135,25 @@ namespace SandboxSimulator
             m_Position += Vec3(x,y,z);
         m_Updated = true;
         m_DidMove = true;
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setOrigin(m_Position);
+            body->setWorldTransform(tr);
+        }
     }
     void TransformComponent::Rotate(const Quat& q)
     {
         m_Orientation *= q;
         m_Updated = true;
         m_DidRotate = true;
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setRotation(m_Orientation);
+            body->setAngularVelocity(Vec3(0,0,0));
+            body->setWorldTransform(tr);
+        }
     }
     void TransformComponent::Rotate(const Vec3& Axis,Scalar Angle)
     {
@@ -68,6 +167,13 @@ namespace SandboxSimulator
         }
         m_Updated = true;
         m_DidRotate = true;
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setRotation(m_Orientation);
+            body->setAngularVelocity(Vec3(0,0,0));
+            body->setWorldTransform(tr);
+        }
     }
     void TransformComponent::Rotate(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle)
     {
@@ -81,26 +187,39 @@ namespace SandboxSimulator
         }
         m_Updated = true;
         m_DidRotate = true;
+        if(m_Parent->HasComponentType(CT_PHYSICS)) {
+            btRigidBody* body = ((PhysicsComponent*)m_Parent->GetComponentByType(CT_PHYSICS))->m_Body;
+            btTransform tr = body->getWorldTransform();
+            tr.setRotation(m_Orientation);
+            body->setAngularVelocity(Vec3(0,0,0));
+            body->setWorldTransform(tr);
+        }
     }
     void TransformComponent::Scale(Scalar s)
     {
-        m_Scale *= s;
-        m_Updated = true;
-        m_DidScale = true;
+        if(!m_Parent->HasComponentType(CT_PHYSICS)) {
+            m_Scale *= s;
+            m_Updated = true;
+            m_DidScale = true;
+        }
     }
     void TransformComponent::Scale(Scalar x,Scalar y,Scalar z)
     {
-        m_Scale.x *= x;
-        m_Scale.y *= y;
-        m_Scale.z *= z;
-        m_Updated = true;
-        m_DidScale = true;
+        if(!m_Parent->HasComponentType(CT_PHYSICS)) {
+            m_Scale.x *= x;
+            m_Scale.y *= y;
+            m_Scale.z *= z;
+            m_Updated = true;
+            m_DidScale = true;
+        }
     }
     void TransformComponent::Scale(const Vec3& s)
     {
-        m_Scale *= s;
-        m_Updated = true;
-        m_DidScale = true;
+        if(!m_Parent->HasComponentType(CT_PHYSICS)) {
+            m_Scale *= s;
+            m_Updated = true;
+            m_DidScale = true;
+        }
     }
     Vec3 TransformComponent::GetPosition(bool Relative) const
     {

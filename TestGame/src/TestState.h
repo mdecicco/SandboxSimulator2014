@@ -3,6 +3,7 @@
 
 #include <Core/StateSystem.h>
 #include <Core/TransformComponent.h>
+#include <Core/PhysicsSystem.h>
 
 namespace SandboxSimulator {
 class RenderComponent;
@@ -20,8 +21,10 @@ class TestState : public State
 
     private:
         TransformComponent* CamTrans;
+        TransformComponent* SphereTrans;
         RenderComponent* pr;
         RenderComponent* er;
+        PhysicsComponent* m_Sphere;
 };
 }
 
