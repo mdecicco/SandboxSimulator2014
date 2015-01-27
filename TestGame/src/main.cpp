@@ -14,6 +14,7 @@
 #include <TestState.h>
 
 #ifdef WIN32
+    //#include <vld.h>
     #include <Windows.h>
 #endif
 
@@ -44,5 +45,6 @@ int main(i32 ArgC,Literal ArgV[])
 
     Eng->Run();
     Eng->Shutdown();
+    delete Eng;
     return 0;
 }

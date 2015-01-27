@@ -55,8 +55,9 @@ namespace SandboxSimulator
         m_Sphere->SetSleepWhenActive(false);
         m_Sphere->SetAngularFactor(Vec3(0,0,0));
 
-        Font* f = new Font();
-        f->Load("Data/Font/Ubuntu-better.dst");
+        //Font* f = new Font();
+        //f->Load("Data/Font/Ubuntu-better.dst");
+        //delete f;
         //f->AddToMesh(pr->GetMesh(), "Hello world!", Vec3(0,0,0), 56);
 
 
@@ -110,5 +111,9 @@ namespace SandboxSimulator
 
         m_Engine->GetInputSystem()->SetMousePosition(Vec2(1280/2,720/2));
         SphereTrans->AddImpulse(Delta, true);
+
+         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_ESCAPE)) {
+            m_Engine->SetShutdown(true);
+        }
     }
 }

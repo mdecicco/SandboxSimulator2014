@@ -47,6 +47,7 @@ namespace SandboxSimulator
     
     SceneGraph::~SceneGraph()
     {
+        m_Entities.clear();
     }
     
     Entity* SceneGraph::CreateEntity()

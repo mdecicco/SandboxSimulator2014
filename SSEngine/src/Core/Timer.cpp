@@ -18,6 +18,7 @@ namespace SandboxSimulator
 
     Timer::~Timer()
     {
+        delete m_Clock;
     }
     
     void Timer::Start()

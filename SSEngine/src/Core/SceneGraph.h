@@ -70,7 +70,13 @@ namespace SandboxSimulator
             }
 
 
-            ~Entity() {}
+            ~Entity() 
+            {
+                for(i32 i = 0; i < CT_COUNT; i++) {
+                    if(HasComponentType((COMPONENT_TYPE)i))
+                        delete m_Components[i];
+                }
+            }
         
             void AddRef() {m_RefCount++;}
             void Destroy();

@@ -14,7 +14,19 @@ namespace SandboxSimulator
     {}
 
     PhysicsComponent::~PhysicsComponent()
-    {}
+    {
+        delete m_Body->getMotionState();
+        //if(m_Body->getCollisionShape()->getUserPointer() != nullptr) delete m_Body->getCollisionShape()->getUserPointer();
+        if(m_Body->getCollisionShape()->getShapeType() == TRIANGLE_MESH_SHAPE_PROXYTYPE || m_Body->getCollisionShape()->getShapeType() == CONVEX_HULL_SHAPE_PROXYTYPE) {
+            btBvhTriangleMeshShape* shp = (btBvhTriangleMeshShape*)m_Body->getCollisionShape();
+            delete shp->getMeshInterface();
+            if(!m_Body->isStaticObject())
+                delete m_Body->getCollisionShape()->getUserPointer();
+        }
+
+        delete m_Body->getCollisionShape();
+        delete m_Body;
+    }
 
     PhysicsSystem::PhysicsSystem() : m_dt(0.0f), m_FrameTimestamp(0.0f), m_LastFrameTimestamp(0.0f)
     {
@@ -117,45 +129,45 @@ namespace SandboxSimulator
                 }
             } else {
                 btTriangleMesh* tMesh = new btTriangleMesh();
-                 if(r->GetMesh()->GetIndexCount() == 0)
-                 {
-                     for(int i = 0;i < r->GetVertexCount();i += 3) tMesh->addTriangle(r->GetVertex(i+0),r->GetVertex(i+1),r->GetVertex(i+2));
-                 }
-                 else
-                 {
-                     for(i32 i = 0;i < r->GetMesh()->GetIndexCount();i += 3)
-                     {
-                         tMesh->addTriangle(r->GetVertex(r->GetMesh()->GetIndex(i+0)),
-                                            r->GetVertex(r->GetMesh()->GetIndex(i+1)),
-                                            r->GetVertex(r->GetMesh()->GetIndex(i+2)));
-                     }
-                 }
-                 if(t->IsStatic())
-                 {
-                     btBvhTriangleMeshShape* Shape = new btBvhTriangleMeshShape(tMesh,true,true);
-                     btDefaultMotionState* State = new btDefaultMotionState(btTransform(t->GetOrientation(),t->GetPosition()));
-                     btRigidBody::btRigidBodyConstructionInfo BodyCI(0.0f,State,Shape,btVector3(0, 0, 0));
-                     Body = new btRigidBody(BodyCI);
-                     Body->setRestitution(Restitution);
-                     Body->setFriction(Friction);
-                     m_World->addRigidBody(Body);
-                 }
-                 else
-                 {
-                     btConvexShape *Shape = new btConvexTriangleMeshShape(tMesh);
-                     btShapeHull *hull = new btShapeHull(Shape);
-                     btScalar margin = Shape->getMargin();
-                     hull->buildHull(margin);
-                     Shape->setUserPointer(hull);
-                 
-                     btDefaultMotionState* State = new btDefaultMotionState(btTransform(t->GetOrientation(),t->GetPosition()));
-                     btVector3 Inertia(0, 0, 0);
-                     Shape->calculateLocalInertia(Mass,Inertia);
-                     btRigidBody::btRigidBodyConstructionInfo BodyCI(Mass,State,Shape,Inertia);
-                     Body = new btRigidBody(BodyCI);
-                     m_World->addRigidBody(Body);
-                     Body->setRestitution(Restitution);
-                     Body->setFriction(Friction);
+                if(r->GetMesh()->GetIndexCount() == 0)
+                {
+                    for(int i = 0;i < r->GetVertexCount();i += 3) tMesh->addTriangle(r->GetVertex(i+0),r->GetVertex(i+1),r->GetVertex(i+2));
+                }
+                else
+                {
+                    for(i32 i = 0;i < r->GetMesh()->GetIndexCount();i += 3)
+                    {
+                        tMesh->addTriangle(r->GetVertex(r->GetMesh()->GetIndex(i+0)),
+                                           r->GetVertex(r->GetMesh()->GetIndex(i+1)),
+                                           r->GetVertex(r->GetMesh()->GetIndex(i+2)));
+                    }
+                }
+                if(t->IsStatic())
+                {
+                    btBvhTriangleMeshShape* Shape = new btBvhTriangleMeshShape(tMesh,true,true);
+                    btDefaultMotionState* State = new btDefaultMotionState(btTransform(t->GetOrientation(),t->GetPosition()));
+                    btRigidBody::btRigidBodyConstructionInfo BodyCI(0.0f,State,Shape,btVector3(0, 0, 0));
+                    Body = new btRigidBody(BodyCI);
+                    Body->setRestitution(Restitution);
+                    Body->setFriction(Friction);
+                    m_World->addRigidBody(Body);
+                }
+                else
+                {
+                    btConvexShape *Shape = new btConvexTriangleMeshShape(tMesh);
+                    btShapeHull *hull = new btShapeHull(Shape);
+                    btScalar margin = Shape->getMargin();
+                    hull->buildHull(margin);
+                    Shape->setUserPointer(hull);
+                
+                    btDefaultMotionState* State = new btDefaultMotionState(btTransform(t->GetOrientation(),t->GetPosition()));
+                    btVector3 Inertia(0, 0, 0);
+                    Shape->calculateLocalInertia(Mass,Inertia);
+                    btRigidBody::btRigidBodyConstructionInfo BodyCI(Mass,State,Shape,Inertia);
+                    Body = new btRigidBody(BodyCI);
+                    m_World->addRigidBody(Body);
+                    Body->setRestitution(Restitution);
+                    Body->setFriction(Friction);
                 }
             }
         } else {

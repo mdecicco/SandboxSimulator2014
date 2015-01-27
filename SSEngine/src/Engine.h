@@ -85,6 +85,8 @@ namespace SandboxSimulator
             void SetPhysicsSystem(PhysicsSystem* rSys) { m_PhysicsSystem = rSys; }
             PhysicsSystem* GetPhysicsSystem() { return m_PhysicsSystem; }
 
+            void SetShutdown(bool sh) { m_DoShutdown = sh; }
+
         protected:
             /* Systems */
 			std::vector<EngineSystem*> m_Systems;

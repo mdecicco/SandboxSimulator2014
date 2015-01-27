@@ -15,7 +15,7 @@ namespace SandboxSimulator
     RenderComponent::~RenderComponent()
     {
         if(m_Mesh) delete m_Mesh;
-        if(m_Shdr) delete m_Shdr;//TODO
+        if(m_Shdr) delete m_Shdr;
         if(m_Font) delete m_Font;
     }
 
@@ -309,7 +309,11 @@ namespace SandboxSimulator
         m_RenderAlg = new ForwardRenderingAlgorithm();
 	}
 
-	RenderSystem::~RenderSystem() {}
+	RenderSystem::~RenderSystem() 
+    {
+        Shutdown();
+        delete m_RenderAlg;
+    }
 
     void RenderSystem::HandleMessage(const EngineMessage* Msg)
     {
@@ -431,6 +435,7 @@ namespace SandboxSimulator
         m_IsRendering = false;
         
         delete m_VisibleEntityList; m_VisibleEntityList = 0;
+        delete m_VisibleTransparentEntityList;
         //delete m_GUIList; m_GUIList = 0;
         m_FrameID++;
 	}

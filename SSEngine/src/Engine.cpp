@@ -49,14 +49,14 @@ namespace SandboxSimulator
          */
         Log("SSEngine v%d.%d\n", SSENGINE_VERSION_MAJOR, SSENGINE_VERSION_MINOR);
 
-		size_t plen = strlen(ArgV[0]);
-        CString Path = MakeCString(plen);
-        strcpy(Path,ArgV[0]);
-        for(size_t i = plen - 1;i > 0;i--)
-        {
-            if(Path[i] == '/') { Path[i] = 0; break; }
-            Path[i] = 0;
-        }
+		//size_t plen = strlen(ArgV[0]);
+        //CString Path = MakeCString(plen);
+        //strcpy(Path,ArgV[0]);
+        //for(size_t i = plen - 1;i > 0;i--)
+        //{
+        //    if(Path[i] == '/') { Path[i] = 0; break; }
+        //    Path[i] = 0;
+        //}
         //FreeCString(Path);
 		//Doesn't work on windows
 		//chdir(Path);
@@ -225,7 +225,7 @@ namespace SandboxSimulator
 
 		// save to log file i32 Ret = fprintf(m_Log, "%s", Formatted);
         printf("%f: %s",m_RunTime.ElapsedTime(),Formatted);
-        //free(Formatted);
+        free(Formatted);
     }
 
     Scalar SSEngine::NormalizeTime(i32 Hour,i32 Minute,i32 Second,bool AM) const
