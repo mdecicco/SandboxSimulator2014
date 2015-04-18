@@ -34,7 +34,7 @@ namespace SandboxSimulator
         {
             case RC_POINT_SPRITE:
                 m_Shdr->Load("Data/Shaders/PointSpriteShader.glsl");
-                AddVertex(Vec3(0.5,0.5,0));
+                AddVertex(Vec3(0,0,0));
                 AddNormal(Vec3(0,0,1));
                 SetPrimType(GL_POINTS);
                 break;

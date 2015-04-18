@@ -227,7 +227,7 @@ namespace SandboxSimulator
         Vec3 Pos = m_Position;
         if(m_HasParent) {
             TransformComponent* t = (TransformComponent*)m_RelativeTo->GetComponentByType(CT_TRANSFORM);
-            if(t) Pos += t->GetPosition(Relative);
+            if(t) return t->GetTransform(Relative).Transpose()*Pos;
         }
         /*if(P && !Relative && m_InheritPosition)
         {

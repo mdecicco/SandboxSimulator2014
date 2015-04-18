@@ -31,7 +31,6 @@ namespace LudumDare {
         m_Engine->GetSceneGraph()->AddComponent(m_Camera, new CameraComponent());
         m_Engine->GetSceneGraph()->AddComponent(m_Camera, new TransformComponent());
         TransformComponent* Trans = GetCameraTransform();
-        Trans->SetFirstPerson(true);
         Trans->SetPosition(Vec3(0,1,3));
         Trans->Rotate(1,0,0,-20);
         Trans->SetRelativeTo(m_Body);

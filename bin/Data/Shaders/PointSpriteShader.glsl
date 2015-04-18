@@ -1,39 +1,38 @@
 [SHDR]
 [Vertex]
 #version 330
-in vec3 a_Position;
+in vec4 a_Position;
 in vec3 a_Normal;
 in vec2 a_TexCoord;
 
 uniform mat4 u_MVP;
 uniform mat4 u_ModelView;
 uniform mat4 u_Model;
-uniform vec3 u_CameraPosition;
 uniform vec2 u_FOV;
-uniform float u_NearPlane;
-uniform float u_FarPlane;
 uniform vec2 u_Resolution;
+uniform vec3 u_CameraPosition;
 
 out vec3 o_Normal;
 
-float PlaneDimensions(float size)
+float WorldToPixels(float Distance,float DesiredSize)
 {
-    float h = 2*u_NearPlane*tan(u_FOV.y/2);
-    float nearHeight = u_Resolution.y * h;
-    float r = size / nearHeight;
-    return u_Resolution.y * r;
+    float h = 2 * Distance * tan((u_FOV.x * 0.01745329251) / 2);
+    float r = DesiredSize / h;
+    return u_Resolution.x * r;
 }
 
 void main()
 {
-    gl_Position = u_MVP * vec4(a_Position,1.0);
+    gl_Position = u_MVP * a_Position;
 
     mat4 normalMat = inverse(transpose(u_Model));
     o_Normal = mat3(normalMat) * a_Normal;
 
-    float size = PlaneDimensions(0.01f);
-    float distance = (u_ModelView * vec4(a_Position, 1.0)).z;
-    gl_PointSize = size / distance;
+    vec4 wPos = u_Model * a_Position;
+    float d = length(u_CameraPosition - wPos.xyz);
+    float size = WorldToPixels(d,1.0);
+
+    gl_PointSize = size;
 }
 [/Vertex]
 

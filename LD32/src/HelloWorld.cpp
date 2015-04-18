@@ -1,19 +1,20 @@
 #include <HelloWorld.h>
 #include <Core/TransformComponent.h>
 #include <Rendering/RenderSystem.h>
+#include <Entities/EnemyEntity.h>
 
 namespace LudumDare {
-    HelloWorld::HelloWorld() 
+    HelloWorld::HelloWorld()
     {
 
     }
 
-    HelloWorld::~HelloWorld() 
+    HelloWorld::~HelloWorld()
     {
         delete m_Player;
     }
 
-    void HelloWorld::Init(StateManagerSystem* Manager) 
+    void HelloWorld::Init(StateManagerSystem* Manager)
     {
         m_Manager = Manager;
 
@@ -26,22 +27,6 @@ namespace LudumDare {
         Scene->AddComponent(Sky, SkyRender);
         Scene->AddComponent(Sky, SkyTransform);
         SkyRender->SetShape(RC_SKY_SPHERE);
-
-        Entity* Test = Scene->CreateEntity();
-        TransformComponent* TestTransform = new TransformComponent();
-        RenderComponent* TestRender = new RenderComponent();
-        Scene->AddComponent(Test, TestRender);
-        Scene->AddComponent(Test, TestTransform);
-        TestTransform->SetPosition(Vec3(0,0.5,-1));
-        TestRender->SetShape(RC_POINT_SPRITE);
-
-        Entity* Test2 = Scene->CreateEntity();
-        TransformComponent* Test2Transform = new TransformComponent();
-        RenderComponent* Test2Render = new RenderComponent();
-        Scene->AddComponent(Test2, Test2Render);
-        Scene->AddComponent(Test2, Test2Transform);
-        Test2Transform->SetPosition(Vec3(0,0.5,-1));
-        Test2Render->SetShape(RC_SQUARE);
 
         //Ground mesh
         Entity* Ground = Scene->CreateEntity();
@@ -59,11 +44,26 @@ namespace LudumDare {
         SkyTransform->SetRelativeTo(m_Player->GetCamera());
 
         m_Engine->GetRenderSystem()->SetCamera(m_Player->GetCamera());
+
+        for(i32 i = 0; i < 1; i++) {
+            Enemy* Enmy = new Enemy(Vec3(0,0,2), m_Player);
+            Enmy->Init(m_Engine);
+            m_Enemies.push_back(Enmy);
+        }
     }
 
-    void HelloWorld::Update(Scalar DeltaTime) 
+    void HelloWorld::Update(Scalar DeltaTime)
     {
+        if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_Q)) {
+            m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() + ((3000*DeltaTime) * 0.00001157407f));
+        } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_E)) {
+            m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() - ((3000*DeltaTime) * 0.00001157407f));
+        }
+
         m_Player->Update(DeltaTime);
+        for(i32 i = 0; i < m_Enemies.size(); i++) {
+            m_Enemies[i]->Update(DeltaTime);
+        }
 
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_ESCAPE))
             m_Engine->SetShutdown(true);

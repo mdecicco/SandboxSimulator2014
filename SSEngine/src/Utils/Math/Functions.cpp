@@ -265,16 +265,23 @@ namespace SandboxSimulator
     }
     void Vec3::Normalize()
     {
-        Scalar mag = Magnitude();
-        x /= mag;
-        y /= mag;
-        z /= mag;
+        if(x != 0 && y != 0 && z != 0) {
+            Scalar mag = Magnitude();
+            x /= mag;
+            y /= mag;
+            z /= mag;
+        }
     }
+
     Vec3 Vec3::Normalized() const
     {
-        Scalar mag = Magnitude();
-        return Vec3(x / mag,y / mag,z / mag);
+        if(x != 0 && y != 0 && z != 0) {
+            Scalar mag = Magnitude();
+            return Vec3(x / mag,y / mag,z / mag);
+        }
+        return Vec3(x,y,z);
     }
+
     Vec3 Vec3::Cross(const Vec3& rval) const
     {
         return Vec3(y * rval.z - z * rval.y, z * rval.x - x * rval.z, x * rval.y - y * rval.x);
