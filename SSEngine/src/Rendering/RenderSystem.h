@@ -26,6 +26,7 @@ namespace SandboxSimulator
         RC_SKY_SPHERE,
         RC_GROUND_PLANE,
         RC_UI,
+        RC_POINT_SPRITE,
         RC_COUNT
     };
 

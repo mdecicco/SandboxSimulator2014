@@ -43,6 +43,7 @@ namespace SandboxSimulator
         SU_TEXTURE6,
         SU_TEXTURE7,
         SU_TEXTURE8,
+        SU_FOV,
         SU_COUNT
     };
 

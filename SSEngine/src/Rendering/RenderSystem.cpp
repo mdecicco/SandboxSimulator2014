@@ -29,8 +29,15 @@ namespace SandboxSimulator
         i32 NumRings = 16;
         i32 NumSectors = 32;
         f32 Radius = 0.5f;
+        
         switch(Shape)
         {
+            case RC_POINT_SPRITE:
+                m_Shdr->Load("Data/Shaders/PointSpriteShader.glsl");
+                AddVertex(Vec3(0.5,0.5,0));
+                AddNormal(Vec3(0,0,1));
+                SetPrimType(GL_POINTS);
+                break;
             case RC_TRIANGLE:
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(0   , 0.5,0));

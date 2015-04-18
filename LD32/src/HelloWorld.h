@@ -5,6 +5,7 @@
 #include <Core/StateSystem.h>
 #include <Rendering/Mesh.h>
 #include <Rendering/Gui/Font.h>
+#include <Entities/Player.h>
 
 using namespace SandboxSimulator;
 namespace LudumDare {
@@ -20,9 +21,7 @@ class HelloWorld : public State
 
     private:
         StateManagerSystem* m_Manager;
-        Mesh* _TimerMesh;
-        int _TimeLeft;
-        Font* F;
+        Player* m_Player;
 };
 }
 
