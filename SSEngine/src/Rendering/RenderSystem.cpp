@@ -309,7 +309,7 @@ namespace SandboxSimulator
     /* Render System */
 	RenderSystem::RenderSystem() : m_TriangleCount(0), m_LastTriangleCount(0), m_FrameID(0)
 	{
-		m_Resolution = Vec2(1280,720);
+		m_Resolution = Vec2(800,600);
         m_ActiveCamera = nullptr;
         m_FullScreen = false;
 		AddComponentType(CT_RENDER);
@@ -354,6 +354,7 @@ namespace SandboxSimulator
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
         m_Window = glfwCreateWindow(m_Resolution.x, m_Resolution.y, "Sandbox Simulator", m_FullScreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 		if(!m_Window)

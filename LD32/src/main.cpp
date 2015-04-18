@@ -8,10 +8,9 @@
 #include <Core/PhysicsSystem.h>
 #include <Core/Message.h>
 
-#include <Network/Socket.h>
 #include <System/SSTypes.h>
 
-#include <HelloWorld.h>
+#include <MenuState.h>
 
 #ifdef WIN32
     //#include <vld.h>
@@ -42,7 +41,7 @@ int main(i32 ArgC,Literal ArgV[])
     //Input won't process unless it has an active glfw window.
     Eng->GetInputSystem()->SetWindow(RendSystem->GetWindow());
 
-    StateSystem->SetState(new HelloWorld());
+    StateSystem->SetState(new MenuState());
 
     Eng->Run();
     Eng->Shutdown();

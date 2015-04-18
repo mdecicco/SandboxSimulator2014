@@ -31,6 +31,9 @@ namespace SandboxSimulator
         m_TimeOfDay = 0.0f;
         m_GameTimeRate = 30;
         m_TimeOfDay = NormalizeTime(6,0,0,false);
+
+        m_GlobalVolume = 100;
+        m_VolumeFactor = 1.0;
     }
     
     SSEngine::~SSEngine()
@@ -290,5 +293,32 @@ namespace SandboxSimulator
         bool IsMorning = m_TimeOfDay < 0.5f - (1.0f / 24.0f) || m_TimeOfDay > 1.0f - (1.0f / 24.0f);
         //snprintf(str,32,"%d:%s%d:%s%d %s",h,(ml10 ? "0" : ""),m,(sl10 ? "0" : ""),s,IsMorning ? "AM" : "PM");
         return string(str);
+    }
+
+    /* Sound Stuff */
+    void SSEngine::SetGlobalVolume(i32 Volume)
+    {
+        if(Volume <= 100 && Volume >= 0) {
+            m_GlobalVolume = Volume;
+            m_VolumeFactor = (f32)Volume / (f32)100;
+        }
+        for(i32 i = 0; i < m_Sounds.size(); i++) {
+            m_Sounds[i]->SetVolume(m_Sounds[i]->GetVolume()); //Refreshes the volume of the backend sound pointer
+        }
+    }
+
+    SoundEffect* SSEngine::CreateSound()
+    {
+        SoundEffect* Sound = new SoundEffect(this);
+        m_Sounds.push_back(Sound);
+        return Sound;
+    }
+
+    SoundEffect* SSEngine::CreateSound(Literal Path)
+    {
+        SoundEffect* Sound = new SoundEffect(this);
+        Sound->Load(Path);
+        m_Sounds.push_back(Sound);
+        return Sound;
     }
 }

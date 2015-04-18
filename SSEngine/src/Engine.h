@@ -18,6 +18,7 @@
 #include <SFML/Network.hpp>
 #include <System/PlatformIncludes.h>
 #include <System/InputSystem.h>
+#include <Sound/SoundEffect.h>
 
 #ifdef __APPLE__
 #define AllocArray(Type,Size) (Type *)__alloca(Size * sizeof(Type))
@@ -78,7 +79,7 @@ namespace SandboxSimulator
             bool IsAM() const;
             string GetTimeString() const;
 
-            //Misc
+            /* Misc */
             void SetRenderSystem(RenderSystem* rSys) { m_RenderSystem = rSys; }
             RenderSystem* GetRenderSystem() { return m_RenderSystem; }
     
@@ -86,6 +87,13 @@ namespace SandboxSimulator
             PhysicsSystem* GetPhysicsSystem() { return m_PhysicsSystem; }
 
             void SetShutdown(bool sh) { m_DoShutdown = sh; }
+
+            /* Sound Functions */
+            void SetGlobalVolume(i32 Volume); //Between 0 and 100
+            SoundEffect* CreateSound();
+            SoundEffect* CreateSound(Literal Path);
+            Scalar GetVolumeFactor() { return m_VolumeFactor; }
+            i32 GetGlobalVolume() { return m_GlobalVolume; }
 
         protected:
             /* Systems */
@@ -113,6 +121,11 @@ namespace SandboxSimulator
             Scalar m_FrameCounter;
             bool m_ShowFps;
             Scalar m_MinFrameTime;
+
+            /* Sound Stuff */
+            Scalar m_VolumeFactor;
+            i32 m_GlobalVolume;
+            std::vector<SoundEffect*> m_Sounds;
     };
 }
 

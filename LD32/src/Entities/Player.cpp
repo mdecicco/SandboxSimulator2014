@@ -32,6 +32,7 @@ namespace LudumDare {
         m_Engine->GetSceneGraph()->AddComponent(m_Camera, new TransformComponent());
         TransformComponent* Trans = GetCameraTransform();
         Trans->SetPosition(Vec3(0,1,3));
+        Trans->SetFirstPerson(true);
         Trans->Rotate(1,0,0,-20);
         Trans->SetRelativeTo(m_Body);
     }
@@ -55,6 +56,7 @@ namespace LudumDare {
 
         Vec2 MousePos = m_Engine->GetInputSystem()->GetMouseDelta();
         GetTransform()->Rotate(Vec3(0,1,0),-MousePos.x*0.5f);
+        GetTransform()->Rotate(Vec3(1,0,0),-MousePos.y*0.5f);
         GetTransform()->AddImpulse(Delta, true);
     }
 }

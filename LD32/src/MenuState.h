@@ -1,5 +1,5 @@
-#ifndef HELLO_WORLD_H
-#define HELLO_WORLD_H
+#ifndef MENU_STATE_H
+#define MENU_STATE_H
 
 #include <Engine.h>
 #include <Core/StateSystem.h>
@@ -8,13 +8,15 @@
 #include <Entities/Player.h>
 #include <Entities/EnemyEntity.h>
 
+#include <SFML/Audio.hpp>
+
 using namespace SandboxSimulator;
 namespace LudumDare {
-class HelloWorld : public State
+class MenuState : public State
 {
     public:
-        HelloWorld();
-        ~HelloWorld();
+        MenuState();
+        ~MenuState();
 
     protected:
         virtual void Init(StateManagerSystem* Manager);
@@ -22,8 +24,7 @@ class HelloWorld : public State
 
     private:
         StateManagerSystem* m_Manager;
-        Player* m_Player;
-        std::vector<Enemy*> m_Enemies;
+        SoundEffect* m_Music;
 };
 }
 

@@ -1,21 +1,25 @@
-#include <HelloWorld.h>
+#include <GameState.h>
 #include <Core/TransformComponent.h>
 #include <Rendering/RenderSystem.h>
 #include <Entities/EnemyEntity.h>
 
 namespace LudumDare {
-    HelloWorld::HelloWorld()
+    GameState::GameState(SoundEffect* BackgroundMusic) : m_BackgroundMusic(BackgroundMusic)
     {
 
     }
 
-    HelloWorld::~HelloWorld()
+    GameState::~GameState()
     {
         delete m_Player;
+        delete m_Explosion;
     }
 
-    void HelloWorld::Init(StateManagerSystem* Manager)
+    void GameState::Init(StateManagerSystem* Manager)
     {
+        m_Explosion = m_Engine->CreateSound("Data/Sound/Explosion.wav");
+        //m_BackgroundMusic->play();
+
         m_Manager = Manager;
 
         SceneGraph* Scene = m_Engine->GetSceneGraph();
@@ -45,19 +49,23 @@ namespace LudumDare {
 
         m_Engine->GetRenderSystem()->SetCamera(m_Player->GetCamera());
 
-        for(i32 i = 0; i < 1; i++) {
+        for(i32 i = 0; i < 2; i++) {
             Enemy* Enmy = new Enemy(Vec3(0,0,2), m_Player);
             Enmy->Init(m_Engine);
             m_Enemies.push_back(Enmy);
         }
     }
 
-    void HelloWorld::Update(Scalar DeltaTime)
+    void GameState::Update(Scalar DeltaTime)
     {
         if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_Q)) {
             m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() + ((3000*DeltaTime) * 0.00001157407f));
+            m_Engine->SetGlobalVolume(m_Engine->GetGlobalVolume()-1);
+            m_Explosion->Play();
         } if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_E)) {
             m_Engine->SetTimeOfDay(m_Engine->GetTimeOfDay() - ((3000*DeltaTime) * 0.00001157407f));
+            m_Engine->SetGlobalVolume(m_Engine->GetGlobalVolume()+1);
+            m_Explosion->Play();
         }
 
         m_Player->Update(DeltaTime);
