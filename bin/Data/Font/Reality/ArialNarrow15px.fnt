@@ -1,0 +1,119 @@
+#fontFace="Arial Narrow" #fontSize=15
+#lineHeight=14 #baseLine=12 #textureWidth=128 #textureHeight=128
+#textureFile="Data/Font/ArialNarrow15px.png"
+#charsCount=95
+#charId=32 #uvStart=(0.1094, 0.9219) #uvEnd=(0.1094, 0.9219) #size=(0.0, 0.0) #xOffset=0 #yOffset=15 #xAdvance=4
+#charId=33 #uvStart=(0.7031, 0.8438) #uvEnd=(0.7344, 0.9531) #size=(4.0, 14.0) #xOffset=2 #yOffset=3 #xAdvance=4
+#charId=34 #uvStart=(0.9062, 0.7188) #uvEnd=(0.9531, 0.7656) #size=(6.0, 6.0) #xOffset=1 #yOffset=4 #xAdvance=5
+#charId=35 #uvStart=(0.7031, 0.1406) #uvEnd=(0.7812, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=36 #uvStart=(0.2344, 0.2656) #uvEnd=(0.2969, 0.3906) #size=(8.0, 16.0) #xOffset=1 #yOffset=2 #xAdvance=7
+#charId=37 #uvStart=(0.4688, 0.0156) #uvEnd=(0.5625, 0.1250) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=11
+#charId=38 #uvStart=(0.6094, 0.1406) #uvEnd=(0.6875, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=39 #uvStart=(0.7969, 0.8438) #uvEnd=(0.8281, 0.8906) #size=(4.0, 6.0) #xOffset=1 #yOffset=4 #xAdvance=3
+#charId=40 #uvStart=(0.5312, 0.4844) #uvEnd=(0.5781, 0.6250) #size=(6.0, 18.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=41 #uvStart=(0.4688, 0.7969) #uvEnd=(0.5156, 0.9375) #size=(6.0, 18.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=42 #uvStart=(0.7500, 0.7188) #uvEnd=(0.7969, 0.7812) #size=(6.0, 8.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=43 #uvStart=(0.8906, 0.2656) #uvEnd=(0.9531, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=5 #xAdvance=8
+#charId=44 #uvStart=(0.7500, 0.8906) #uvEnd=(0.7812, 0.9375) #size=(4.0, 6.0) #xOffset=2 #yOffset=13 #xAdvance=4
+#charId=45 #uvStart=(0.7969, 0.7969) #uvEnd=(0.8438, 0.8281) #size=(6.0, 4.0) #xOffset=1 #yOffset=9 #xAdvance=5
+#charId=46 #uvStart=(0.8594, 0.7969) #uvEnd=(0.8906, 0.8281) #size=(4.0, 4.0) #xOffset=2 #yOffset=13 #xAdvance=4
+#charId=47 #uvStart=(0.7812, 0.5938) #uvEnd=(0.8281, 0.7031) #size=(6.0, 14.0) #xOffset=0 #yOffset=3 #xAdvance=4
+#charId=48 #uvStart=(0.7812, 0.3594) #uvEnd=(0.8438, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=49 #uvStart=(0.7188, 0.5938) #uvEnd=(0.7656, 0.7031) #size=(6.0, 14.0) #xOffset=2 #yOffset=3 #xAdvance=7
+#charId=50 #uvStart=(0.7031, 0.3594) #uvEnd=(0.7656, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=51 #uvStart=(0.6250, 0.3594) #uvEnd=(0.6875, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=52 #uvStart=(0.5156, 0.1406) #uvEnd=(0.5938, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=53 #uvStart=(0.5469, 0.3594) #uvEnd=(0.6094, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=54 #uvStart=(0.4688, 0.3594) #uvEnd=(0.5312, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=55 #uvStart=(0.3906, 0.8594) #uvEnd=(0.4531, 0.9688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=56 #uvStart=(0.3906, 0.7344) #uvEnd=(0.4531, 0.8438) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=57 #uvStart=(0.3906, 0.6094) #uvEnd=(0.4531, 0.7188) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=58 #uvStart=(0.7500, 0.7969) #uvEnd=(0.7812, 0.8750) #size=(4.0, 10.0) #xOffset=2 #yOffset=7 #xAdvance=4
+#charId=59 #uvStart=(0.6562, 0.8750) #uvEnd=(0.6875, 0.9688) #size=(4.0, 12.0) #xOffset=2 #yOffset=7 #xAdvance=4
+#charId=60 #uvStart=(0.8125, 0.2656) #uvEnd=(0.8750, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=5 #xAdvance=8
+#charId=61 #uvStart=(0.9062, 0.4844) #uvEnd=(0.9688, 0.5469) #size=(8.0, 8.0) #xOffset=1 #yOffset=5 #xAdvance=8
+#charId=62 #uvStart=(0.7344, 0.2656) #uvEnd=(0.7969, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=5 #xAdvance=8
+#charId=63 #uvStart=(0.3906, 0.4844) #uvEnd=(0.4531, 0.5938) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=64 #uvStart=(0.0156, 0.0156) #uvEnd=(0.1250, 0.1562) #size=(14.0, 18.0) #xOffset=1 #yOffset=2 #xAdvance=13
+#charId=65 #uvStart=(0.3594, 0.0156) #uvEnd=(0.4531, 0.1250) #size=(12.0, 14.0) #xOffset=0 #yOffset=3 #xAdvance=9
+#charId=66 #uvStart=(0.4219, 0.1406) #uvEnd=(0.5000, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=67 #uvStart=(0.3281, 0.1406) #uvEnd=(0.4062, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=68 #uvStart=(0.2344, 0.1406) #uvEnd=(0.3125, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=69 #uvStart=(0.1406, 0.7656) #uvEnd=(0.2188, 0.8750) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=70 #uvStart=(0.3906, 0.3594) #uvEnd=(0.4531, 0.4688) #size=(8.0, 14.0) #xOffset=2 #yOffset=3 #xAdvance=8
+#charId=71 #uvStart=(0.2500, 0.0156) #uvEnd=(0.3438, 0.1250) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=10
+#charId=72 #uvStart=(0.1406, 0.6406) #uvEnd=(0.2188, 0.7500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=73 #uvStart=(0.7031, 0.7188) #uvEnd=(0.7344, 0.8281) #size=(4.0, 14.0) #xOffset=2 #yOffset=3 #xAdvance=4
+#charId=74 #uvStart=(0.3125, 0.8594) #uvEnd=(0.3750, 0.9688) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=75 #uvStart=(0.1406, 0.5156) #uvEnd=(0.2188, 0.6250) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=76 #uvStart=(0.3125, 0.7344) #uvEnd=(0.3750, 0.8438) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=77 #uvStart=(0.1406, 0.0156) #uvEnd=(0.2344, 0.1250) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=11
+#charId=78 #uvStart=(0.1406, 0.3906) #uvEnd=(0.2188, 0.5000) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=79 #uvStart=(0.0156, 0.7969) #uvEnd=(0.1094, 0.9062) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=10
+#charId=80 #uvStart=(0.1406, 0.2656) #uvEnd=(0.2188, 0.3750) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=81 #uvStart=(0.0156, 0.6719) #uvEnd=(0.1094, 0.7812) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=10
+#charId=82 #uvStart=(0.1406, 0.1406) #uvEnd=(0.2188, 0.2500) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=83 #uvStart=(0.8594, 0.0156) #uvEnd=(0.9375, 0.1250) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=84 #uvStart=(0.7656, 0.0156) #uvEnd=(0.8438, 0.1250) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=8
+#charId=85 #uvStart=(0.6719, 0.0156) #uvEnd=(0.7500, 0.1250) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=86 #uvStart=(0.0156, 0.5469) #uvEnd=(0.1094, 0.6562) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=87 #uvStart=(0.0156, 0.1719) #uvEnd=(0.1250, 0.2812) #size=(14.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=12
+#charId=88 #uvStart=(0.0156, 0.4219) #uvEnd=(0.1094, 0.5312) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=89 #uvStart=(0.0156, 0.2969) #uvEnd=(0.1094, 0.4062) #size=(12.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=9
+#charId=90 #uvStart=(0.5781, 0.0156) #uvEnd=(0.6562, 0.1250) #size=(10.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=8
+#charId=91 #uvStart=(0.5938, 0.5938) #uvEnd=(0.6406, 0.7188) #size=(6.0, 16.0) #xOffset=1 #yOffset=3 #xAdvance=4
+#charId=92 #uvStart=(0.6562, 0.5938) #uvEnd=(0.7031, 0.7031) #size=(6.0, 14.0) #xOffset=0 #yOffset=3 #xAdvance=4
+#charId=93 #uvStart=(0.5312, 0.7812) #uvEnd=(0.5781, 0.9062) #size=(6.0, 16.0) #xOffset=1 #yOffset=3 #xAdvance=4
+#charId=94 #uvStart=(0.2344, 0.9062) #uvEnd=(0.2969, 0.9688) #size=(8.0, 8.0) #xOffset=1 #yOffset=3 #xAdvance=6
+#charId=95 #uvStart=(0.8125, 0.7188) #uvEnd=(0.8906, 0.7500) #size=(10.0, 4.0) #xOffset=0 #yOffset=14 #xAdvance=7
+#charId=96 #uvStart=(0.5312, 0.9219) #uvEnd=(0.5781, 0.9688) #size=(6.0, 6.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=97 #uvStart=(0.8281, 0.4844) #uvEnd=(0.8906, 0.5781) #size=(8.0, 12.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=98 #uvStart=(0.3125, 0.6094) #uvEnd=(0.3750, 0.7188) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=99 #uvStart=(0.7500, 0.4844) #uvEnd=(0.8125, 0.5781) #size=(8.0, 12.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=100 #uvStart=(0.3125, 0.4844) #uvEnd=(0.3750, 0.5938) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=101 #uvStart=(0.6719, 0.4844) #uvEnd=(0.7344, 0.5781) #size=(8.0, 12.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=102 #uvStart=(0.5938, 0.8594) #uvEnd=(0.6406, 0.9688) #size=(6.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=4
+#charId=103 #uvStart=(0.3125, 0.3594) #uvEnd=(0.3750, 0.4688) #size=(8.0, 14.0) #xOffset=1 #yOffset=6 #xAdvance=7
+#charId=104 #uvStart=(0.2344, 0.7812) #uvEnd=(0.2969, 0.8906) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=105 #uvStart=(0.9062, 0.5938) #uvEnd=(0.9375, 0.7031) #size=(4.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=3
+#charId=106 #uvStart=(0.5312, 0.6406) #uvEnd=(0.5781, 0.7656) #size=(6.0, 16.0) #xOffset=0 #yOffset=4 #xAdvance=3
+#charId=107 #uvStart=(0.2344, 0.6562) #uvEnd=(0.2969, 0.7656) #size=(8.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=7
+#charId=108 #uvStart=(0.9375, 0.3594) #uvEnd=(0.9688, 0.4688) #size=(4.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=3
+#charId=109 #uvStart=(0.3125, 0.2656) #uvEnd=(0.4062, 0.3438) #size=(12.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=11
+#charId=110 #uvStart=(0.6562, 0.2656) #uvEnd=(0.7188, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=7
+#charId=111 #uvStart=(0.5938, 0.4844) #uvEnd=(0.6562, 0.5781) #size=(8.0, 12.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=112 #uvStart=(0.2344, 0.5312) #uvEnd=(0.2969, 0.6406) #size=(8.0, 14.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=113 #uvStart=(0.2344, 0.4062) #uvEnd=(0.2969, 0.5156) #size=(8.0, 14.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=114 #uvStart=(0.8438, 0.5938) #uvEnd=(0.8906, 0.6719) #size=(6.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=5
+#charId=115 #uvStart=(0.8594, 0.3594) #uvEnd=(0.9219, 0.4531) #size=(8.0, 12.0) #xOffset=1 #yOffset=5 #xAdvance=7
+#charId=116 #uvStart=(0.5938, 0.7344) #uvEnd=(0.6406, 0.8438) #size=(6.0, 14.0) #xOffset=1 #yOffset=3 #xAdvance=4
+#charId=117 #uvStart=(0.5781, 0.2656) #uvEnd=(0.6406, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=7
+#charId=118 #uvStart=(0.5000, 0.2656) #uvEnd=(0.5625, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=7
+#charId=119 #uvStart=(0.7969, 0.1406) #uvEnd=(0.8906, 0.2188) #size=(12.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=9
+#charId=120 #uvStart=(0.4219, 0.2656) #uvEnd=(0.4844, 0.3438) #size=(8.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=7
+#charId=121 #uvStart=(0.9062, 0.1406) #uvEnd=(0.9688, 0.2500) #size=(8.0, 14.0) #xOffset=1 #yOffset=6 #xAdvance=7
+#charId=122 #uvStart=(0.1406, 0.8906) #uvEnd=(0.2031, 0.9688) #size=(8.0, 10.0) #xOffset=1 #yOffset=7 #xAdvance=7
+#charId=123 #uvStart=(0.4688, 0.6406) #uvEnd=(0.5156, 0.7812) #size=(6.0, 18.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=124 #uvStart=(0.6562, 0.7188) #uvEnd=(0.6875, 0.8594) #size=(4.0, 18.0) #xOffset=2 #yOffset=2 #xAdvance=4
+#charId=125 #uvStart=(0.4688, 0.4844) #uvEnd=(0.5156, 0.6250) #size=(6.0, 18.0) #xOffset=1 #yOffset=2 #xAdvance=5
+#charId=126 #uvStart=(0.0156, 0.9219) #uvEnd=(0.0938, 0.9688) #size=(10.0, 6.0) #xOffset=1 #yOffset=6 #xAdvance=8
+#kerningsCount=19
+#kerning #first=84 #second=97 #amount=-1
+#kerning #first=84 #second=99 #amount=-1
+#kerning #first=84 #second=111 #amount=-1
+#kerning #first=84 #second=115 #amount=-1
+#kerning #first=80 #second=44 #amount=-1
+#kerning #first=80 #second=46 #amount=-1
+#kerning #first=84 #second=44 #amount=-1
+#kerning #first=84 #second=46 #amount=-1
+#kerning #first=84 #second=58 #amount=-1
+#kerning #first=89 #second=101 #amount=-1
+#kerning #first=89 #second=44 #amount=-1
+#kerning #first=89 #second=46 #amount=-1
+#kerning #first=86 #second=44 #amount=-1
+#kerning #first=86 #second=46 #amount=-1
+#kerning #first=84 #second=101 #amount=-1
+#kerning #first=89 #second=111 #amount=-1
+#kerning #first=89 #second=113 #amount=-1
+#kerning #first=70 #second=44 #amount=-1
+#kerning #first=70 #second=46 #amount=-1
