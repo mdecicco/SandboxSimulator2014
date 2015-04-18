@@ -59,12 +59,7 @@ namespace SandboxSimulator
         //Font* f = new Font();
         //f->Load("Data/Font/Ubuntu-better.dst");
         //f->AddToMesh(pr->GetMesh(), "Hello world!", Vec3(0,0,0), 56);
-<<<<<<< HEAD
         //delete f;
-
-=======
-        m_Engine->GetInputSystem()->DisableCursor(true);
->>>>>>> e58dcd2c3df1b9b645ffcc68557a37151c153060
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
         CamTrans = new TransformComponent();
@@ -105,7 +100,7 @@ namespace SandboxSimulator
 
         Vec2 MousePos = m_Engine->GetInputSystem()->GetMouseDelta();
         SphereTrans->Rotate(Vec3(0,1,0),-MousePos.x*0.5f);
-        
+
         SphereTrans->AddImpulse(Delta, true);
 
          if(m_Engine->GetInputSystem()->KeyDown(GLFW_KEY_ESCAPE)) {
