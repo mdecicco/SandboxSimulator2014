@@ -47,12 +47,6 @@ ADD_DEFINITIONS(
 )
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/SSEngine)
-if(BUILD_GAME)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/SandboxSimulator)
-endif()
-
-if(BUILD_TEST)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/TestGame)
-endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/LD32)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/SSEngine/src/" DESTINATION include/SSEngine FILES_MATCHING PATTERN "*.h")
