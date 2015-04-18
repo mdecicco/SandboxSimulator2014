@@ -24,6 +24,6 @@ uniform sampler2D u_Texture0;
 out vec4 Out0;
 
 void main() {
-    Out0 = vec4(0,0,0,1);//texture(u_Texture0, o_TexC);
+    Out0 = texture(u_Texture0, o_TexC);
 }
 [/Fragment]

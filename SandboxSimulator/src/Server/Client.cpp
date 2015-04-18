@@ -125,11 +125,13 @@ namespace SandboxSimulator
         EntityList* Entities = m_Engine->GetSceneGraph()->GetEntities();
         for(EntityList::iterator it = Entities->begin(); it != Entities->end(); it++) {
             Entity* E = it->second.get();
-            if(E->HasComponentType(CT_TRANSFORM)) {
-                TransformComponent* Trans = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
-                Vec3 Pos = Trans->GetPosition();
-                CreatePlayerCommand cmd = CreatePlayerCommand(m_Engine, E->GetID(), Pos);
-                Commands.push_back(cmd);
+            if(E->GetID() != 998) {
+                if(E->HasComponentType(CT_TRANSFORM)) {
+                    TransformComponent* Trans = (TransformComponent*)E->GetComponentByType(CT_TRANSFORM);
+                    Vec3 Pos = Trans->GetPosition();
+                    CreatePlayerCommand cmd = CreatePlayerCommand(m_Engine, E->GetID(), Pos);
+                    Commands.push_back(cmd);
+                }
             }
         }
 

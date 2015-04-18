@@ -46,7 +46,7 @@ namespace SandboxSimulator
                     m_Clients[i]->Ping();
             }
 
-            if(m_TimeSinceLastUpdate > 0.1) {
+            if(m_TimeSinceLastUpdate > 0.05) {
                 for(i32 i = 0; i < m_Clients.size(); i++) {
                     m_Clients[i]->SendPositionUpdate(m_Engine, false);
                 }

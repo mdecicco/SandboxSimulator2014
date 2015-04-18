@@ -10,7 +10,7 @@ namespace SandboxSimulator
     {
         for(i32 i = 0;i < MAX_TEXTURES;i++)
         {
-            delete m_Textures[i];
+            //delete m_Textures[i];
         }
     }
     bool Mesh::OnLoad()

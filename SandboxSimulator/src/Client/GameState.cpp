@@ -28,6 +28,7 @@ namespace SandboxSimulator
         gr->SetShape(RC_GROUND_PLANE);
         TransformComponent* gt = (TransformComponent*)G->GetComponentByType(CT_TRANSFORM);
         gt->SetPosition(Vec3(0,-0.5,0));
+        m_Engine->GetPhysicsSystem()->MakePhysical(G, 0, false, 0, 0);
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity(997);
         CamTrans = new TransformComponent();

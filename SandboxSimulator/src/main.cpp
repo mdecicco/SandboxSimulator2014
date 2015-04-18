@@ -18,6 +18,7 @@
 //Server includes
 #include <Server/ServerListener.h>
 #include <Server/ServerSystem.h>
+#include <Core/PhysicsSystem.h>
 
 #ifdef WIN32
     #include <Windows.h>
@@ -74,7 +75,6 @@ int main(i32 ArgC,Literal ArgV[])
             ServerSystem* system = new ServerSystem(mutex);
             Eng->RegisterSystem(system);
             Eng->Initialize(ArgC,ArgV);
-
             ServerListener* Listener = new ServerListener(Port, system, mutex);
             Listener->Start();
             Eng->Run();
@@ -89,11 +89,14 @@ int main(i32 ArgC,Literal ArgV[])
             StateManagerSystem* StateSystem = new StateManagerSystem();
             ConnectionSystem* ConnSystem = new ConnectionSystem();
             RenderSystem* RendSystem = new RenderSystem();
+            PhysicsSystem* PhysSystem = new PhysicsSystem();
 
             Eng->RegisterSystem(ConnSystem);
             Eng->RegisterSystem(StateSystem);
             Eng->RegisterSystem(RendSystem);
             Eng->SetRenderSystem(RendSystem);
+            Eng->RegisterSystem(PhysSystem);
+            Eng->SetPhysicsSystem(PhysSystem);
             Eng->Initialize(ArgC,ArgV);
 
             //Input won't process unless it has an active glfw window.

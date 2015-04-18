@@ -7,6 +7,7 @@
 
 #include <Core/TransformComponent.h>
 #include <Rendering/RenderSystem.h>
+#include <Core/PhysicsSystem.h>
 
 #include <Common/NetworkDefs.h>
 

@@ -47,6 +47,7 @@ namespace SandboxSimulator
         m_Engine->GetSceneGraph()->AddComponent(P, new RenderComponent());
         m_Engine->GetSceneGraph()->AddComponent(P, new TransformComponent());
         pr = (RenderComponent*)P->GetComponentByType(CT_RENDER);
+        //pr->SetShape(RC_UI);
         pr->SetShape(RC_SPHERE);
         SphereTrans = (TransformComponent*)P->GetComponentByType(CT_TRANSFORM);
         SphereTrans->SetPosition(Vec3(0,6,0));
@@ -57,8 +58,8 @@ namespace SandboxSimulator
 
         //Font* f = new Font();
         //f->Load("Data/Font/Ubuntu-better.dst");
-        //delete f;
         //f->AddToMesh(pr->GetMesh(), "Hello world!", Vec3(0,0,0), 56);
+        //delete f;
 
 
         Entity* Cam = m_Engine->GetSceneGraph()->CreateEntity();
