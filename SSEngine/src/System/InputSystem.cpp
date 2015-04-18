@@ -2,7 +2,7 @@
 
 namespace SandboxSimulator
 {
-    InputSystem::InputSystem() : EngineSystem(), m_Window(nullptr), m_WindowSet(false)
+    InputSystem::InputSystem() : EngineSystem(), m_Window(nullptr), m_WindowSet(false), m_OldMousePosition(Vec2(0,0))
     {}
     InputSystem::~InputSystem() {}
 
@@ -56,5 +56,24 @@ namespace SandboxSimulator
         if(m_WindowSet && glfwGetMouseButton(m_Window, button) == GLFW_PRESS) 
             return true;
         return false;
+    }
+
+    Vec2 InputSystem::GetMouseDelta()
+    {
+        Vec2 pos = GetMousePosition();
+        Vec2 old = m_OldMousePosition;
+        m_OldMousePosition = pos;
+        return pos - old;
+    }
+
+    void InputSystem::DisableCursor(bool disable)
+    {
+        if(m_WindowSet) {
+            if(disable) {
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            } else
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
     }
 };
