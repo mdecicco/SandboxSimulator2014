@@ -123,6 +123,7 @@ namespace SandboxSimulator
         f32 xPos = 0;
         f32 yPos = 0;
         f32 Scale = (f32)TextSize / (f32)m_TextSize;
+        m->Clear();
         for(i32 i = 0;i < Text.size();i++)
         {
             char c = Text[i];

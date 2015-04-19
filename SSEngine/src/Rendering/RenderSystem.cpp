@@ -18,6 +18,11 @@ namespace SandboxSimulator
         if(m_Shdr) delete m_Shdr;
         if(m_Font) delete m_Font;
     }
+    
+    void RenderComponent::LoadMesh(const string& File)
+    {
+        m_Mesh->Load(File.c_str());
+    }
 
     void RenderComponent::SetShape(RC_SHAPES Shape)
     {
@@ -29,8 +34,15 @@ namespace SandboxSimulator
         i32 NumRings = 16;
         i32 NumSectors = 32;
         f32 Radius = 0.5f;
+        
         switch(Shape)
         {
+            case RC_POINT_SPRITE:
+                m_Shdr->Load("Data/Shaders/PointSpriteShader.glsl");
+                AddVertex(Vec3(0,0,0));
+                AddNormal(Vec3(0,0,1));
+                SetPrimType(GL_POINTS);
+                break;
             case RC_TRIANGLE:
                 m_Shdr->Load("Data/Shaders/TestShader.glsl");
                 AddVertex(Vec3(0   , 0.5,0));
@@ -302,7 +314,7 @@ namespace SandboxSimulator
     /* Render System */
 	RenderSystem::RenderSystem() : m_TriangleCount(0), m_LastTriangleCount(0), m_FrameID(0)
 	{
-		m_Resolution = Vec2(1280,720);
+		m_Resolution = Vec2(800,600);
         m_ActiveCamera = nullptr;
         m_FullScreen = false;
 		AddComponentType(CT_RENDER);
@@ -347,6 +359,7 @@ namespace SandboxSimulator
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
         m_Window = glfwCreateWindow(m_Resolution.x, m_Resolution.y, "Sandbox Simulator", m_FullScreen ? glfwGetPrimaryMonitor() : NULL, NULL);
 		if(!m_Window)

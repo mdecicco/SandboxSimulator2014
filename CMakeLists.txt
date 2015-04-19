@@ -34,7 +34,7 @@ ADD_DEFINITIONS( -DASSIMP_BUILD_BOOST_WORKAROUND )
 MESSAGE( STATUS "Building a non-boost version of Assimp." )
 
 find_package(OpenGL REQUIRED)
-find_package(SFML 2 COMPONENTS network system REQUIRED)
+find_package(SFML 2 COMPONENTS network system audio REQUIRED)
 
 include_directories(SYSTEM ${PROJECT_SOURCE_DIR}/SSEngine/src/ ${GLFWDIR}/include ${OPENGL_INCLUDE_DIR} ${GLEWDIR}/include ${ZDIR} ${BULLETDIR} ${SFMLDIR}/include )
 
@@ -47,12 +47,6 @@ ADD_DEFINITIONS(
 )
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/SSEngine)
-if(BUILD_GAME)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/SandboxSimulator)
-endif()
-
-if(BUILD_TEST)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/TestGame)
-endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/LD32)
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/SSEngine/src/" DESTINATION include/SSEngine FILES_MATCHING PATTERN "*.h")

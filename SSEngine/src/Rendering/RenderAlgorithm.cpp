@@ -55,6 +55,7 @@ namespace SandboxSimulator
 
     i32 ForwardRenderingAlgorithm::Render(RenderSystem* rSys,RenderList& l)
     {
+        glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
         i32 VisibleEntityCount = 0;
         
         CameraComponent* Observer = 0;
@@ -97,7 +98,9 @@ namespace SandboxSimulator
                 Uf(SU_NEAR_PLANE,Observer->m_NearPlane);
                 Uf(SU_FAR_PLANE,Observer->m_FarPlane);
                 Vec3 cp = ObserverTransform->GetPosition(false);
+                Vec2 Fov = Observer->m_FieldOfView;
                 Uv3(SU_CAMERA_POSITION,cp);
+                Uv2(SU_FOV, Fov);
             }
             Uf(SU_RUNTIME,rSys->GetEngine()->GetElapsedTime());
             Uv2(SU_RESOLUTION,rSys->GetResolution());

@@ -13,6 +13,7 @@ class Mesh : public Asset
     
         virtual bool OnLoad();
         //void LoadFromAssimpMesh(aiMesh* Mesh);
+        bool LoadFromOBJ();
     
         bool IsAnimated() const { return false; }//m_IsAnimated; }
         //const Skeleton* GetSkeleton() const { return &m_Skeleton; }

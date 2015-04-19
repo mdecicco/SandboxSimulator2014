@@ -30,6 +30,7 @@ namespace SandboxSimulator
         "u_Texture6",
         "u_Texture7",
         "u_Texture8",
+        "u_FOV"
     };
     
     Shader::Shader() : m_VS(0), m_PS(0), m_PID(0), m_ListID(-1), m_Loaded(false)

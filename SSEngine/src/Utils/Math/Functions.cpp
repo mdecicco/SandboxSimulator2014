@@ -266,15 +266,21 @@ namespace SandboxSimulator
     void Vec3::Normalize()
     {
         Scalar mag = Magnitude();
-        x /= mag;
-        y /= mag;
-        z /= mag;
+        if(mag == 0.0f) return;
+        mag = 1.0f / mag;
+        x *= mag;
+        y *= mag;
+        z *= mag;
     }
+
     Vec3 Vec3::Normalized() const
     {
         Scalar mag = Magnitude();
-        return Vec3(x / mag,y / mag,z / mag);
+        if(mag == 0.0f) return Vec3(0,0,0);
+        mag = 1.0f / mag;
+        return Vec3(x * mag,y * mag,z * mag);
     }
+
     Vec3 Vec3::Cross(const Vec3& rval) const
     {
         return Vec3(y * rval.z - z * rval.y, z * rval.x - x * rval.z, x * rval.y - y * rval.x);
@@ -1128,6 +1134,22 @@ namespace SandboxSimulator
     {
     }
 
+    void Quat::LookAt(Vec3 From,Vec3 To)
+    {
+        Vec3 Fwd = (To - From).Normalized();
+
+        Scalar dot = Vec3(0,0,1).Dot(Fwd);
+
+        if(abs(dot - (-1.0f)) < 0.000001f)
+        {
+            FromAxisAngle(0,1,0,3.1415926535897932f);
+        }
+        if(abs(dot - (1.0f)) < 0.000001f)
+        {
+            FromAxisAngle(0,1,0,0);
+        }
+        FromAxisAngle(Vec3(0,0,1).Cross(Fwd).Normalized(),acos(dot));
+    }
     void Quat::FromAxisAngle(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle)
     {
         Scalar a = (Angle * PI_OVER_180) * 0.5f;
