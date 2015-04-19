@@ -18,6 +18,11 @@ namespace SandboxSimulator
         if(m_Shdr) delete m_Shdr;
         if(m_Font) delete m_Font;
     }
+    
+    void RenderComponent::LoadMesh(const string& File)
+    {
+        m_Mesh->Load(File.c_str());
+    }
 
     void RenderComponent::SetShape(RC_SHAPES Shape)
     {

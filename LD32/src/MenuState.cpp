@@ -21,7 +21,7 @@ namespace LudumDare {
         m_Music = m_Engine->CreateSound("Data/Sound/AmericaFuckYeah.wav");
         m_Music->Play();
         m_Music->SetLoop(true);
-        m_Music->SetVolume(15);
+        m_Music->SetVolume(2);
         m_Manager = Manager;
 
         SceneGraph* Scene = m_Engine->GetSceneGraph();

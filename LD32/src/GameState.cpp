@@ -1,6 +1,9 @@
 #include <GameState.h>
 #include <Core/TransformComponent.h>
 #include <Rendering/RenderSystem.h>
+
+#include <Entities/ArtilleryEntity.h>
+#include <Entities/Player.h>
 #include <Entities/EnemyEntity.h>
 
 namespace LudumDare {
@@ -13,6 +16,7 @@ namespace LudumDare {
     {
         delete m_Player;
         delete m_Explosion;
+        delete m_HoboGunnerTest;
     }
 
     void GameState::Init(StateManagerSystem* Manager)
@@ -42,7 +46,13 @@ namespace LudumDare {
         GroundTransform->SetPosition(Vec3(0, -2, 0));
         GroundTransform->SetStatic(true);
         m_Engine->GetPhysicsSystem()->MakePhysical(Ground, 0.0, false, 0.5, 1.0);
-
+        
+        //Gunner test
+        m_HoboGunnerTest = new ArtilleryEntity(Vec3(0,0.5,0),this);
+        m_HoboGunnerTest->Init(m_Engine);
+        
+        
+        
         m_Player = new Player();
         m_Player->Init(m_Engine);
         SkyTransform->SetRelativeTo(m_Player->GetCamera());
@@ -69,6 +79,8 @@ namespace LudumDare {
         }
 
         m_Player->Update(DeltaTime);
+        m_HoboGunnerTest->Update(DeltaTime);
+        
         for(i32 i = 0; i < m_Enemies.size(); i++) {
             m_Enemies[i]->Update(DeltaTime);
         }

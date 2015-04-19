@@ -89,6 +89,7 @@ namespace SandboxSimulator
             void ToggleHide() { m_Hide = !m_Hide; }
 
             Shader* GetShader() { return m_Shdr; }
+            void SetShader(Shader* S) { if(m_Shdr) { m_Shdr->Destroy(); } m_Shdr = S; }
             void SetShape(RC_SHAPES Shape);
 
             void SetFont(Font* Fnt) { m_Font = Fnt; }

@@ -2,6 +2,99 @@
 
 namespace SandboxSimulator
 {
+    bool ReadVec3(string Line,Vec3& out)
+    {
+        string x,y,z;
+        //Vertex
+        i32 a = 0;
+        char c = Line[a]; a++;
+        while((!isnumber(c) && c != '-')) { c = Line[a]; a++; }
+        
+        x.push_back(c);
+        c = Line[a]; a++;;
+        while(c != ',' && c != ' ')
+        {
+            x.push_back(c);
+            c = Line[a]; a++;
+        }
+        
+        y.push_back(Line[a]); a++;
+        c = Line[a]; a++;;
+        while(c != ',' && c != ' ')
+        {
+            y.push_back(c);
+            c = Line[a]; a++;
+        }
+        
+        z.push_back(Line[a]); a++;
+        c = Line[a]; a++;;
+        while(c != ' ' && c != '\n')
+        {
+            z.push_back(c);
+            c = Line[a]; a++;
+        }
+        
+        out = Vec3(atof(x.c_str()),atof(y.c_str()),atof(z.c_str()));
+        return true;
+    }
+    bool ReadVec2(string Line,Vec2& out)
+    {
+        string x,y;
+        //Vertex
+        i32 a = 0;
+        char c = Line[a]; a++;
+        while((!isnumber(c) && c != '-')) { c = Line[a]; a++; }
+        
+        x.push_back(c);
+        c = Line[a]; a++;;
+        while(c != ',' && c != ' ')
+        {
+            x.push_back(c);
+            c = Line[a]; a++;
+        }
+        
+        y.push_back(Line[a]); a++;
+        c = Line[a]; a++;;
+        while(c != ' ' && c != '\n')
+        {
+            y.push_back(c);
+            c = Line[a]; a++;
+        }
+        
+        out = Vec2(atof(x.c_str()),atof(y.c_str()));
+        return true;
+    }
+    bool ReadVertexAttribIndices(string VtxIndices,i32& v,i32& t,i32& n)
+    {
+        string i0,i1,i2;
+        i32 i = 0;
+        while(VtxIndices[i] != '/')
+        {
+            if(isnumber(VtxIndices[i])) i0.push_back(VtxIndices[i]);
+            i++;
+        }
+        
+        i++;
+        while(VtxIndices[i] != '/')
+        {
+            if(isnumber(VtxIndices[i])) i1.push_back(VtxIndices[i]);
+            i++;
+        }
+        
+        i++;
+        while(VtxIndices[i] != ' ' && VtxIndices[i] != '\n' && i < VtxIndices.length())
+        {
+            if(isnumber(VtxIndices[i])) i2.push_back(VtxIndices[i]);
+            i++;
+        }
+        
+        v = atoi(i0.c_str());
+        t = atoi(i1.c_str());
+        n = atoi(i2.c_str());
+        
+        return true;
+    }
+    
     Mesh::Mesh() : m_TangBuff(0), m_NormBuff(0), m_TexCBuff(0), m_VertBuff(0), m_IndexBuff(0), m_VAO(0)
     {
         for(i32 i = 0;i < MAX_TEXTURES;i++) m_Textures[i] = 0;
@@ -138,11 +231,126 @@ namespace SandboxSimulator
         }
         else Log("Error: No meshes in file <%s>.",m_Path.c_str());
         */
-        return true;
+        
+        SetPosition(0);
+        string Path = GetPath();
+        string ext = Path.substr(Path.find_last_of("."),Path.length());
+        if(ext.length() != 4)
+        {
+            printf("File <%s> is not a .obj file.\n",GetPath());
+            return false;
+        }
+        for(i32 i = 0; i < ext.length();i++) ext[i] = tolower(ext[i]);
+        if(ext != ".obj")
+        {
+            printf("File <%s> is not a .obj file.\n",GetPath());
+            return false;
+        }
+        
+        return LoadFromOBJ();
     }
     //void Mesh::LoadFromAssimpMesh(aiMesh *Mesh)
     //{
     //}
+    bool Mesh::LoadFromOBJ()
+    {
+        SetPosition(0);
+        string Path = GetPath();
+        string ext = Path.substr(Path.find_last_of("."),Path.length());
+        if(ext.length() != 4)
+        {
+            printf("File <%s> is not a .obj file.\n",GetPath());
+            return false;
+        }
+        for(i32 i = 0; i < ext.length();i++) ext[i] = tolower(ext[i]);
+        if(ext != ".obj")
+        {
+            printf("File <%s> is not a .obj file.\n",GetPath());
+            return false;
+        }
+        
+        Clear();
+        
+        vector<Vec3> Verts;
+        vector<Vec3> Norms;
+        vector<Vec2> TexCoords;
+        
+        while(!AtEnd())
+        {
+            string Line;
+            {
+                char c = GetC();
+                while(c != '\n') { Line.push_back(c); c = GetC(); }
+            }
+            
+            if(Line[0] == '#') continue;
+            else if(Line[0] == 'v')
+            {
+                if(Line[1] == 't')
+                {
+                    //Tex coord
+                    Vec2 v;
+                    if(!ReadVec2(Line,v)) return false;
+                    TexCoords.push_back(v);
+                }
+                else if(Line[1] == 'n')
+                {
+                    //Normal
+                    Vec3 v;
+                    if(!ReadVec3(Line,v)) return false;
+                    Norms.push_back(v);
+                }
+                else
+                {
+                    Vec3 v;
+                    if(!ReadVec3(Line,v)) return false;
+                    Verts.push_back(v);
+                }
+            }
+            else if(Line[0] == 'f')
+            {
+                i32 i = 0;
+                while(!isnumber(Line[i])) i++;
+                i32 sIdx0 = i;
+                while(isnumber(Line[i]) || Line[i] == ',' || Line[i] == '/') i++;
+                i32 eIdx0 = i;
+                i++;
+                
+                while(!isnumber(Line[i])) i++;
+                i32 sIdx1 = i;
+                while(isnumber(Line[i]) || Line[i] == ',' || Line[i] == '/') i++;
+                i32 eIdx1 = i;
+                i++;
+                
+                while(!isnumber(Line[i])) i++;
+                i32 sIdx2 = i;
+                while(isnumber(Line[i]) || Line[i] == ',' || Line[i] == '/') i++;
+                i32 eIdx2 = i;
+                
+                i32 v0,t0,n0;
+                ReadVertexAttribIndices(Line.substr(sIdx0,eIdx0),v0,t0,n0);
+                i32 v1,t1,n1;
+                ReadVertexAttribIndices(Line.substr(sIdx1,eIdx1),v1,t1,n1);
+                i32 v2,t2,n2;
+                ReadVertexAttribIndices(Line.substr(sIdx2,eIdx2),v2,t2,n2);
+                
+                //printf("f %d/%d/%d %d/%d/%d %d/%d/%d\n",v0,t0,n0,v1,t1,n1,v2,t2,n2);
+                
+                AddVertex(Verts[v0 - 1]);
+                AddTexCoord(TexCoords[t0 - 1]);
+                AddNormal(Norms[n0 - 1]);
+                
+                AddVertex(Verts[v1 - 1]);
+                AddTexCoord(TexCoords[t1 - 1]);
+                AddNormal(Norms[n1 - 1]);
+                
+                AddVertex(Verts[v2 - 1]);
+                AddTexCoord(TexCoords[t2 - 1]);
+                AddNormal(Norms[n2 - 1]);
+            }
+        }
+        return true;
+    }
     /* Attribute access */
     void Mesh::Clear()
     {

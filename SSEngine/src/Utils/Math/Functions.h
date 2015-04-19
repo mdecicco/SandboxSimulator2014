@@ -300,6 +300,7 @@ namespace SandboxSimulator
             void FromAxisAngle(Scalar Ax,Scalar Ay,Scalar Az,Scalar Angle);
             void FromAxisAngle(const Vec3& Axis,Scalar Angle);
         
+            void LookAt(Vec3 From,Vec3 To);
             Mat4 ToMat() const;
         
             Quat operator *(const Quat& rVal) const;
